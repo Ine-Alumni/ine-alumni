@@ -82,7 +82,7 @@ const NavBar = () => {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <Link to="/ressources" className="text-sm font-medium hover:underline">
+                <Link to="/ressources/textuelles" className="text-sm font-medium hover:underline">
                   Ressources
                 </Link>
               </NavigationMenuItem>
