@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Routes, Route } from 'react-router'
 import './App.css'
 import SharedLayout from './SharedLayout'
@@ -9,13 +8,12 @@ import Stages from './components/stages/Stages'
 import Enreprises from './components/entreprises/Entreprises'
 import Laureats from './components/laureats/Laureats'
 import RessourcesLayout from './components/ressources/RessourcesLayout'
-import OutilsPratiques from './components/ressources/outilsPratiques'
+import OutilsPratiques from './components/ressources/OutilsPratiques'
 import RscCertification from './components/ressources/RscCertification'
 import RscTextuelles from './components/ressources/RscTextuelles'
 import RscInteractives from './components/ressources/RscInteractives'
 import Login from './components/login/Login'
 import Signup from './components/signup/Signup'
-
 
 
 function App() {
