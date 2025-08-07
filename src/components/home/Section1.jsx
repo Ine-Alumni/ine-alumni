@@ -17,11 +17,14 @@ const Section1 = () => {
 
         <div className='relative z-10 mx-[12vw] flex justify-center items-center gap-12 py-20 max-lg:flex-col'>
             <div className='max-w-150'>
-                <h1 className='text-4xl font-extrabold text-gray-700'>Bienvenue sur la plateforme des Alumni INPT</h1>
+                <h1 className='text-4xl font-extrabold text-[#113F67]'>Bienvenue sur la plateforme des Alumni INPT</h1>
                 <p className='mt-4 text-gray-600'>Connectez-vous avec la communauté INPT, accédez aux opportunités professionnelles, et bénéficiez des ressources partagées.</p>
                 <Link to='/nouveau-compte'>
-                  <Button className='rounded-2xl font-bold cursor-pointer mt-4 shadow-md focus:border-2 focus:border-[#0c5f95] flex bg-[#5691cb] hover:bg-[#0c5f95] text-white'>Créer un compte</Button>
+                  <Button className="mt-2 drop-shadow rounded-[7px] font-bold cursor-pointer ml-4 shadow-[0_4_15px_rgba(0,0,0,0.2)] focus:border-2 focus:border-[#113F67] flex bg-[#34699A] hover:bg-[#2b5c88] text-white transition duration-300 ease-in-out transform transition-transform duration-300 hover:scale-105 focus-within:scale-105">
+              Créer un compte
+            </Button>
                 </Link>
+                
             </div>
 
             <Carousel className='max-w-120' opts={{

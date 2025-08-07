@@ -1,43 +1,67 @@
 import React from 'react'
 import { Link } from 'react-router'
 
-const Card = ({img, title, description, linkTitle, link}) => {
-    return (
-        <div className='p-8 shadow-md flex flex-col gap-2 rounded-2xl bg-slate-50/50 max-w-md w-sm items-start'>
-            <img src={img} alt="icon" className='h-6'/>
-            <h2 className='font-bold'>{title}</h2>
-            <p>{description}</p>
-            <Link to={link}><p className='underline font-bold text-[#5691cb]'>{linkTitle}</p></Link>
-        </div>
-    )
-}
 
 const Section2 = () => {
-  return (
-    <div>
-        <div className='mt-16 mx-[12vw] flex flex-wrap gap-y-12 gap-12 justify-center'>
+    return (
+        <div>
 
-            <Card img='/assets/icons/education.svg' title='Offres de Stage' description='Accédez aux opportunités de stages.' linkTitle='Voir les offres' link='/stages'/>
+            <h1 className='text-3xl font-extrabold text-[#34699A] mt-14 text-center'>Opportunités et Événements</h1>
 
-            <Card img='/assets/icons/education2.svg' title="Offres d'Emploi" description="Découvrez les opportunités d'emploi pour les jeunes diplômés" linkTitle='Explorer les offres' link='/emplois'/>
+            <div className='mt-16 mx-[12vw] flex flex-wrap gap-y-12 gap-12 justify-center '>
+                <div className="w-72 bg-white shadow-md rounded-lg border p-6 flex flex-col items-center text-center transform transition-transform duration-300 hover:scale-105 focus-within:scale-105">
+                    <img src='/assets/icons/education.svg'alt=" education Icone" className="w-10 h-10 mb-4"/>
+                    <h3 className="text-lg font-bold mb-2">Offres de Stage</h3>
+                    <p className="text-sm text-gray-700 mb-4">Accédez aux opportunités de stages.</p>
+                    <Link to='/' className="border-2 border-[#34699A] text-[#34699A] px-4 py-1 rounded font-semibold hover:bg-[#34699A] hover:text-white transition">Voir les offres</Link>
+                </div>
 
-            <Card img='/assets/icons/education3.svg' title='Événements' description="Calendrier des activités et événements de l'INPT." linkTitle='Voir le calendrier' link='/evenements'/>
+                <div className="w-72 bg-white shadow-md rounded-lg border p-6 flex flex-col items-center text-center transform transition-transform duration-300 hover:scale-105 focus-within:scale-105">
+                    <img src='/assets/icons/education2.svg'alt=" education Icone" className="w-10 h-10 mb-4"/>
+                    <h3 className="text-lg font-bold mb-2">Offres d'Emploi</h3>
+                    <p className="text-sm text-gray-700 mb-4">Découvrez les opportunités d'emploi pour les jeunes diplômés</p>
+                    <Link to='/' className="border-2 border-[#34699A] text-[#34699A] px-4 py-1 rounded font-semibold hover:bg-[#34699A] hover:text-white transition">Explorer les offres</Link>
+                </div>
+
+                <div className="w-72 bg-white shadow-md rounded-lg border p-6 flex flex-col items-center text-center transform transition-transform duration-300 hover:scale-105 focus-within:scale-105">
+                    <img src='/assets/icons/education3.svg'alt=" education Icone" className="w-10 h-10 mb-4"/>
+                    <h3 className="text-lg font-bold mb-2">Événements</h3>
+                    <p className="text-sm text-gray-700 mb-4">Calendrier des activités et événements de l'INPT.</p>
+                    <Link to='/' className="border-2 border-[#34699A] text-[#34699A] px-4 py-1 rounded font-semibold hover:bg-[#34699A] hover:text-white transition">Voir le calendrier</Link>
+                </div>
+
+
+            </div>
+
+            <h1 className='text-3xl font-extrabold text-[#34699A] mt-14 text-center'>Ressources et Annuaires</h1>
+
+            <div className="mt-10 mx-[12vw] flex flex-wrap gap-y-12 gap-12 justify-center">
+
+                <div className="w-72 bg-white shadow-md rounded-lg border p-6 flex flex-col items-center text-center transform transition-transform duration-300 hover:scale-105 focus-within:scale-105">
+                    <img src="/assets/icons/education4.svg" alt=" education4 Icone" className="w-10 h-10 mb-4"/>
+                    <h3 className="text-lg font-bold mb-2">Bibliothèque en Ligne</h3>
+                    <p className="text-sm text-gray-700 mb-4">Accédez à notre collection de ressources pédagogiques.</p>
+                    <Link to="/" className="border-2 border-[#34699A] text-[#34699A] px-4 py-1 rounded font-semibold hover:bg-[#34699A] hover:text-white transition">Voir les ressources</Link>
+                </div>
+
+                <div className="w-72 bg-white shadow-md rounded-lg border p-6 flex flex-col items-center text-center transform transition-transform duration-300 hover:scale-105 focus-within:scale-105">
+                    <img src="/assets/icons/education.svg" alt=" education Icone" className="w-10 h-10 mb-4"/>
+                    <h3 className="text-lg font-bold mb-2">Annuaire des Lauréats</h3>
+                    <p className="text-sm text-gray-700 mb-4">Retrouvez et connectez-vous avec les anciens de l'INPT.</p>
+                    <Link to="/" className="border-2 border-[#34699A] text-[#34699A] px-4 py-1 rounded font-semibold hover:bg-[#34699A] hover:text-white transition">Explorer</Link>
+                </div>
+
+                <div className="w-72 bg-white shadow-md rounded-lg border p-6 flex flex-col items-center text-center transform transition-transform duration-300 hover:scale-105 focus-within:scale-105">
+                    <img src="/assets/icons/education2.svg" alt=" education4 Icone" className="w-10 h-10 mb-4"/>
+                    <h3 className="text-lg font-bold mb-2">"Annuaire des Entreprises"</h3>
+                    <p className="text-sm text-gray-700 mb-4">Consultez le répertoire d’entreprises de marché.</p>
+                    <Link to="/" className="border-2 border-[#34699A] text-[#34699A] px-4 py-1 rounded font-semibold hover:bg-[#34699A] hover:text-white transition">Consulter</Link>
+                </div>
+
+            </div>
 
         </div>
-
-        <h1 className='text-3xl font-extrabold text-gray-700 mt-14 text-center'>Ressources et Annuaires</h1>
-
-        <div className='mt-10 mx-[12vw] flex flex-wrap gap-y-12 gap-12 justify-center'>
-
-            <Card img='/assets/icons/education4.svg' title='Bibliothèque en Ligne' description='Accédez à notre collection de ressources pédagogiques.' linkTitle='Voir les ressources' link='/ressources'/>
-
-            <Card img='/assets/icons/education.svg' title="Annuaire des Lauréats" description="Retrouvez et connectez-vous avec les anciens de l'INPT." linkTitle='Explorer' link='/laureats'/>
-
-            <Card img='/assets/icons/education2.svg' title='Annuaire des Entreprises' description="Consultez le répertoire d’entreprises de marché." linkTitle='Consulter' link='/entreprises'/>
-
-        </div>
-    </div>
-  )
+    )
 }
 
 export default Section2

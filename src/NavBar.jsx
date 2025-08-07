@@ -1,4 +1,6 @@
 import React from 'react'
+import LanguageToggle from './components/LanguageToggle';
+import DarkModeToggle  from './components/DarkModeToggle';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -26,7 +28,7 @@ const NavBar = () => {
       <div className='flex justify-center items-center h-16 fixed top-0  w-full  border-b border-gray-200 bg-white/50 backdrop-blur-xl z-30 transition-all'>
         <div className='flex justify-between items-center w-full mx-[12.5vw] max-lg:mx-[2vw]'>
           <Link to='/'>
-          <img src="/assets/ine_alumni.jpg" alt="logo" className='h-16'/>
+          <img src="/assets/ine_alumni_blue.png" alt="logo" className='h-14'/>
           </Link>
           
           <div className='flex'>
@@ -40,40 +42,35 @@ const NavBar = () => {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <Link to="/evenements" className="text-sm font-medium hover:underline">
-                  Événements
+                <Link to="/about" className="text-sm font-medium hover:underline">
+                  À propos
                 </Link>
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <Link to="/emplois" className="text-sm font-medium hover:underline">
-                  Emplois
+                <Link to="/contactus" className="text-sm font-medium hover:underline">
+                  Contactez-nous
                 </Link>
               </NavigationMenuItem>
 
-              <NavigationMenuItem>
-                <Link to="/stages" className="text-sm font-medium hover:underline">
-                  Stages
-                </Link>
-              </NavigationMenuItem>
+
 
               <NavigationMenuItem>
-                <NavigationMenuTrigger className='bg-transparent hover:bg-transparent hover:underline hover:cursor-pointer data-[state=open]:bg-transparent px-0'>Annuaires</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="grid p-2 w-[280px]">
                     <li className='hover:bg-gray-100 p-4 rounded-sm'>
-                      <Link to="/laureats" className="block space-y-1">
-                        <div className="text-sm font-medium leading-none">Lauréats</div>
+                      <Link to="/about" className="block space-y-1">
+                        <div className="text-sm font-medium leading-none">À propos</div>
                         <p className="text-sm text-muted-foreground">
-                          Liste des anciens étudiants INE.
+                          À propos nous
                         </p>
                       </Link>
                     </li>
                     <li className='hover:bg-gray-100 p-4 rounded-sm'>
-                      <Link to="/entreprises" className="block space-y-1">
-                        <div className="text-sm font-medium leading-none">Entreprises</div>
+                      <Link to="/contactus" className="block space-y-1">
+                        <div className="text-sm font-medium leading-none">Contactez-nous</div>
                         <p className="text-sm text-muted-foreground">
-                          Répertoire des entreprises de marché.
+                          Contactez nous.
                         </p>
                       </Link>
                     </li>
@@ -81,20 +78,28 @@ const NavBar = () => {
                 </NavigationMenuContent>
               </NavigationMenuItem>
 
-              <NavigationMenuItem>
-                <Link to="/ressources" className="text-sm font-medium hover:underline">
-                  Ressources
-                </Link>
-              </NavigationMenuItem>
-
             </NavigationMenuList>
           </NavigationMenu>
 
           <HamburgerMenu />
 
-          <Link to="/se-connecter">
-              <Button className='rounded-2xl font-bold cursor-pointer ml-4 shadow-md focus:border-2 focus:border-[#0c5f95] flex bg-[#5691cb] hover:bg-[#0c5f95] text-white'>Se connecter</Button>
+          <LanguageToggle />
+          <DarkModeToggle/>
+
+          <Link to="/nouveau-compte">
+            <Button className="mt-2  drop-shadow rounded-[7px] font-bold cursor-pointer ml-4 shadow-[0_4_30px_rgba(0,0,0,0.35)] bg-white text-black hover:bg-gray-100 focus:bg-white active:bg-white focus:outline-none transition duration-300 ease-in-out">
+              S'inscrire
+            </Button>
           </Link>
+
+
+          <Link to="/se-connecter">
+            <Button className="mt-2 drop-shadow rounded-[7px] font-bold cursor-pointer ml-4 shadow-[0_4_15px_rgba(0,0,0,0.2)] focus:border-2 focus:border-[#113F67] flex bg-[#34699A] hover:bg-[#2b5c88] text-white transition duration-300 ease-in-out">
+              Connexion
+            </Button>
+          </Link>
+
+
           </div>
         </div>
       </div>
@@ -113,24 +118,12 @@ function HamburgerMenu() {
       <DropdownMenuContent className="w-48 mt-2">
         <DropdownMenuItem>
           <Link to="/" className="w-full">Accueil</Link>
+        </DropdownMenuItem> 
+        <DropdownMenuItem>
+          <Link to="/about" className="w-full">À propos</Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Link to="/evenements" className="w-full">Événements</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link to="/emplois" className="w-full">Emplois</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link to="/stages" className="w-full">Stages</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link to="/laureats" className="w-full">Laureats</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link to="/entreprises" className="w-full">Entreprises</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link to="/ressources" className="w-full">Ressources</Link>
+          <Link to="/contactus" className="w-full">Contactez-nous</Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
