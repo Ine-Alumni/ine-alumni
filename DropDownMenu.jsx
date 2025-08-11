@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function DropDownMenu() {
+export default function DropDownMenu({onChange}) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -28,17 +28,23 @@ export default function DropDownMenu() {
       {isOpen && (
         <div className="absolute right-0 z-10 mt-2 w-40 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
           <div className="py-1">
-            <button className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100">
-              Edit
+            <button className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100" onClick={() => onChange('Logiciel')}>
+              Logiciel
             </button>
-            <button className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100">
-              Duplicate
+            <button className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100" onClick={() => onChange('Extension')}>
+              Extension
             </button>
-            <button className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100">
-              Archive
+            <button className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100" onClick={() => onChange('Machine Virtuelle Préconfigurée')}>
+              Machine Virtuelle Préconfigurée
             </button>
-            <button className="block w-full px-4 py-2 text-left text-sm text-red-700 hover:bg-red-100">
-              Delete
+            <button className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100" onClick={() => onChange('IDE')}>
+              IDE
+            </button>
+            <button
+            className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+            onClick={() => onChange("")}
+            >
+              All
             </button>
           </div>
         </div>
