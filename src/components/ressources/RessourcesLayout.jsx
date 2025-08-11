@@ -10,6 +10,19 @@ export default function RessourcesLayout() {
     { key: "outils", label: "Outils pratiques" },
     { key: "certification", label: "Ressources de certification" },
   ];
+
+  const placeholderContent = function(){
+    switch(activeTab) {
+    case "textuelles":
+      return "Rechercher par titre, auteur, technologie...";
+    case "interactives":
+      return "Rechercher par nom, catégorie...";
+    case "outils":
+      return "Rechercher par nom, type...";
+    case "certification" :
+      return "Rechercher par nom, domaine...";
+    }
+ }      
   return (
     <>
       <h1 className="text-xl font-bold mx-10 mt-25 mb-1">Ressources</h1>
@@ -22,15 +35,14 @@ export default function RessourcesLayout() {
         {tabs.map((tab) => (
           <Link key={tab.key} to={`/ressources/${tab.key}`}>
             <button
-              key={tab.key}
               onClick={() => {
                 setActiveTab(tab.key);
               }}
-              className={`px-4 py-2 transition duration-200
+              className={`px-4 py-2 transition duration-200 h-10 w-60
             ${
               activeTab === tab.key
-                ? "bg-blue-400 text-white rounded-t-md h-10 w-45"
-                : "text-blue-500 hover:text-blue-700 hover:cursor-pointer"
+                ? "rounded-t-md shadow-[0_-3.5px_5px_rgba(0,0,0,0.25)] mb-10" 
+                : "text-blue-500 hover:text-blue-600 hover:cursor-pointer"
             }`}
             >
               {tab.label}
@@ -39,13 +51,11 @@ export default function RessourcesLayout() {
         ))}
       </div>
 
-      <div className="bg-blue-400 h-0.25 mt-0.2 mb-10"></div>
-
       <div className="relative text-gray-600 flex flex-row justify-center mb-15">
         <input
           type="search"
           name="search"
-          placeholder="Rechercher par titre, auteur, technologie..."
+          placeholder= {placeholderContent()}
           className="bg-white h-10 px-5 w-100 pr-10 rounded-full text-sm focus:outline-none border border-gray-400"
         />
         <button type="submit" className="relative right-9 bottom-1.5 mt-3 mr-4">
