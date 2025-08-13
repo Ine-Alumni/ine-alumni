@@ -210,7 +210,8 @@ const Evenements = () => {
           price: 0,
           image: evt.image ? `http://localhost:8080${evt.image}` : '',
           schedule: '',
-          whatToExpect: evt.expectations || ''
+          whatToExpect: evt.expectations || '',
+          
         }));
 
         setEvents(adaptedEvents);
