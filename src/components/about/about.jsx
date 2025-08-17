@@ -13,7 +13,7 @@ const AboutUs = () => {
         <h2 className="text-3xl font-semibold mb-4 text-center">À propos</h2>
 
 
-        <h3 className="text-xl text-[#34699A] font-bold mb-2 ml-60">Notre mission</h3>
+        <h3 className="text-xl text-[#3A7FC2] font-bold mb-2 ml-60">Notre mission</h3>
 
         <div className="max-w-3xl mx-auto mb-8">
           <div className="relative z-10 bg-white shadow-md p-4 rounded border flex flex-col w-[800px] h-[8.5rem] mx-auto">
@@ -57,10 +57,7 @@ const AboutUs = () => {
       </div>
 
 
-
-
-
-        <h3 className="text-xl text-[#34699A] font-bold mb-2 ml-55">Notre vision</h3>
+        <h3 className="text-xl text-[#3A7FC2] font-bold mb-2 ml-55">Notre vision</h3>
         <div className='relative py-20 px-[8vw] min-h-screen items-center -mt-20'>
             <div className='relative z-10 bg-white shadow-md p-4 rounded border flex flex-col w-[800px] h-[8.5rem] mx-auto'>
                 <p className="text-gray-700 ">

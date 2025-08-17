@@ -2,7 +2,7 @@ import React from 'react'
 
 const Section3 = () => {
   return (
-    <div className='mx-[12vw] mt-25 flex justify-center gap-25 flex-wrap text-slate-50 bg-[#113F67] p-10 px-20 rounded-2xl max-md:flex-col max-md:items-center max-md:text-center transform transition-transform duration-300 hover:scale-105 focus-within:scale-105'>
+    <div className='mx-[12vw] mt-25 flex justify-center gap-25 flex-wrap text-slate-50 bg-[#053A5F] p-10 px-20 rounded-2xl max-md:flex-col max-md:items-center max-md:text-center transform transition-transform duration-300 hover:scale-105 focus-within:scale-105'>
         <div>
             <h1 className='text-5xl font-extrabold'>700+</h1>
             <p>Laureats connectés</p>

@@ -39,7 +39,7 @@ const ContactUs = () => {
                 <div className="md:col-span-2 flex justify-center mt-4 ">
                     <button
                     type="submit"
-                    className="bg-[#34699A] text-white font-semibold py-3 px-30 rounded shadow-md hover:bg-[#2a5274] transition transform transition-transform duration-300 hover:scale-105 focus-within:scale-105 "
+                    className="bg-[#0C5F95] text-white font-semibold py-3 px-30 rounded shadow-md hover:bg-[#053A5F] transition transform transition-transform duration-300 hover:scale-105 focus-within:scale-105cursor-pointer "
                     >
                     Envoyer le message
                     </button>
