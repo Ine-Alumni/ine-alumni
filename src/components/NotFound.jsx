@@ -25,7 +25,7 @@ export default function Page404() {
             onClick={() => window.history.back()}
             className="bg-[#0C5F95] hover:bg-[#053A5F] text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
-            Retour à l'accueil
+            Retour à la page précédente
             </button>
         </div>
 );
