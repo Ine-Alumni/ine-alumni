@@ -4,9 +4,10 @@ import { JobListing } from './JobListing';
 import { JobSubmission } from './JobSubmission';
 import { JobDetails } from './JobDetails.jsx';
 import { Button } from '../ui/button';
-import { useLanguage } from '../contexts/LanguageContext.jsx';
+import { useLanguage, LanguageProvider } from '../contexts/LanguageContext.jsx';
 
-const Jobs = () => {
+// Main Jobs component content that uses the language context
+const JobsContent = () => {
   const [currentView, setCurrentView] = useState('jobs');
   const [selectedJob, setSelectedJob] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -94,6 +95,15 @@ const Jobs = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+// Wrapper component that provides language context to all job-related components
+const Jobs = () => {
+  return (
+    <LanguageProvider>
+      <JobsContent />
+    </LanguageProvider>
   );
 };
 
