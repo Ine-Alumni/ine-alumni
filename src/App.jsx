@@ -3,9 +3,8 @@ import { Routes, Route } from 'react-router'
 import './App.css'
 import SharedLayout from './SharedLayout'
 import Home from './components/home/Home'
+import Jobs from './components/offers/jobs'
 import Evenements from './components/evenements/Evenements'
-import Emplois from './components/emplois/Emplois'
-import Stages from './components/stages/Stages'
 import Enreprises from './components/entreprises/Entreprises'
 import Laureats from './components/laureats/Laureats'
 import Ressources from './components/ressources/Ressources'
@@ -20,8 +19,7 @@ function App() {
       <Route path="/" element={<SharedLayout />}>
         <Route index element={<Home />}/>
         <Route path="evenements" element={<Evenements />}/>
-        <Route path="emplois" element={<Emplois />}/>
-        <Route path="stages" element={<Stages/>}/>
+        <Route path="jobs" element={<Jobs />}/>
         <Route path="entreprises" element={<Enreprises/>}/>
         <Route path="laureats" element={<Laureats />}/>
         <Route path="ressources" element={<Ressources />}/>
