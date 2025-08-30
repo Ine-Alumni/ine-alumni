@@ -1,48 +1,63 @@
+import { AppWindowIcon } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+// per-page Tabs removed; layout now handles resource type tabs
+
 export default function RscCertification(){
-  const outils = [
+  const certs = [
     {
       name: "IBM AI Fundamentals Badge",
       field: "Artificial Intelligence (AI)",
-      description:
-        "This certification validates understanding of artificial intelligence fundamentals and its practical applications in business."
+      description: "Validates understanding of AI fundamentals and business use-cases.",
     },
     {
-      name: "IBM AI Fundamentals Badge",
-      field: "Artificial Intelligence (AI)",
-      description:
-        "This certification validates understanding of artificial intelligence fundamentals and its practical applications in business.",
+      name: "Google Cloud Data Engineer",
+      field: "Cloud / Data",
+      description: "Demonstrates ability to design and build data processing systems on GCP.",
     },
     {
-      name: "IBM AI Fundamentals Badge",
-      field: "Artificial Intelligence (AI)",
-      description:
-        "This certification validates understanding of artificial intelligence fundamentals and its practical applications in business.",
+      name: "AWS Certified Developer",
+      field: "Cloud",
+      description: "Shows competency in developing and maintaining applications on AWS.",
     },
     {
-      name: "IBM AI Fundamentals Badge",
-      field: "Artificial Intelligence (AI)",
-      description:
-        "This certification validates understanding of artificial intelligence fundamentals and its practical applications in business.",
+      name: "Coursera ML Specialization",
+      field: "Machine Learning",
+      description: "Covers core ML algorithms and practical implementation.",
     },
   ];
+
+  // removed per-page filtering tabs; keep data simple
+
   return (
-    <div className="flex flex-col items-center gap-6 px-4 mt-8 justify-center">
-      {outils.map((outil, index) => (
-        <div className="flex flex-row w-300 p-6 border border-gray-400 rounded-xl shadow-md">
-          <img src="https://th.bing.com/th/id/OIP.4usehIOUmZt_7--Ccw6JRAAAAA?w=216&h=216&c=7&r=0&o=7&pid=1.7&rm=3" className="h-12 mr-7 mt-1"/>
-          <div
-            key={index}
-            className="flex flex-col"
-          >
-            <h2 className="text-lg font-bold mb-2">
-              "{outil.name}" : {outil.field}
-            </h2>
-            <p className="text-sm text-gray-700">
-              {outil.description}
-            </p>
-          </div>
-        </div>
-      ))}
+    <div className="w-full max-w-4xl mx-auto mt-6 px-4">
+      <h2 className="text-xl font-bold mb-2">Ressources de certification</h2>
+      <p className="text-gray-500 text-sm mb-4">Explorez des certifications et badges reconnus.</p>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
+        {certs.map((c, i) => (
+          <Card key={i}>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2"><AppWindowIcon className="w-4 h-4" /> {c.name}</CardTitle>
+              <CardDescription className="text-sm">{c.field}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-gray-700">{c.description}</p>
+            </CardContent>
+            <CardFooter>
+              <Button size="sm">Learn</Button>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 }
