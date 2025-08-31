@@ -1,4 +1,3 @@
-
 import { CodeIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -10,15 +9,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-// per-page Tabs removed; the layout controls resource-type tabs
 
-export default function Interactives() {
+export default function RscInteractives() {
   const websites = [
     {
       name: "W3Schools",
       category: "Website",
-      description:
-        "Online web development tutorials, references and examples.",
+      description: "Online web development tutorials, references and examples.",
     },
     {
       name: "FreeCodeCamp",
@@ -37,19 +34,23 @@ export default function Interactives() {
     },
   ];
 
-  // removed per-page filtering tabs; keep data simple
-
   return (
     <div className="w-full max-w-4xl mx-auto mt-6 px-4">
       <h2 className="text-xl font-bold mb-2">Ressources interactives</h2>
-      <p className="text-gray-500 text-sm mb-4">Sites et plateformes interactives pour s'entraîner et apprendre.</p>
+      <p className="text-gray-500 text-sm mb-4">
+        Sites et plateformes interactives pour s'entraîner et apprendre.
+      </p>
 
-  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
         {websites.map((site, i) => (
           <Card key={i}>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2"><CodeIcon className="w-4 h-4" /> {site.name}</CardTitle>
-              <CardDescription className="text-sm">{site.category}</CardDescription>
+              <CardTitle className="flex items-center gap-2">
+                <CodeIcon className="w-4 h-4" /> {site.name}
+              </CardTitle>
+              <CardDescription className="text-sm">
+                {site.category}
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-gray-700">{site.description}</p>

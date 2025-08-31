@@ -1,10 +1,6 @@
 import { Outlet, useNavigate, useLocation } from "react-router";
 import { useState, useEffect } from "react";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 
 const tabs = [
@@ -19,25 +15,31 @@ export default function RessourcesLayout() {
   const location = useLocation();
   const [activeTab, setActiveTab] = useState("textuelles");
 
-  const placeholderContent = function(){
-    switch(activeTab) {
-    case "textuelles":
-      return "Rechercher par titre, auteur, technologie...";
-    case "interactives":
-      return "Rechercher par nom, catégorie...";
-    case "outils":
-      return "Rechercher par nom, type...";
-    case "certification" :
-      return "Rechercher par nom, domaine...";
+  const placeholderContent = (activeTab) => {
+    switch (activeTab) {
+      case "textuelles":
+        return "Rechercher par titre, auteur, technologie...";
+      case "interactives":
+        return "Rechercher par nom, catégorie...";
+      case "outils":
+        return "Rechercher par nom, type...";
+      case "certification":
+        return "Rechercher par nom, domaine...";
+      default:
+        return "Rechercher...";
     }
- }      
+  };
+
   useEffect(() => {
     // derive tab from current path (/ressources/:tab)
     const parts = location.pathname.split("/").filter(Boolean);
     const last = parts[parts.length - 1];
     if (tabs.find((t) => t.key === last)) {
       setActiveTab(last);
-    } else if (location.pathname.endsWith("/ressources") || location.pathname.endsWith("/ressources/")) {
+    } else if (
+      location.pathname.endsWith("/ressources") ||
+      location.pathname.endsWith("/ressources/")
+    ) {
       setActiveTab("textuelles");
     }
   }, [location.pathname]);
@@ -50,12 +52,12 @@ export default function RessourcesLayout() {
   return (
     <>
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-xl font-bold mt-25 mb-1">Ressources</h1>
+        <h1 className="text-xl font-bold mt-6 mb-1">Ressources</h1>
         <p className="text-gray-500 text-sm mt-1.5">
-          Bénéficiez de notre collection de ressources variées pour enrichir votre
-          apprentissage et maximiser votre réussite académique
+          Bénéficiez de notre collection de ressources variées pour enrichir
+          votre apprentissage et maximiser votre réussite académique
         </p>
-        <div className=" mt-6">
+        <div className="mt-6">
           <Tabs value={activeTab} onValueChange={handleTabChange}>
             <TabsList>
               {tabs.map((tab) => (
@@ -70,17 +72,15 @@ export default function RessourcesLayout() {
             <Input
               type="search"
               name="search"
-              placeholder={placeholderContent()}
-              className="max-w"
+              placeholder={placeholderContent(activeTab)}
+              className="max-w-md"
             />
           </div>
         </div>
       </div>
-      
 
-      
       <Outlet />
-      <div className="mb-15"/>
+      <div className="mb-14" />
     </>
   );
 }

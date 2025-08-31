@@ -9,7 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-// Tabs removed — page will show a single grid of cards
 
 export default function OutilsPratiques() {
   const outils = [
