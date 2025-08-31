@@ -14,18 +14,6 @@ import RscTextuelles from "./components/ressources/RscTextuelles";
 import RscInteractives from "./components/ressources/RscInteractives";
 import Login from "./components/login/Login";
 import Signup from "./components/signup/Signup";
-import { Routes, Route } from "react-router";
-import "./App.css";
-import SharedLayout from "./SharedLayout";
-import Home from "./components/home/Home";
-import Evenements from "./components/evenements/Evenements";
-import Emplois from "./components/emplois/Emplois";
-import Stages from "./components/stages/Stages";
-import Enreprises from "./components/entreprises/Entreprises";
-import Laureats from "./components/laureats/Laureats";
-import Ressources from "./components/ressources/Ressources";
-import Login from "./components/login/Login";
-import Signup from "./components/signup/Signup";
 import NotFound from "./components/NotFound";
 
 import EventDetails from "./components/eventdetails/EventDetails";
