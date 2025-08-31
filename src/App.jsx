@@ -26,7 +26,6 @@ function App() {
         <Route path="se-connecter" element={<Login />} />
         <Route path="nouveau-compte" element={<Signup />} />
         <Route path="evenements/:id" element={<EventDetails />} />
-        <Route path="/eventdetails/:id" element={<EventDetails />} />
         <Route path="*" element={<div>404 Not found</div>} />
       </Route>
     </Routes>
