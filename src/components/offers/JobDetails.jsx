@@ -10,7 +10,28 @@ import { ArrowLeft, MapPin, Building, Calendar, ExternalLink, Clock } from 'luci
 import { useLanguage } from '../contexts/LanguageContext.jsx';
 import { toast } from 'sonner';
 
-// Mock job data - retained as fallback if no job passed
+/**
+ * Mock job data - retained as fallback if no job passed
+ * 
+ * This data serves multiple purposes:
+ * 1. Development/testing when API is unavailable
+ * 2. Fallback when job prop is not provided
+ * 3. Example structure for API response format
+ * 
+ * Each job object contains:
+ * @property {string} id - Unique job identifier
+ * @property {string} title - Job title/position name
+ * @property {string} company - Company/organization name
+ * @property {string} location - Job location (city, country, or "Remote")
+ * @property {string} type - Job type: 'stage', 'emploi', 'alternance', 'autre'
+ * @property {string} customType - Custom type when type='autre' (e.g., 'Mission', 'Freelance', 'Bénévolat')
+ * @property {string} duration - Job duration/contract length
+ * @property {string} description - Full job description with markdown-like formatting
+ * @property {string} posted - Job posting date in ISO format
+ * @property {boolean} isNew - Whether job was posted within last 7 days
+ * @property {boolean} isRemote - Whether job allows remote work
+ * @property {string} externalLink - Optional link to original job posting
+ */
 const mockJobs = {
   '1': {
     id: '1',
@@ -233,40 +254,103 @@ const mockJobs = {
     externalLink: 'https://assotech.org/benevolat/tech-developers',
   }
 };
-
 /**
  * JobDetails Component
  * 
- * Displays detailed view of a specific job offer with application functionality.
- * Features:
- * - Clean white cards with proper spacing and blue borders
- * - Gray headers with job metadata, white content areas
- * - Formatted job description with markdown-like styling
- * - Application modal with form validation and toast notifications
- * - Responsive design with improved visual hierarchy
- * - Consistent color scheme: #0C5F95 (dark blue), #3A7FC2 (medium blue), #E2F2FF (light blue)
+ * Main component for displaying detailed view of a specific job offer.
+ * This component serves as the detailed page when a user clicks on a job from the listing.
  * 
- * @param {Object} props
- * @param {Object} props.job - Job object with all details
- * @param {Function} props.onBack - Callback to return to job listing
+ * Architecture & Design Philosophy:
+ * - Uses consistent blue color scheme: #0C5F95 (dark), #3A7FC2 (medium), #E2F2FF (light)
+ * - Card-based layout with gray headers and white content areas
+ * - Responsive design that works on mobile and desktop
+ * - Maintains separation of concerns with dedicated functions for specific tasks
+ * 
+ * Key Features:
+ * - Clean white cards with proper spacing and blue borders
+ * - Gray headers (bg-gray-50) for metadata, white content for descriptions
+ * - Formatted job description with markdown-like styling (**bold**, • bullets)
+ * - Application modal with comprehensive form validation
+ * - Toast notifications for user feedback
+ * - Responsive design with mobile-first approach
+ * - External link support for original job postings
+ * - Proper spacing (pb-8) to prevent footer collision
+ * 
+ * Data Flow:
+ * 1. Receives job data via props (from JobListing component)
+ * 2. Falls back to mock data if no job prop provided
+ * 3. Formats and displays job information in structured cards
+ * 4. Handles user interactions (back navigation, application modal)
+ * 5. Manages form state and submission with proper validation
+ * 
+ * State Management:
+ * - showApplicationModal: Controls application form modal visibility
+ * - applicationForm: Manages form data (name, email, phone, cv, message)
+ * - isSubmitting: Handles form submission loading state
+ * 
+ * Integration Points:
+ * - useLanguage: For internationalization support
+ * - toast (sonner): For user feedback notifications
+ * - UI components: Button, Card, Badge, Dialog, Input, Textarea, Label
+ * - Icons: Lucide React icons for visual enhancement
+ * 
+ * @param {Object} props - Component props
+ * @param {Object} props.job - Job object with all details (optional, falls back to mock data)
+ * @param {Function} props.onBack - Callback function to return to job listing
+ * 
+ * @example
+ * // Usage from JobListing component
+ * <JobDetails 
+ *   job={selectedJob} 
+ *   onBack={() => setSelectedJob(null)} 
+ * />
+ * 
+ * @example
+ * // Usage without job prop (uses mock data)
+ * <JobDetails onBack={() => navigate('/jobs')} />
  */
 export function JobDetails({ job: jobProp, onBack }) {
-  const { t } = useLanguage();
+  /**
+   * Component state management
+   * 
+   * State variables control different aspects of the component:
+   * - showApplicationModal: Boolean to control modal dialog visibility
+   * - applicationForm: Object containing all form field values
+   * - isSubmitting: Boolean to handle loading state during form submission
+   */
+  const { t } = useLanguage(); // Internationalization hook
   const [showApplicationModal, setShowApplicationModal] = useState(false);
   const [applicationForm, setApplicationForm] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    cv: null,
-    message: '',
+    name: '',          // Applicant's full name
+    email: '',         // Contact email address
+    phone: '',         // Phone number
+    cv: null,          // CV file upload
+    message: '',       // Cover letter/motivation message
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Prefer passed job prop, fallback to mock data
+  /**
+   * Job data resolution
+   * 
+   * Prioritizes passed job prop, but provides graceful fallback to mock data.
+   * This ensures the component always has data to display, useful for:
+   * - Development and testing scenarios
+   * - Error recovery when API data is malformed
+   * - Standalone component usage
+   */
   const job = jobProp || mockJobs['1'];
 
   /**
-   * Format date for display in French locale
+   * Date formatting utility
+   * 
+   * Formats ISO date strings for display in French locale.
+   * Used for job posting dates throughout the component.
+   * 
+   * @param {string} dateString - ISO date string (e.g., "2025-01-15")
+   * @returns {string} Formatted date in French (e.g., "15 janvier 2025")
+   * 
+   * @example
+   * formatDate("2025-01-15") // "15 janvier 2025"
    */
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -278,7 +362,21 @@ export function JobDetails({ job: jobProp, onBack }) {
   };
 
   /**
-   * Get appropriate color scheme for job type badge
+   * Job type badge color mapping
+   * 
+   * Returns appropriate Tailwind CSS classes for job type badges.
+   * Each job type has its own color scheme for visual distinction:
+   * - stage (internship): Blue theme
+   * - emploi (job): Green theme  
+   * - alternance (work-study): Purple theme
+   * - autre (other/custom): Orange theme
+   * 
+   * @param {string} type - Job type ('stage', 'emploi', 'alternance', 'autre')
+   * @returns {string} Tailwind CSS classes for background, text, and border colors
+   * 
+   * @example
+   * getTypeColor('stage') // "bg-blue-50 text-blue-700 border-blue-200"
+   * getTypeColor('autre') // "bg-orange-50 text-orange-700 border-orange-200"
    */
   const getTypeColor = (type) => {
     switch (type) {
@@ -296,7 +394,23 @@ export function JobDetails({ job: jobProp, onBack }) {
   };
 
   /**
-   * Get display text for job type, handling custom types
+   * Job type display text resolver
+   * 
+   * Determines the appropriate display text for job type badges.
+   * Handles special case where type='autre' and customType is provided.
+   * 
+   * Logic:
+   * - If type is 'autre' and customType exists: show customType
+   * - Otherwise: use internationalized type label via t() function
+   * 
+   * @returns {string} Display text for the job type badge
+   * 
+   * @example
+   * // For job with type='autre' and customType='Mission'
+   * getTypeDisplayText() // "Mission"
+   * 
+   * // For job with type='stage'
+   * getTypeDisplayText() // "Stage" (or translated equivalent)
    */
   const getTypeDisplayText = () => {
     if (job.type === 'autre' && job.customType) {
@@ -306,7 +420,31 @@ export function JobDetails({ job: jobProp, onBack }) {
   };
 
   /**
-   * Handle application form submission with validation and API call simulation
+   * Application form submission handler
+   * 
+   * Manages the complete form submission workflow:
+   * 1. Prevents default form behavior
+   * 2. Sets loading state to prevent multiple submissions
+   * 3. Simulates API call with realistic delay
+   * 4. Shows success notification to user
+   * 5. Closes modal and resets form
+   * 6. Restores normal state
+   * 
+   * In a real application, this would:
+   * - Validate form data client-side
+   * - Send POST request to job application API endpoint
+   * - Handle API response (success/error scenarios)
+   * - Show appropriate user feedback
+   * - Possibly redirect user or update application status
+   * 
+   * @param {Event} e - Form submission event
+   * 
+   * Error Handling:
+   * - Currently simulated, but should include:
+   *   - Network error handling
+   *   - Validation error display
+   *   - File upload error handling
+   *   - Rate limiting feedback
    */
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -328,7 +466,30 @@ export function JobDetails({ job: jobProp, onBack }) {
   };
 
   /**
-   * Handle file upload for CV with validation
+   * File upload handler for CV attachment
+   * 
+   * Handles CV file selection and validation.
+   * Updates the applicationForm state with the selected file.
+   * 
+   * Current Implementation:
+   * - Accepts first selected file or null if none selected
+   * - Updates form state immediately
+   * 
+   * Production Considerations:
+   * - File size validation (should limit to reasonable size, e.g., 5MB)
+   * - File type validation (PDF, DOC, DOCX as indicated in UI)
+   * - Virus scanning for uploaded files
+   * - Preview functionality for selected files
+   * - Progress indication for large file uploads
+   * 
+   * @param {Event} e - File input change event
+   * 
+   * @example
+   * // User selects a PDF file
+   * handleFileChange(event) // Updates applicationForm.cv with File object
+   * 
+   * // User cancels file selection
+   * handleFileChange(event) // Updates applicationForm.cv with null
    */
   const handleFileChange = (e) => {
     const file = e.target.files?.[0] || null;
@@ -336,8 +497,42 @@ export function JobDetails({ job: jobProp, onBack }) {
   };
 
   /**
-   * Format job description with proper styling
-   * Handles markdown-like formatting (**bold**, • bullets)
+   * Job description formatting engine
+   * 
+   * Converts plain text job descriptions with markdown-like syntax into styled React elements.
+   * This function is crucial for displaying rich, formatted job descriptions.
+   * 
+   * Supported Formatting:
+   * - **text**: Bold section headers (converted to h3 elements)
+   * - • text: Bullet points with custom styling
+   * - Plain text: Regular paragraphs with proper spacing
+   * - Empty lines: Converted to line breaks for spacing
+   * 
+   * Styling Applied:
+   * - Headers: Blue color (#053A5F), semibold weight, proper margins
+   * - Bullets: Blue bullet points, proper indentation
+   * - Paragraphs: Gray text with relaxed line-height
+   * - Spacing: Consistent margins between elements
+   * 
+   * @param {string} description - Raw job description with markdown-like formatting
+   * @returns {Array<JSX.Element>} Array of formatted React elements
+   * 
+   * @example
+   * const description = `
+   * **Responsibilities:**
+   * • Develop user interfaces
+   * • Collaborate with team
+   * 
+   * Regular paragraph text here.
+   * `;
+   * 
+   * formatDescription(description)
+   * // Returns: [<h3>Responsibilities:</h3>, <div>• Develop...</div>, ...]
+   * 
+   * Performance Note:
+   * - Splits description by newlines and processes each line
+   * - Uses array index as React key (acceptable for static content)
+   * - Minimal DOM manipulation for optimal rendering
    */
   const formatDescription = (description) => {
     return description.split('\n').map((paragraph, index) => {
