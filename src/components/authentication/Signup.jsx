@@ -4,11 +4,13 @@ import { Link, useNavigate } from 'react-router'
 import { signupSchema } from '../../schemas/signupSchema.js'
 import axios from 'axios'
 import { login, register } from '../../services/auth-service.js'
-import { AlertContext } from '../../SharedLayout.jsx'
+import { useAlert } from '../../SharedLayout.jsx'
+import { useAuth } from './AuthenticationProvider.jsx'
 
 const Signup = () => {
     const navigate = useNavigate();
-    const {addAlert} = useContext(AlertContext);
+    const {addAlert} = useAlert();
+    const {setAuth} = useAuth();
         
     const {values, errors, touched, isSubmitting, handleChange, handleSubmit} = useFormik({
         initialValues: {
@@ -25,20 +27,27 @@ const Signup = () => {
         },
         validationSchema: signupSchema,
         onSubmit: async (values, actions) => {
-            register(values.fullName, values.email, values.password, 
+            try{
+                const response = await register(values.fullName, values.email, values.password, 
                 values.major, values.graduationYear, values.phoneNumber, 
-                values.gender, values.country, values.city)
-            .then((response) => {
-                login(values.email, values.password);
-                actions.resetForm();
-                addAlert(response.data.isSuccess, response.data.message);
+                values.gender, values.country, values.city);
+
                 if(response.data.isSuccess){
-                    navigate("/verification-email");
+                    const loginResponse = await login(values.email, values.password);
+                    actions.resetForm();
+                    addAlert(true, response.data.message);
+                    if(loginResponse.data.isSuccess){
+                        setAuth(loginResponse.data.response);
+                        navigate("/verification-email");
+                    }
+                    
+                }else{
+                    addAlert(false, response.data.message);
                 }
-            }).catch((error) => {
+            }catch(error) {
                 actions.resetForm();
                 addAlert(false, error.response?.data?.message || "Une erreur est survenue. Veuillez réessayer plus tard.");
-            })
+            }
         }
     });
 

@@ -1,35 +1,42 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useAuth } from '../../App'
+import { useAuth } from './AuthenticationProvider'
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp'
 import { MailCheck, AlertCircle } from 'lucide-react'
 import { verifyEmail, resendVerificationEmail } from '../../services/auth-service'
-import { AlertContext } from '../../SharedLayout'
+import { useAlert } from '../../SharedLayout'
 import { useNavigate } from 'react-router'
 
 const EmailVerification = () => {
   const { auth, setAuth } = useAuth();
   const [otp, setOtp] = useState('');
-  const {addAlert} = useContext(AlertContext);
+  const {addAlert} = useAlert();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (otp.length === 6) {
       verifyEmail(otp).then(response => {
-        addAlert(response.data.isSuccess, response.data.message);
+        console.log(response.data);
         if(response.data.isSuccess){
+          addAlert(true, response.data.message);
           setAuth({...auth, isEmailVerified: true});
           navigate("/evenements");
+        }else{
+          addAlert(false, "Code est invalide ou expiré.");
         }
       }).catch((error) => {
         setOtp('');
-        addAlert(false, error.response?.data?.message || "Une erreur est survenue. Veuillez réessayer plus tard.");
+        addAlert(false, "Code est invalide ou expiré.");
       })
     }
   }, [otp]);
 
   const resendVerification = () => {
     resendVerificationEmail().then(response => {
-        addAlert(response.data.isSuccess, response.data.message);
+        if(response.data.isSuccess){
+          addAlert(true, response.data.message);
+        }else {
+          addAlert(false, response.data.message);
+        }
         setOtp('');
       }).catch((error) => {
         setOtp('');

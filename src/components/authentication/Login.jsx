@@ -2,16 +2,16 @@ import React from 'react'
 import { Link } from 'react-router'
 import { useNavigate } from 'react-router';
 import { useContext } from 'react';
-import { AlertContext } from '../../SharedLayout.jsx';
+import { useAlert } from '../../SharedLayout.jsx';
 import { useFormik } from 'formik';
 import { signinSchema } from '../../schemas/signinSchema.js';
 import { login } from '../../services/auth-service.js'
-import { useAuth } from '../../App.jsx';
+import { useAuth } from './AuthenticationProvider';
 
 const Login = () => {
     const navigate = useNavigate();
-    const {addAlert} = useContext(AlertContext);
-    const {setAuth} = useAuth();
+    const {addAlert} = useAlert();
+    const {setAuth, setAuthIsLoading} = useAuth();
 
     const {values, errors, touched, isSubmitting, handleChange, handleSubmit} = useFormik({
             initialValues: {
@@ -20,18 +20,24 @@ const Login = () => {
             },
             validationSchema: signinSchema,
             onSubmit: async (values, actions) => {
-                login(values.email, values.password)
-                .then((response) => {
-                    actions.resetForm();
-                    addAlert(response.data.isSuccess, response.data.message);
+                try{    
+                    setAuthIsLoading(true);
+                    const response = await login(values.email, values.password);
+
                     if(response.data.isSuccess){
+                        actions.resetForm();
                         setAuth(response.data.response);
+                        addAlert(true, response.data.message);
                         navigate("/evenements");
+                    }else{
+                        addAlert(false, "Données invalides.");
                     }
-                }).catch((error) => {
+                }catch(error) {
                     actions.resetForm();
-                    addAlert(false, error.response?.data?.message || "Une erreur est survenue. Veuillez réessayer plus tard.");
-                })
+                    addAlert(false, "Données invalides.");
+                }finally{
+                    setAuthIsLoading(false);
+                }
             }
         });
 

@@ -1,20 +1,27 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import NavBar from './NavBar';
 import Footer from './Footer';
 import { Outlet } from 'react-router';
 import Alerts from './components/alerts/Alerts';
 
-export const AlertContext = React.createContext();
+const AlertContext = React.createContext();
+
+export const useAlert = () => {
+    return useContext(AlertContext);
+}
 
 const SharedLayout = () => {
     const [alerts, setAlerts] = useState([]);
 
     const addAlert = (success, description) => {
-        setAlerts([...alerts, {success, description}]);
+        const newAlert = {id: Date.now(), success, description};
+        setAlerts([...alerts, newAlert]);
 
-        setTimeout(() => {
-            setAlerts((prevAlerts) => prevAlerts.slice(1));
-        }, 10000);
+        const timeoutId = setTimeout(() => {
+            setAlerts((prevAlerts) => prevAlerts.filter(alert => alert.id !== newAlert.id));
+        }, 8000);
+
+        return () => clearTimeout(timeoutId);
     }
 
     return (

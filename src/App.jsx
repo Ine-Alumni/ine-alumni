@@ -16,32 +16,21 @@ import Login from "./components/authentication/Login";
 import Signup from "./components/authentication/Signup";
 import NotFound from "./components/NotFound";
 import EventDetails from "./components/eventdetails/EventDetails";
-import { createContext, useContext, useEffect, useState } from "react";
-import { getAuthenticationState } from "./services/auth-service";
 import ProtectedRoute from "./components/authentication/ProtectedRoute";
 import AccountVerification from "./components/authentication/AccountVerification";
 import EmailVerification from "./components/authentication/EmailVerification";
-
-const AuthenticationContext = createContext();
-
-export const useAuth = () => {
-  return useContext(AuthenticationContext);
-}
+import AuthenticationProvider from "./components/authentication/AuthenticationProvider";
+import HideWhenAuthenticated from "./components/authentication/HideWhenAuthenticated";
 
 function App() {
-  const [auth, setAuth] = useState(null);
-
-  useEffect(() => {
-    setAuth(getAuthenticationState());
-  }, []);
-
+  
   return (
-    <AuthenticationContext.Provider value={{auth, setAuth}}>
+    <AuthenticationProvider>
       <Routes>
         <Route path="/" element={<SharedLayout />}>
         
           {/* fully authenticated routes */}
-          <Route element={<ProtectedRoute requireEmailVerification={true} requireAccountVerification={true}/>} > 
+          <Route element={<ProtectedRoute />} > 
               <Route path="evenements" element={<Evenements />} >
                 <Route path=":id" element={<EventDetails />} />
               </Route>
@@ -55,24 +44,21 @@ function App() {
                 <Route path="outils" element={<OutilsPratiques />} />
                 <Route path="certification" element={<RscCertification />} />
               </Route>
-          </Route>
-
-          <Route path="/verification-email" element={<ProtectedRoute requireEmailVerification={false} requireAccountVerification={false}/>} >
-            <Route index element={<EmailVerification/>} />
-          </Route>
-
-          <Route path="/verification-compte" element={<ProtectedRoute requireEmailVerification={true} requireAccountVerification={false}/>} >
-            <Route index element={<AccountVerification/>} />
+              <Route path="verification-email" element={<EmailVerification/>} />
+              <Route path="verification-compte" element={<AccountVerification/>} />
           </Route>
 
           <Route index element={<Home />} />
-          <Route path="se-connecter" element={<Login />} />
-          <Route path="nouveau-compte" element={<Signup />} />
           <Route path="*" element={<NotFound />}></Route>
+
+          <Route element={<HideWhenAuthenticated />}>
+            <Route path="se-connecter" element={<Login />} />
+            <Route path="nouveau-compte" element={<Signup />} />
+          </Route>
 
         </Route>
       </Routes>
-    </AuthenticationContext.Provider>
+    </AuthenticationProvider>
   );
 }
 

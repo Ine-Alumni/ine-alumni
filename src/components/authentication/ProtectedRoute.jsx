@@ -1,29 +1,43 @@
 import React from 'react'
-import { Navigate, Outlet } from 'react-router'
-import { useAuth } from '../../App'
+import { Navigate, Outlet, useLocation } from 'react-router'
+import { useAuth } from './AuthenticationProvider'
 
 // A wrapper for authenticated routes
-const ProtectedRoute = ({ requireEmailVerification, requireAccountVerification }) => {
-  const { auth } = useAuth();
+const ProtectedRoute = () => {
+  const { auth, authIsLoading } = useAuth();
+  const location = useLocation();
 
-  const isAuthorized = () => {
-    if(!auth) return false;
-    if(requireEmailVerification && requireAccountVerification){
-      if(auth.isEmailVerified && auth.isAccountVerified) return true;
-      return false;
-    }
-    if(requireEmailVerification){
-      if(auth.isEmailVerified) return true;
-      return false;
-    }
-    if(requireAccountVerification){
-      if(auth.isAccountVerified) return true;
-      return false;
-    }
-    return true;
+  if(authIsLoading){
+    return null;
   }
-  return ( isAuthorized() ? <Outlet /> :
-     <Navigate to={!auth? "/se-connecter": !auth.isEmailVerified? "/verification-email": "/verification-compte"} replace/>)
+
+  if(!auth){
+    return <Navigate to="/se-connecter" replace/>
+  }
+
+  // If email is not verified while authenticated, only allow /verification-email
+  if(!auth.isEmailVerified){
+    if(location.pathname !== "/verification-email"){
+      return <Navigate to="/verification-email" replace/>
+    }
+    return <Outlet />;
+  }
+
+  // If account is not verified while authenticated, only allow /verification-compte
+  if(!auth.isAccountVerified){
+    if(location.pathname !== "/verification-compte"){
+      return <Navigate to="/verification-compte" replace/>
+    }
+    return <Outlet />;
+  }
+
+  // If both are verified, restrict access to verification pages
+  if(location.pathname === "/verification-email" || location.pathname === "/verification-compte"){
+    return <Navigate to="/evenements" replace/>
+  }
+
+  // Otherwise, allow access
+  return <Outlet />;
 }
 
 export default ProtectedRoute
