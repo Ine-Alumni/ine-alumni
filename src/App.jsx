@@ -15,6 +15,7 @@ import RscInteractives from "./components/ressources/RscInteractives";
 import Login from "./components/login/Login";
 import Signup from "./components/signup/Signup";
 import NotFound from "./components/NotFound";
+import Clubs from "./components/clubs/Clubs"
 
 import EventDetails from "./components/eventdetails/EventDetails";
 
@@ -34,6 +35,7 @@ function App() {
           <Route path="outils" element={<OutilsPratiques />} />
           <Route path="certification" element={<RscCertification />} />
         </Route>
+        <Route path="clubs" element={<Clubs/>}/>
         <Route path="se-connecter" element={<Login />} />
         <Route path="nouveau-compte" element={<Signup />} />
         <Route path="evenements/:id" element={<EventDetails />} />

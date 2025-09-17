@@ -1,43 +1,36 @@
-import React from 'react'
-import { Link } from 'react-router'
-
-const Card = ({img, title, description, linkTitle, link}) => {
-    return (
-        <div className='p-8 shadow-md flex flex-col gap-2 rounded-2xl bg-slate-50/50 max-w-md w-sm items-start'>
-            <img src={img} alt="icon" className='h-6'/>
-            <h2 className='font-bold'>{title}</h2>
-            <p>{description}</p>
-            <Link to={link}><p className='underline font-bold text-[#5691cb]'>{linkTitle}</p></Link>
-        </div>
-    )
-}
-
 const Section2 = () => {
+  const stats = [
+    { number: "2500+", label: "Alumni" },
+    { number: "20+", label: "Active Student Clubs" },
+    { number: "100+", label: "Events Every Year" },
+    { number: "95%", label: "of graduates stay connected" },
+  ];
+
   return (
-    <div>
-        <div className='mt-16 mx-[12vw] flex flex-wrap gap-y-12 gap-12 justify-center'>
+    <section id="section2" className=" flex items-start justify-center px-4 py-12">
+      <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center">
+        {stats.map((stat, index) => (
+          <div
+            key={index}
+            className="bg-white text-center flex flex-col items-center justify-center
+                      w-full max-w-[298px] aspect-[298/159] rounded-[18px] mx-auto
+                      shadow-[0_8px_15px_rgba(0,0,0,0.25)] hover:-translate-y-2 transition-transform"
+          >
 
-            <Card img='/assets/icons/education.svg' title='Offres de Stage' description='Accédez aux opportunités de stages.' linkTitle='Voir les offres' link='/stages'/>
+            <div className="text-2xl sm:text-xl md:text-2xl lg:text-[2rem] font-bold text-[#3A7FC2] leading-none">
+              {stat.number}
+            </div>
 
-            <Card img='/assets/icons/education2.svg' title="Offres d'Emploi" description="Découvrez les opportunités d'emploi pour les jeunes diplômés" linkTitle='Explorer les offres' link='/emplois'/>
+            <div className="text-[#3A7FC2] font-medium text-sm sm:text-xs md:text-sm lg:text-base mt-2 leading-5 text-center px-2">
+              {stat.label}
+            </div>
 
-            <Card img='/assets/icons/education3.svg' title='Événements' description="Calendrier des activités et événements de l'INPT." linkTitle='Voir le calendrier' link='/evenements'/>
+            <div className="w-12 h-1 bg-[#3A7FC2] rounded mt-2"></div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+};
 
-        </div>
-
-        <h1 className='text-3xl font-extrabold text-gray-700 mt-14 text-center'>Ressources et Annuaires</h1>
-
-        <div className='mt-10 mx-[12vw] flex flex-wrap gap-y-12 gap-12 justify-center'>
-
-            <Card img='/assets/icons/education4.svg' title='Bibliothèque en Ligne' description='Accédez à notre collection de ressources pédagogiques.' linkTitle='Voir les ressources' link='/ressources'/>
-
-            <Card img='/assets/icons/education.svg' title="Annuaire des Lauréats" description="Retrouvez et connectez-vous avec les anciens de l'INPT." linkTitle='Explorer' link='/laureats'/>
-
-            <Card img='/assets/icons/education2.svg' title='Annuaire des Entreprises' description="Consultez le répertoire d’entreprises de marché." linkTitle='Consulter' link='/entreprises'/>
-
-        </div>
-    </div>
-  )
-}
-
-export default Section2
+export default Section2;
