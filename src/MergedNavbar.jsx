@@ -19,7 +19,7 @@ const MergedNavbar = () => {
 
   return (
     <nav>
-      <div className='flex justify-center items-center h-16 fixed top-0 w-full border-b border-gray-200 bg-white/50 backdrop-blur-xl z-30 transition-all'>
+      <div className='flex justify-center items-center h-16 fixed top-0 w-full border-b border-gray-200 bg-[#E4F2FF] backdrop-blur-xl z-30 transition-all'>
         <div className='flex justify-between items-center w-full mx-[12.5vw] max-lg:mx-[2vw]'>
           <Link to={isAuthenticated ? '/private-home' : '/'}>
             <img src="/assets/ine_alumni_blue.png" alt="logo" className='h-14'/>

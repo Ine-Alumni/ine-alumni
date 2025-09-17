@@ -2,14 +2,18 @@ import { Routes, Route, useNavigate, useLocation } from "react-router";
 import { useEffect } from "react";
 import { AuthProvider } from "./components/AuthContext";
 import "./App.css";
-import SharedLayout from "./SharedLayout";
+import SharedLayout from "./sharedlayout/SharedLayout";
 import Home from "./components/home/Home";
 import Evenements from "./components/evenements/Evenements";
 import Emplois from "./components/emplois/Emplois";
 import Stages from "./components/stages/Stages";
+import RessourcesLayout from "./components/ressources/RessourcesLayout";
+import RscTextuelles from "./components/ressources/RscTextuelles";
+import RscInteractives from "./components/ressources/RscInteractives";
+import RscCertification from "./components/ressources/RscCertification";
+import OutilsPratiques from "./components/ressources/OutilsPratiques";
 import Entreprises from "./components/entreprises/Entreprises";
 import Laureats from "./components/laureats/Laureats";
-import Ressources from "./components/ressources/Ressources";
 import Questions from "./components/questions/Questions";
 import Login from "./components/login/Login";
 import Signup from "./components/signup/Signup";
@@ -57,7 +61,13 @@ function AppContent() {
             <Route path="stages" element={<Stages />} />
             <Route path="entreprises" element={<Entreprises />} />
             <Route path="laureats" element={<Laureats />} />
-            <Route path="ressources" element={<Ressources />} />
+            <Route path="ressources" element={<RessourcesLayout />}>
+              <Route path="textuelles" element={<RscTextuelles />} />
+              <Route path="interactives" element={<RscInteractives />} />
+              <Route path="outils" element={<OutilsPratiques />} />
+              <Route path="certification" element={<RscCertification />} />
+            </Route>
+
             <Route path="questions" element={<Questions />} />
             <Route path="profile" element={<Profile />} />
             <Route path="evenements/:id" element={<EventDetails />} />
