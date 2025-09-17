@@ -67,7 +67,7 @@ const Section1 = () => {
                     .getElementById("section2")
                     ?.scrollIntoView({ behavior: "smooth" });
                 }}
-                className="flex items-center flex justify-center bg-white text-[#3A7FC2] text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold rounded-full px-4 sm:px-6 py-3 sm:py-4 hover:bg-gray-100 transition-colors w-[220px] sm:w-[280px] md:w-[250px] lg:w-[300px] h-[55px] sm:h-[60px] md:h-[60px] lg:h-[60px]"
+                className="flex items-center justify-center bg-white text-[#3A7FC2] text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold rounded-full px-4 sm:px-6 py-3 sm:py-4 hover:bg-gray-100 transition-colors w-[220px] sm:w-[280px] md:w-[250px] lg:w-[300px] h-[55px] sm:h-[60px] md:h-[60px] lg:h-[60px]"
               >
                 <ArrowDownCircle className="w-6 h-6 sm:w-8 sm:h-8 lg:w-9 lg:h-9" />
                 <span className="flex-1 text-center">Explore</span>
