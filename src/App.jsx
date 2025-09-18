@@ -17,7 +17,7 @@ import Laureats from "./components/laureats/Laureats";
 import Questions from "./components/questions/Questions";
 import Login from "./components/login/Login";
 import Signup from "./components/signup/Signup";
-import About from "./components/about/About";
+import About from "./components/about/about";
 import Contactus from "./components/contactus/Contactus";
 import Profile from "./components/profile/Profile";
 import NotFound from "./components/NotFound";
