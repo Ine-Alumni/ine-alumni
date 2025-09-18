@@ -3,7 +3,7 @@ import "./App.css";
 import SharedLayout from "./SharedLayout";
 import Home from "./components/home/Home";
 import Evenements from "./components/evenements/Evenements";
-import Jobs from './components/offers/jobs'
+import Jobs from './components/offers/Jobs'
 import Enreprises from "./components/entreprises/Entreprises";
 import Laureats from "./components/laureats/Laureats";
 import RessourcesLayout from "./components/ressources/RessourcesLayout";
