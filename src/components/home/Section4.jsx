@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ChevronRight, Calendar, MapPin, Users, Share2, Loader2, AlertCircle, Heart } from 'lucide-react';
+import authHeader from '../../services/auth-header';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1";
 
 const Section4 = () => {
   const navigate = useNavigate();
@@ -17,7 +18,11 @@ const Section4 = () => {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(`${API_BASE_URL}/ev/api/evenements`);
+        const response = await fetch(`${API_BASE_URL}/events`, {
+          method: 'GET',
+          headers: 
+            authHeader(),
+        });
         if (!response.ok) {
           throw new Error(`Failed to fetch events: ${response.status}`);
         }
@@ -25,7 +30,7 @@ const Section4 = () => {
         const data = await response.json();
 
         // Fix image URLs
-        const processedEvents = data.map(event => ({
+        const processedEvents = data.response.map(event => ({
           ...event,
           image:
             event.image && event.image.startsWith("/uploads")
@@ -136,19 +141,19 @@ const Section4 = () => {
 
   // Render events section
   return (
-    <div className="mx-auto text-center py-25 px-4">
+    <div className="mx-auto text-center pt-25 px-4">
   <HeaderSection/>
   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div className="py-12 px-4">
       <div className="max-w-6xl mx-auto">
 
         {/* Events Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div className="flex justify-center gap-14 mb-8">
           {upcomingEvents.map((event) => (
             <div 
               key={event.id} 
               onClick={() => handleCardClick(event.id)}
-              className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+              className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer w-100"
             >
 
               {/* Image Container */}
@@ -212,10 +217,10 @@ const Section4 = () => {
         </div>
 
         {/* Discover More Button */}
-        <div className="flex justify-center">
+        <div className="flex justify-center mt-15">
           <button 
-            onClick={() => navigate('/events')}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-6 py-3 rounded-lg flex items-center gap-2 transition-colors duration-200"
+            onClick={() => navigate('/evenements')}
+            className="bg-[#3A7FC2] hover:bg-[#2c6aab] cursor-pointer text-white font-medium px-6 py-3 rounded-lg flex items-center gap-2 hover:shadow-lg transform hover:scale-105 transition-all duration-200"
           >
             Discover more
             <ChevronRight className="w-4 h-4" />

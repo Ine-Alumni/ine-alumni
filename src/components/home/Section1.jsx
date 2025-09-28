@@ -10,7 +10,7 @@ const Section1 = () => {
       }}
     >
       <div className="px-6 md:px-12 lg:px-[72px] pt-10">
-        <div className="flex flex-col lg:flex-row items-center lg:items-end justify-between gap-10 lg:gap-16">
+        <div className="flex flex-col lg:flex-row items-center lg:items-end justify-center gap-30 max-md:gap-10">
           <div className="flex gap-4 md:gap-8 items-end">
             <div className="flex flex-col gap-4 md:gap-6 justify-end">
               <div className="w-[150px] sm:w-[220px] md:w-[260px] lg:w-[300px] h-[220px] sm:h-[330px] md:h-[380px] lg:h-[442px] overflow-hidden shadow-md">
@@ -39,28 +39,28 @@ const Section1 = () => {
             </div>
           </div>
 
-          <div className="text-white flex-1 max-w-lg text-center lg:text-left">
+          <div className="text-white flex-1 max-w-lg text-left">
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[45px] font-bold leading-tight tracking-wide">
               <span className="block">WELCOME TO</span>
               <span className="whitespace-nowrap"> INPT INE-ALUMNI</span>
               <span className="block">PLATFORM</span>
             </h1>
 
-            <p className="mt-8 md:mt-12 lg:mt-20 text-base sm:text-lg md:text-xl lg:text-[30px] text-center tracking-widest">
-              <span className="block sm:inline ml-0 sm:ml-4">
+            <p className="mt-6 md:mt-8 lg:mt-12 text-base sm:text-lg md:text-xl lg:text-[30px] text-left tracking-widest">
+              
                 Your perfect place to
-              </span>
+              
               <br className="hidden sm:block" />
-              <span>
+              
                 create <span className="font-semibold">connections</span> with
-              </span>
+              
               <br />
-              <span className="block sm:inline ml-0 sm:ml-4">
-                more than <span className="font-extrabold">2500+ Alumni</span>
-              </span>
+              
+              more than <span className="font-extrabold">2500+ Alumni</span>
+              
             </p>
 
-            <div className="mt-5 md:mt-7 flex items-center justify-center lg:justify-center">
+            <div className="mt-8 md:mt-7 flex items-center justify-start">
               <button
                 onClick={() => {
                   document
@@ -75,7 +75,7 @@ const Section1 = () => {
               </button>
             </div>
 
-            <p className="mt-4 md:mt-6 text-sm sm:text-base md:text-[16px] text-[#DBEAFE] opacity-100 text-center lg:text-left mb-6 ">
+            <p className="mt-6 md:mt-6 text-sm sm:text-base md:text-[16px] text-[#DBEAFE] opacity-100 text-center lg:text-left mb-6 ">
               "Connecting Generations of Students, Building a Stronger Future Together"
             </p>
           </div>

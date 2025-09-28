@@ -7,14 +7,14 @@ const Section2 = () => {
   ];
 
   return (
-    <section id="section2" className=" flex items-start justify-center px-4 py-12">
+    <section id="section2" className=" my-10  flex items-start justify-center px-4 py-12">
       <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 justify-center">
         {stats.map((stat, index) => (
           <div
             key={index}
             className="bg-white text-center flex flex-col items-center justify-center
                       w-full max-w-[298px] aspect-[298/159] rounded-[18px] mx-auto
-                      shadow-[0_8px_15px_rgba(0,0,0,0.25)] hover:-translate-y-2 transition-transform"
+                      shadow-[0_8px_15px_rgba(0,0,0,0.07)] hover:-translate-y-2 transition-transform"
           >
 
             <div className="text-2xl sm:text-xl md:text-2xl lg:text-[2rem] font-bold text-[#3A7FC2] leading-none">

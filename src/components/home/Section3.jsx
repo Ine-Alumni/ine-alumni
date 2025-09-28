@@ -31,7 +31,7 @@ const Section3 = () => {
         {/* Header Section */}
         <div className="bg-[#1AA5FF]/10 rounded-[18px] text-center px-8 py-6 w-full mx-9">
           <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4">
-            Plateforme de n etworking pour les étudiants de INPT
+            Plateforme de networking pour les étudiants de INPT
           </h1>
           <p className="text-base md:text-lg text-gray-700">
             A bridge between past and present students — share experiences, find
@@ -47,7 +47,7 @@ const Section3 = () => {
               <div
                 key={index}
                 className="bg-white rounded-[18px] mx-auto 
-                          shadow-[0_8px_15px_rgba(0,0,0,0.25)] 
+                          shadow-[0_8px_15px_rgba(0,0,0,0.07)] 
                           flex flex-col items-center text-center 
                           p-4 sm:p-6 
                           hover:-translate-y-2 transition-transform duration-300
@@ -88,7 +88,7 @@ const Section3 = () => {
             {cardsData.map((card, index) => (
               <div
                 key={index}
-                className={`bg-white rounded-[18px] shadow-[0_8px_15px_rgba(0,0,0,0.25)] flex flex-col items-center text-center p-6 hover:-translate-y-2 transition-transform duration-300 ${index < 2 ? 'w-[45%] min-w-[300px]' : 'w-[45%] min-w-[300px] md:w-[300px]'} min-h-[252px]`}
+                className={`bg-white rounded-[18px] shadow-[0_8px_15px_rgba(0,0,0,0.07)] flex flex-col items-center text-center p-6 hover:-translate-y-2 transition-transform duration-300 ${index < 2 ? 'w-[45%] min-w-[300px]' : 'w-[45%] min-w-[300px] md:w-[300px]'} min-h-[252px]`}
               >
                 <div className="mb-4 flex-shrink-0">{card.icon}</div>
 
@@ -115,7 +115,7 @@ const Section3 = () => {
               <div
                 key={index}
                 className="bg-white rounded-[18px] 
-                          shadow-[0_8px_15px_rgba(0,0,0,0.25)] 
+                          shadow-[0_8px_15px_rgba(0,0,0,0.07)] 
                           flex flex-col items-center text-center 
                           p-6 hover:-translate-y-2 transition-transform duration-300
                           w-[300px] lg:w-[350px] xl:w-[405px]

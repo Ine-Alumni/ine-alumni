@@ -4,7 +4,7 @@ import { ChevronRight } from 'lucide-react';
 
 const Section5 = () => {
     return(
-        <section className="py-6 sm:py-8 md:py-10 px-4 sm:px-6 md:px-8">
+        <section className="pb-2 pt-0 sm:py-8 md:py-10 px-4 sm:px-6 md:px-8">
             <div className="max-w-7xl mx-auto text-center">
 
                 {/* Header */}
@@ -18,7 +18,7 @@ const Section5 = () => {
                 </h2>
 
                 {/* Clubs Grid */}
-                <div className="mb-8 sm:mb-10 md:mb-12">
+                <div className="mb-8 sm:mb-10 md:mb-20 mt-20">
                     
                     {/* Mobile: Single Column */}
                     <div className="flex flex-col items-center gap-6 sm:gap-8 md:hidden">
@@ -26,7 +26,7 @@ const Section5 = () => {
                             <div className="w-[200px] sm:w-[240px] 
                                            h-[200px] sm:h-[240px] 
                                            flex items-center justify-center bg-white 
-                                           rounded-[18px] shadow-[0_8px_15px_rgba(0,0,0,0.25)] 
+                                           rounded-[18px] shadow-[0_8px_15px_rgba(0,0,0,0.07)] 
                                            hover:shadow-[0_12px_25px_rgba(0,0,0,0.3)] 
                                            transition-shadow duration-300">
                                 <img src="assets/club1.png" alt="A25 Club" 
@@ -38,7 +38,7 @@ const Section5 = () => {
                             <div className="w-[200px] sm:w-[240px] 
                                            h-[200px] sm:h-[240px] 
                                            flex items-center justify-center bg-white 
-                                           rounded-[18px] shadow-[0_8px_15px_rgba(0,0,0,0.25)] 
+                                           rounded-[18px] shadow-[0_8px_15px_rgba(0,0,0,0.07)] 
                                            hover:shadow-[0_12px_25px_rgba(0,0,0,0.3)] 
                                            transition-shadow duration-300">
                                 <img src="assets/club2.png" alt="GameLab INPT" 
@@ -50,7 +50,7 @@ const Section5 = () => {
                             <div className="w-[200px] sm:w-[240px] 
                                            h-[200px] sm:h-[240px] 
                                            flex items-center justify-center bg-white 
-                                           rounded-[18px] shadow-[0_8px_15px_rgba(0,0,0,0.25)] 
+                                           rounded-[18px] shadow-[0_8px_15px_rgba(0,0,0,0.07)] 
                                            hover:shadow-[0_12px_25px_rgba(0,0,0,0.3)] 
                                            transition-shadow duration-300">
                                 <img src="assets/club3.png" alt="IEEE NPT Student Branch" 
@@ -64,7 +64,7 @@ const Section5 = () => {
                         <div className="flex flex-col items-center group hover:-translate-y-2 transition-transform duration-300">
                             <div className="w-[280px] h-[280px] 
                                            flex items-center justify-center bg-white 
-                                           rounded-[18px] shadow-[0_8px_15px_rgba(0,0,0,0.25)] 
+                                           rounded-[18px] shadow-[0_8px_15px_rgba(0,0,0,0.07)] 
                                            hover:shadow-[0_12px_25px_rgba(0,0,0,0.3)] 
                                            transition-shadow duration-300">
                                 <img src="assets/club1.png" alt="A25 Club" 
@@ -75,7 +75,7 @@ const Section5 = () => {
                         <div className="flex flex-col items-center group hover:-translate-y-2 transition-transform duration-300">
                             <div className="w-[280px] h-[280px] 
                                            flex items-center justify-center bg-white 
-                                           rounded-[18px] shadow-[0_8px_15px_rgba(0,0,0,0.25)] 
+                                           rounded-[18px] shadow-[0_8px_15px_rgba(0,0,0,0.07)] 
                                            hover:shadow-[0_12px_25px_rgba(0,0,0,0.3)] 
                                            transition-shadow duration-300">
                                 <img src="assets/club2.png" alt="GameLab INPT" 
@@ -87,7 +87,7 @@ const Section5 = () => {
                                        w-full md:w-auto justify-center mt-6">
                             <div className="w-[280px] h-[280px] 
                                            flex items-center justify-center bg-white 
-                                           rounded-[18px] shadow-[0_8px_15px_rgba(0,0,0,0.25)] 
+                                           rounded-[18px] shadow-[0_8px_15px_rgba(0,0,0,0.07)] 
                                            hover:shadow-[0_12px_25px_rgba(0,0,0,0.3)] 
                                            transition-shadow duration-300">
                                 <img src="assets/club3.png" alt="IEEE NPT Student Branch" 
@@ -102,7 +102,7 @@ const Section5 = () => {
                             <div className="w-[300px] lg:w-[330px] xl:w-[363px] 
                                            h-[300px] lg:h-[330px] xl:h-[363px] 
                                            flex items-center justify-center bg-white 
-                                           rounded-[18px] shadow-[0_8px_15px_rgba(0,0,0,0.25)] 
+                                           rounded-[18px] shadow-[0_8px_15px_rgba(0,0,0,0.07)] 
                                            hover:shadow-[0_12px_25px_rgba(0,0,0,0.3)] 
                                            transition-shadow duration-300">
                                 <img src="assets/club1.png" alt="A25 Club" 
@@ -114,7 +114,7 @@ const Section5 = () => {
                             <div className="w-[300px] lg:w-[330px] xl:w-[363px] 
                                            h-[300px] lg:h-[330px] xl:h-[363px] 
                                            flex items-center justify-center bg-white 
-                                           rounded-[18px] shadow-[0_8px_15px_rgba(0,0,0,0.25)] 
+                                           rounded-[18px] shadow-[0_8px_15px_rgba(0,0,0,0.07)] 
                                            hover:shadow-[0_12px_25px_rgba(0,0,0,0.3)] 
                                            transition-shadow duration-300">
                                 <img src="assets/club2.png" alt="GameLab INPT" 
@@ -126,7 +126,7 @@ const Section5 = () => {
                             <div className="w-[300px] lg:w-[330px] xl:w-[363px] 
                                            h-[300px] lg:h-[330px] xl:h-[363px] 
                                            flex items-center justify-center bg-white 
-                                           rounded-[18px] shadow-[0_8px_15px_rgba(0,0,0,0.25)] 
+                                           rounded-[18px] shadow-[0_8px_15px_rgba(0,0,0,0.07)] 
                                            hover:shadow-[0_12px_25px_rgba(0,0,0,0.3)] 
                                            transition-shadow duration-300">
                                 <img src="assets/club3.png" alt="IEEE NPT Student Branch" 

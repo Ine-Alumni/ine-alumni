@@ -6,8 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Search, MapPin, Building, Calendar, Filter, Clock, ChevronDown, ChevronRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext.jsx';
+import authHeader from '../../services/auth-header.js';
 
-const API_BASE = import.meta.env.VITE_API_BASE || '/api/v1';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8080/api/v1';
 
 // Mock data for demonstration - will be replaced by API data when available
 const mockJobs = [
@@ -118,7 +119,7 @@ export function JobListing({ onJobSelect }) {
       setLoading(true);
       setError('');
       try {
-        const res = await fetch(`${API_BASE}/offers`);
+        const res = await fetch(`${API_BASE}/offers`, { method: 'GET', headers: authHeader() });
         if (!res.ok) {
           // If API fails, use mock data for demonstration
           if (isMounted) {
@@ -128,7 +129,7 @@ export function JobListing({ onJobSelect }) {
           return;
         }
         const data = await res.json();
-        if (isMounted) setJobs((data || []).map(mapApiOfferToUi));
+        if (isMounted) setJobs((data.response || []).map(mapApiOfferToUi));
       } catch (e) {
         // Fallback to mock data on error
         if (isMounted) {
