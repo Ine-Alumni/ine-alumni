@@ -15,9 +15,12 @@ import {
 import { Menu } from "lucide-react"
 import { Link } from 'react-router'
 import { Button } from "@/components/ui/button"
+import { useAuth } from './components/authentication/AuthenticationProvider'
+import { logout } from './services/auth-service'
 
 
 const NavBar = () => {
+  const {auth} = useAuth();
   return (
     <nav >
       <div className='flex justify-center items-center h-16 fixed top-0  w-full  border-b border-gray-200 bg-white/50 backdrop-blur-xl z-30 transition-all'>
@@ -43,8 +46,8 @@ const NavBar = () => {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <Link to="/emplois" className="text-sm font-medium hover:underline">
-                  Emplois
+                <Link to="/jobs" className="text-sm font-medium hover:underline">
+                  Offres
                 </Link>
               </NavigationMenuItem>
 
@@ -89,9 +92,11 @@ const NavBar = () => {
 
           <HamburgerMenu />
 
-          <Link to="/se-connecter">
+          { !auth && <Link to="/se-connecter">
               <Button className='rounded-2xl font-bold cursor-pointer ml-4 shadow-md focus:border-2 focus:border-[#0c5f95] flex bg-[#5691cb] hover:bg-[#0c5f95] text-white'>Se connecter</Button>
-          </Link>
+          </Link> }
+
+          { auth && <Button className='rounded-2xl font-bold cursor-pointer ml-4 shadow-md focus:border-2 focus:border-[#0c5f95] flex bg-[#5691cb] hover:bg-[#0c5f95] text-white' onClick={logout}>Se déconnecter</Button>}
           </div>
         </div>
       </div>
@@ -115,10 +120,7 @@ function HamburgerMenu() {
           <Link to="/evenements" className="w-full">Événements</Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Link to="/emplois" className="w-full">Emplois</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link to="/stages" className="w-full">Stages</Link>
+          <Link to="/jobs" className="w-full">Offres</Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Link to="/laureats" className="w-full">Laureats</Link>

@@ -4,7 +4,7 @@ import { ChevronRight, Calendar, MapPin, Users, Share2, Loader2, AlertCircle, He
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
-const EventSection = () => {
+const Section4 = () => {
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -238,4 +238,4 @@ const EventSection = () => {
   );
 };
 
-export default EventSection;
+export default Section4;

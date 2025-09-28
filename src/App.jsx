@@ -1,56 +1,66 @@
 import { Routes, Route } from "react-router";
-import { Suspense, lazy } from "react";
 import "./App.css";
 import SharedLayout from "./SharedLayout";
+import Home from "./components/home/Home";
+import Evenements from "./components/evenements/Evenements";
+import Jobs from './components/offers/Jobs'
+import Enreprises from "./components/entreprises/Entreprises";
+import Laureats from "./components/laureats/Laureats";
+import RessourcesLayout from "./components/ressources/RessourcesLayout";
+import OutilsPratiques from "./components/ressources/OutilsPratiques";
+import RscCertification from "./components/ressources/RscCertification";
+import RscTextuelles from "./components/ressources/RscTextuelles";
+import RscInteractives from "./components/ressources/RscInteractives";
+import Login from "./components/authentication/Login";
+import Signup from "./components/authentication/Signup";
 import NotFound from "./components/NotFound";
-
-// Lazy loaded components necessary to have fast loading
-const Home = lazy(() => import("./components/home/Home"));
-const Evenements = lazy(() => import("./components/evenements/Evenements"));
-const Emplois = lazy(() => import("./components/emplois/Emplois"));
-const Stages = lazy(() => import("./components/stages/Stages"));
-const Entreprises = lazy(() => import("./components/entreprises/Entreprises"));
-const Laureats = lazy(() => import("./components/laureats/Laureats"));
-const RessourcesLayout = lazy(() => import("./components/ressources/RessourcesLayout"));
-const OutilsPratiques = lazy(() => import("./components/ressources/OutilsPratiques"));
-const RscCertification = lazy(() => import("./components/ressources/RscCertification"));
-const RscTextuelles = lazy(() => import("./components/ressources/RscTextuelles"));
-const RscInteractives = lazy(() => import("./components/ressources/RscInteractives"));
-const Login = lazy(() => import("./components/login/Login"));
-const Signup = lazy(() => import("./components/signup/Signup"));
-const Clubs = lazy(() => import("./components/clubs/Clubs"));
-const EventDetails = lazy(() => import("./components/eventdetails/EventDetails"));
+import EventDetails from "./components/eventdetails/EventDetails";
+import ProtectedRoute from "./components/authentication/ProtectedRoute";
+import AccountVerification from "./components/authentication/AccountVerification";
+import EmailVerification from "./components/authentication/EmailVerification";
+import AuthenticationProvider from "./components/authentication/AuthenticationProvider";
+import HideWhenAuthenticated from "./components/authentication/HideWhenAuthenticated";
+import Clubs from "./components/clubs/Clubs";
 
 function App() {
+  
   return (
-    <Suspense fallback={
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
-      </div>
-    }>
+    <AuthenticationProvider>
       <Routes>
         <Route path="/" element={<SharedLayout />}>
-          <Route index element={<Home />} />
-          <Route path="evenements" element={<Evenements />} />
-          <Route path="emplois" element={<Emplois />} />
-          <Route path="stages" element={<Stages />} />
-          <Route path="entreprises" element={<Entreprises />} />
-          <Route path="laureats" element={<Laureats />} />
-          <Route path="ressources" element={<RessourcesLayout />}>
-            <Route path="textuelles" element={<RscTextuelles />} />
-            <Route path="interactives" element={<RscInteractives />} />
-            <Route path="outils" element={<OutilsPratiques />} />
-            <Route path="certification" element={<RscCertification />} />
+        
+          {/* fully authenticated routes */}
+          <Route element={<ProtectedRoute />} > 
+              <Route path="evenements" element={<Evenements />} >
+                <Route path=":id" element={<EventDetails />} />
+              </Route>
+              <Route path="jobs" element={<Jobs />} />
+              <Route path="entreprises" element={<Enreprises />} />
+              <Route path="laureats" element={<Laureats />} />
+              <Route path="ressources" element={<RessourcesLayout />}>
+                <Route path="textuelles" element={<RscTextuelles />} />
+                <Route path="interactives" element={<RscInteractives />} />
+                <Route path="outils" element={<OutilsPratiques />} />
+                <Route path="certification" element={<RscCertification />} />
+              </Route>
+              <Route path="verification-email" element={<EmailVerification/>} />
+              <Route path="verification-compte" element={<AccountVerification/>} />
           </Route>
-          <Route path="clubs" element={<Clubs />} />
-          <Route path="se-connecter" element={<Login />} />
-          <Route path="nouveau-compte" element={<Signup />} />
-          <Route path="evenements/:id" element={<EventDetails />} />
-          <Route path="*" element={<NotFound />} />
+
+          <Route index element={<Home />} />
+          <Route path="*" element={<NotFound />}></Route>
+          <Route path="clubs" element={<Clubs />}></Route>
+
+          <Route element={<HideWhenAuthenticated />}>
+            <Route path="se-connecter" element={<Login />} />
+            <Route path="nouveau-compte" element={<Signup />} />
+          </Route>
+
         </Route>
       </Routes>
-    </Suspense>
+    </AuthenticationProvider>
   );
 }
+
 
 export default App;
