@@ -13,24 +13,28 @@ import {
 export default function RscTextuelles() {
   const ebooks = [
     {
+      id: 'clean-code',
       title: "Clean Code",
       author: "Robert C. Martin",
       description:
         "A handbook of Agile Software Craftsmanship — focus on writing clean, maintainable code.",
     },
     {
+      id: 'pragmatic-programmer',
       title: "The Pragmatic Programmer",
       author: "Andrew Hunt & David Thomas",
       description:
         "A practical guide to modern software development and career growth.",
     },
     {
+      id: 'refactoring',
       title: "Refactoring",
       author: "Martin Fowler",
       description:
         "Techniques for improving the design of existing code with safe transformations.",
     },
     {
+      id: 'you-dont-know-js',
       title: "You Don't Know JS (Yet)",
       author: "Kyle Simpson",
       description:
@@ -44,8 +48,8 @@ export default function RscTextuelles() {
       <p className="text-gray-500 text-sm mb-4">Ebooks et guides pour approfondir vos connaissances.</p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
-        {ebooks.map((ebook, i) => (
-          <Card key={i}>
+        {ebooks.map((ebook) => (
+          <Card key={ebook.id}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <AppWindowIcon className="w-4 h-4" /> {ebook.title}

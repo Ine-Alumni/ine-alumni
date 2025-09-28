@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { FaFacebookF, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 
 import { MapPin, Gift, Camera, Star, Heart } from "lucide-react";
+import authHeader from "../../services/auth-header";
 
 const EventDetails = () => {
   const { id } = useParams();
@@ -26,7 +27,7 @@ const EventDetails = () => {
   useEffect(() => {
     const API_BASE_URL =
       import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
-    fetch(`${API_BASE_URL}/api/evenements/${id}`)
+    fetch(`${API_BASE_URL}/events/${id}`, { method: "GET" , headers: authHeader()})
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch event data");
         return res.json();

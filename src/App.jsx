@@ -1,85 +1,68 @@
 import { Routes, Route, useNavigate, useLocation } from "react-router";
 import { useEffect } from "react";
-import { AuthProvider } from "./components/AuthContext";
 import "./App.css";
 import SharedLayout from "./sharedlayout/SharedLayout";
 import Home from "./components/home/Home";
 import Evenements from "./components/evenements/Evenements";
-import Emplois from "./components/emplois/Emplois";
-import Stages from "./components/stages/Stages";
+import Jobs from './components/offers/Jobs'
+import Enreprises from "./components/entreprises/Entreprises";
+import Laureats from "./components/laureats/Laureats";
 import RessourcesLayout from "./components/ressources/RessourcesLayout";
 import RscTextuelles from "./components/ressources/RscTextuelles";
 import RscInteractives from "./components/ressources/RscInteractives";
-import RscCertification from "./components/ressources/RscCertification";
-import OutilsPratiques from "./components/ressources/OutilsPratiques";
-import Entreprises from "./components/entreprises/Entreprises";
-import Laureats from "./components/laureats/Laureats";
-import Questions from "./components/questions/Questions";
-import Login from "./components/login/Login";
-import Signup from "./components/signup/Signup";
-import About from "./components/about/about";
-import Contactus from "./components/contactus/Contactus";
-import Profile from "./components/profile/Profile";
+import Login from "./components/authentication/Login";
+import Signup from "./components/authentication/Signup";
 import NotFound from "./components/NotFound";
 import EventDetails from "./components/eventdetails/EventDetails";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./components/authentication/ProtectedRoute";
+import AccountVerification from "./components/authentication/AccountVerification";
+import EmailVerification from "./components/authentication/EmailVerification";
+import AuthenticationProvider from "./components/authentication/AuthenticationProvider";
+import HideWhenAuthenticated from "./components/authentication/HideWhenAuthenticated";
+import Clubs from "./components/clubs/Clubs";
 
-function AppContent() {
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const isAuthenticated = false;
-  const username = isAuthenticated ? "Hibat Allah" : "";
-
-  // AUTO REDIRECT: When authenticated and on public route, go to private route
-  useEffect(() => {
-    if (isAuthenticated && location.pathname === "/") {
-      navigate("/private-home", { replace: true });
-    }
-  }, [isAuthenticated, location.pathname, navigate]);
-
+function App() {
+  
   return (
-    <AuthProvider isAuthenticated={isAuthenticated} username={username}>
+    <AuthenticationProvider>
       <Routes>
-        {/* Public Routes */}
         <Route path="/" element={<SharedLayout />}>
-          <Route index element={<Home />} />
-          <Route path="se-connecter" element={<Login />} />
-          <Route path="nouveau-compte" element={<Signup />} />
-          <Route path="about" element={<About />} />
-          <Route path="contactus" element={<Contactus />} />
-          <Route path="evenements/:id" element={<EventDetails />} />
-          <Route path="*" element={<NotFound />} />
-        </Route>
-
-        {/* Private Routes */}
-        <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
-          <Route path="/private-home" element={<SharedLayout />}>
-            <Route index element={<Home />} />
-            <Route path="evenements" element={<Evenements />} />
-            <Route path="emplois" element={<Emplois />} />
-            <Route path="stages" element={<Stages />} />
-            <Route path="entreprises" element={<Entreprises />} />
-            <Route path="laureats" element={<Laureats />} />
-            <Route path="ressources" element={<RessourcesLayout />}>
-              <Route path="textuelles" element={<RscTextuelles />} />
-              <Route path="interactives" element={<RscInteractives />} />
-              <Route path="outils" element={<OutilsPratiques />} />
-              <Route path="certification" element={<RscCertification />} />
-            </Route>
-
-            <Route path="questions" element={<Questions />} />
-            <Route path="profile" element={<Profile />} />
-            <Route path="evenements/:id" element={<EventDetails />} />
+        
+          {/* fully authenticated routes */}
+          <Route element={<ProtectedRoute />} > 
+              <Route path="evenements" element={<Evenements />} >
+                <Route path=":id" element={<EventDetails />} />
+              </Route>
+              <Route path="about" element={<About />} />
+              <Route path="contactus" element={<Contactus />} />
+              <Route path="jobs" element={<Jobs />} />
+              <Route path="entreprises" element={<Enreprises />} />
+              <Route path="laureats" element={<Laureats />} />
+              <Route path="ressources" element={<RessourcesLayout />}>
+                <Route path="textuelles" element={<RscTextuelles />} />
+                <Route path="interactives" element={<RscInteractives />} />
+                <Route path="outils" element={<OutilsPratiques />} />
+                <Route path="certification" element={<RscCertification />} />
+              </Route>
+              <Route path="verification-email" element={<EmailVerification/>} />
+              <Route path="verification-compte" element={<AccountVerification/>} />
+              <Route path="profile" element={<Profile />} />
           </Route>
+
+          <Route index element={<Home />} />
+          <Route path="*" element={<NotFound />}></Route>
+          <Route path="clubs" element={<Clubs />}></Route>
+
+          <Route element={<HideWhenAuthenticated />}>
+            <Route path="se-connecter" element={<Login />} />
+            <Route path="nouveau-compte" element={<Signup />} />
+          </Route>
+
         </Route>
       </Routes>
-    </AuthProvider>
+    </AuthenticationProvider>
   );
 }
 
-function App() {
-  return <AppContent />;
-}
 
 export default App;
