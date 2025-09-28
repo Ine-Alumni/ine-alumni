@@ -8,8 +8,9 @@ import { Label } from '../ui/label.jsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { useLanguage } from '../contexts/LanguageContext.jsx';
 import { toast } from 'sonner';
+import authHeader from '../../services/auth-header.js';
 
-const API_BASE = import.meta.env.VITE_API_BASE || '/api/v1';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8080/api/v1';
 
 /**
  * JobSubmission Component
@@ -102,7 +103,9 @@ export function JobSubmission() {
       // Submit to API
       const res = await fetch(`${API_BASE}/offers`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          ...authHeader(),
+          'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
 
@@ -126,7 +129,7 @@ export function JobSubmission() {
       });
 
       // Navigate back to job listings
-      navigate('/emplois');
+      navigate('/jobs');
     } catch (err) {
       toast.error(err.message || 'Submission failed');
     } finally {

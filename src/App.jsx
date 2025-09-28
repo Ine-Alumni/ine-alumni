@@ -20,6 +20,7 @@ import AccountVerification from "./components/authentication/AccountVerification
 import EmailVerification from "./components/authentication/EmailVerification";
 import AuthenticationProvider from "./components/authentication/AuthenticationProvider";
 import HideWhenAuthenticated from "./components/authentication/HideWhenAuthenticated";
+import Clubs from "./components/clubs/Clubs";
 
 function App() {
   
@@ -48,6 +49,7 @@ function App() {
 
           <Route index element={<Home />} />
           <Route path="*" element={<NotFound />}></Route>
+          <Route path="clubs" element={<Clubs />}></Route>
 
           <Route element={<HideWhenAuthenticated />}>
             <Route path="se-connecter" element={<Login />} />

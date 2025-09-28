@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import authHeader from "../../services/auth-header";
 
 const Evenements = () => {
   const navigate = useNavigate();
   const API_BASE_URL =
-    import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+    import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1";
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("All");
   const [selectedCalendarDate, setSelectedCalendarDate] = useState(null);
@@ -120,10 +121,10 @@ const Evenements = () => {
     e.preventDefault();
 
     const eventToSend = {
-      titre: newEvent.title,
+      title: newEvent.title,
       description: newEvent.description,
       date: newEvent.date,
-      lieu: newEvent.location,
+      location: newEvent.location,
       club: newEvent.category,
       image: newEvent.image,
       schedule: newEvent.schedule,
@@ -131,9 +132,10 @@ const Evenements = () => {
     };
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/evenements`, {
+      const response = await fetch(`${API_BASE_URL}/events`, {
         method: "POST",
         headers: {
+          ...authHeader(),
           "Content-Type": "application/json",
         },
         body: JSON.stringify(eventToSend),
@@ -144,6 +146,7 @@ const Evenements = () => {
       }
 
       const savedEvent = await response.json();
+      savedEvent = savedEvent.response;
 
       setEvents((prev) => [
         ...prev,
@@ -184,18 +187,18 @@ const Evenements = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/evenements`);
+        const response = await fetch(`${API_BASE_URL}/events`, { method: "GET", headers: authHeader()});
         if (!response.ok) {
           throw new Error("Erreur lors du chargement des événements");
         }
         const data = await response.json();
 
-        const adaptedEvents = data.map((evt) => ({
+        const adaptedEvents = (data.response || []).map((evt) => ({
           id: evt.id,
-          title: evt.titre,
+          title: evt.title,
           category: evt.club,
           date: evt.date,
-          location: evt.lieu,
+          location: evt.location,
           description: evt.description,
           status: new Date(evt.date) < new Date() ? "Past" : "Upcoming",
           progress: 0,
