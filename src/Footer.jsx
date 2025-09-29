@@ -1,18 +1,18 @@
 import React from 'react'
 import { Link } from 'react-router'
-import { useAuth } from './components/AuthContext' 
+import { useAuth } from './components/authentication/AuthenticationProvider' 
 import { Home, Calendar, Briefcase, GraduationCap, Building, BookOpen } from 'lucide-react'
 
 const Footer = () => {
-  const { isAuthenticated } = useAuth()
+  const { auth } = useAuth()
 
   return (
     <div className='bg-[#053A5F] px-[12vw] pt-11 pb-6 text-white'>
       <div className='flex gap-8 justify-between flex-wrap gap-y-6'>
         <div>
           <img src="/assets/ine_alumni_white.png" alt="ine alumni logo" className='h-20'/>
-          <h1 className='mt-4 text-xl font-bold'>Ine Alumni</h1>
-          <p className='max-w-45 mt-2 text-sm'>Votre réseau professionnel commence ici.</p>
+          {/* <h1 className='mt-4 text-xl font-bold'>Ine Alumni</h1> */}
+          <p className='max-w-45 text-sm mt-5'>Votre réseau professionnel commence ici.</p>
         </div>
         
         <div>
@@ -23,29 +23,25 @@ const Footer = () => {
                 <Home className='w-4 h-4' /> Accueil
               </Link>
               
-              <Link to={isAuthenticated ? '/private-home/evenements' : '/'} className='flex items-center gap-2 mt-2 text-sm hover:underline'>
+              <Link to={'/evenements' } className='flex items-center gap-2 mt-2 text-sm hover:underline'>
                 <Calendar className='w-4 h-4' /> Événements
               </Link>
               
-              <Link to={isAuthenticated ? '/private-home/emplois' : '/'} className='flex items-center gap-2 mt-2 text-sm hover:underline'>
-                <Briefcase className='w-4 h-4' /> Emplois
-              </Link>
-              
-              <Link to={isAuthenticated ? '/private-home/stages' : '/'} className='flex items-center gap-2 mt-2 text-sm hover:underline'>
-                <Briefcase className='w-4 h-4' /> Stages
+              <Link to={'/jobs' } className='flex items-center gap-2 mt-2 text-sm hover:underline'>
+                <Briefcase className='w-4 h-4' /> Offres
               </Link>
             </div>
             
             <div>
-              <Link to={isAuthenticated ? '/private-home/laureats' : '/'} className='flex items-center gap-2 mt-2 text-sm hover:underline'>
+              <Link to={'/laureats' } className='flex items-center gap-2 mt-2 text-sm hover:underline'>
                 <GraduationCap className='w-4 h-4' /> Laureats
               </Link>
               
-              <Link to={isAuthenticated ? '/private-home/entreprises' : '/'} className='flex items-center gap-2 mt-2 text-sm hover:underline'>
+              <Link to={'/entreprises' } className='flex items-center gap-2 mt-2 text-sm hover:underline'>
                 <Building className='w-4 h-4' /> Entreprises
               </Link>
               
-              <Link to={isAuthenticated ? '/private-home/ressources' : '/'} className='flex items-center gap-2 mt-2 text-sm hover:underline'>
+              <Link to={'/ressources/textuelles' } className='flex items-center gap-2 mt-2 text-sm hover:underline'>
                 <BookOpen className='w-4 h-4' /> Ressources
               </Link>
             </div>

@@ -1,7 +1,7 @@
 import { Routes, Route, useNavigate, useLocation } from "react-router";
 import { useEffect } from "react";
 import "./App.css";
-import SharedLayout from "./sharedlayout/SharedLayout";
+import SharedLayout from "./SharedLayout";
 import Home from "./components/home/Home";
 import Evenements from "./components/evenements/Evenements";
 import Jobs from './components/offers/Jobs'
@@ -20,6 +20,11 @@ import EmailVerification from "./components/authentication/EmailVerification";
 import AuthenticationProvider from "./components/authentication/AuthenticationProvider";
 import HideWhenAuthenticated from "./components/authentication/HideWhenAuthenticated";
 import Clubs from "./components/clubs/Clubs";
+import About from "./components/about/about";
+import Contactus from "./components/contactus/Contactus";
+import Profile from "./components/profile/Profile";
+import OutilsPratiques from "./components/ressources/OutilsPratiques";
+import RscCertification from "./components/ressources/RscCertification";
 
 function App() {
   
