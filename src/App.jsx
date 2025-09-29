@@ -1,4 +1,5 @@
-import { Routes, Route } from "react-router";
+import { Routes, Route, useNavigate, useLocation } from "react-router";
+import { useEffect } from "react";
 import "./App.css";
 import SharedLayout from "./SharedLayout";
 import Home from "./components/home/Home";
@@ -7,8 +8,6 @@ import Jobs from './components/offers/Jobs'
 import Enreprises from "./components/entreprises/Entreprises";
 import Laureats from "./components/laureats/Laureats";
 import RessourcesLayout from "./components/ressources/RessourcesLayout";
-import OutilsPratiques from "./components/ressources/OutilsPratiques";
-import RscCertification from "./components/ressources/RscCertification";
 import RscTextuelles from "./components/ressources/RscTextuelles";
 import RscInteractives from "./components/ressources/RscInteractives";
 import Login from "./components/authentication/Login";
@@ -21,6 +20,11 @@ import EmailVerification from "./components/authentication/EmailVerification";
 import AuthenticationProvider from "./components/authentication/AuthenticationProvider";
 import HideWhenAuthenticated from "./components/authentication/HideWhenAuthenticated";
 import Clubs from "./components/clubs/Clubs";
+import About from "./components/about/about";
+import Contactus from "./components/contactus/Contactus";
+import Profile from "./components/profile/Profile";
+import OutilsPratiques from "./components/ressources/OutilsPratiques";
+import RscCertification from "./components/ressources/RscCertification";
 
 function App() {
   
@@ -34,6 +38,8 @@ function App() {
               <Route path="evenements" element={<Evenements />} >
                 <Route path=":id" element={<EventDetails />} />
               </Route>
+              <Route path="about" element={<About />} />
+              <Route path="contactus" element={<Contactus />} />
               <Route path="jobs" element={<Jobs />} />
               <Route path="entreprises" element={<Enreprises />} />
               <Route path="laureats" element={<Laureats />} />
@@ -45,6 +51,7 @@ function App() {
               </Route>
               <Route path="verification-email" element={<EmailVerification/>} />
               <Route path="verification-compte" element={<AccountVerification/>} />
+              <Route path="profile" element={<Profile />} />
           </Route>
 
           <Route index element={<Home />} />
