@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useAuth } from './components/authentication/AuthenticationProvider' 
 import LanguageToggle from './components/LanguageToggle'
 import DarkModeToggle from './components/DarkModeToggle'
+import { CircleUser, LogOut } from 'lucide-react'
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -9,20 +10,21 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger
 } from "@/components/ui/navigation-menu"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,  DropdownMenuCheckboxItem, DropdownMenuLabel, DropdownMenuSeparator} from "@/components/ui/dropdown-menu"
 import { Menu } from "lucide-react"
 import { Link } from 'react-router'
 import { Button } from "@/components/ui/button"
+import { logout } from './services/auth-service'
 
 const MergedNavbar = () => {
   const { auth } = useAuth()
 
   return (
     <nav>
-      <div className='flex justify-center items-center h-16 fixed top-0 w-full border-b border-gray-200 bg-white/50 backdrop-blur-xl z-30 transition-all'>
+      <div className='max-lg:px-6 flex justify-center items-center h-16 fixed top-0 w-full border-b border-gray-200 bg-white/50 backdrop-blur-xl z-30 transition-all'>
         <div className='flex justify-between items-center w-full mx-[12.5vw] max-lg:mx-[2vw]'>
           <Link to={'/'}>
-            <img src="/assets/ine_alumni_blue.png" alt="logo" className='h-12'/>
+            <img src="/assets/ine_alumni_blue.png" alt="logo" className='ml-3 h-13'/>
           </Link>
 
           <div className='flex items-center'>
@@ -106,18 +108,33 @@ const MergedNavbar = () => {
             {!auth ? (
               <>
                 <Link to="/nouveau-compte">
-                  <Button className="mt-2 ml-4 drop-shadow rounded-[7px] font-bold cursor-pointer shadow-[0_4_30px_rgba(0,0,0,0.35)] bg-white text-black hover:bg-gray-100">S'inscrire</Button>
+                  <Button className="ml-4 px-4 py-2 cursor-pointer rounded-md font-medium bg-white text-black hover:bg-gray-100 border border-gray-200">
+                    S'inscrire
+                  </Button>
                 </Link>
                 <Link to="/se-connecter">
-                  <Button className="mt-2 ml-4 drop-shadow rounded-[7px] font-bold cursor-pointer shadow-[0_4_15px_rgba(0,0,0,0.2)] bg-[#0C5F95] text-white hover:bg-[#053A5F]">Connexion</Button>
+                  <Button className="ml-3 px-4 py-2 cursor-pointer rounded-md font-medium bg-[#0C5F95] text-white hover:bg-[#053A5F] shadow-sm">
+                    Connexion
+                  </Button>
                 </Link>
               </>
             ) : (
-              <Link to='/profile'>
-                <button className="ml-2 p-2 hover:bg-gray-100 rounded">
-                  <img src="/assets/icons/profile.svg" alt="Profile" className="w-10 h-10" />
-                </button>
-              </Link>
+                
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="ml-4 cursor-pointer p-2 rounded">
+                      <CircleUser color='#444444' size='30px'/>
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-40">
+                    <Link to='/profile'><DropdownMenuItem className='cursor-pointer'>
+                      Profile
+                    </DropdownMenuItem></Link>
+                    <button onClick={logout}><DropdownMenuItem className='cursor-pointer'>
+                       <LogOut className='inline h-full mb-1 mr-1' color='#222222' size='25px'/> Se déconnecter
+                    </DropdownMenuItem></button>
+                  </DropdownMenuContent>
+                </DropdownMenu>
             )}
 
           </div>
@@ -134,8 +151,8 @@ function HamburgerMenu() {
   
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="md:hidden p-2">
-        <Menu className="h-6 w-6" />
+      <DropdownMenuTrigger className="md:hidden p-0">
+        <Menu className="h-6 w-6 cursor-pointer" />
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className="w-48 mt-2">
