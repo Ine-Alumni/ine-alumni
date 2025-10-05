@@ -8,7 +8,7 @@ import { Label } from '../ui/label.jsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { useLanguage } from '../contexts/LanguageContext.jsx';
 import { toast } from 'sonner';
-import axios from 'axios';
+
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8080/api/v1';
 
@@ -101,15 +101,16 @@ export function JobSubmission() {
       };
 
       // Submit to API
-      const res = await axios.post(`${API_BASE}/offers`, payload, {
-        headers: { 'Content-Type': 'application/json' }
+      const res = await fetch(`${API_BASE}/offers`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
       });
 
-      // Remove this check - axios throws on error status codes automatically
-      // if (!res.ok) {
-      //   const text = await res.text();
-      //   throw new Error(text || 'Failed to submit');
-      // }
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || 'Failed to submit');
+      }
 
       toast.success(t('submit.success'));
 
