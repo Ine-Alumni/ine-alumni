@@ -41,10 +41,10 @@ export const getAuthenticationState = async () => {
 
         const response = await axios.get(API_URL + "/auth/validate", {headers: authHeader(),
             validateStatus: function (status){ return status < 400}
-         });
+        });
 
-         const token = auth.token;
-         return {...response.data.response, token};
+        const token = auth.token;
+        return {...response.data.response, token};
 
     } catch(error){
         localStorage.removeItem("auth");

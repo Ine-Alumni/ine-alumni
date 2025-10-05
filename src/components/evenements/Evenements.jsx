@@ -145,7 +145,7 @@ const Evenements = () => {
         throw new Error("Erreur lors de la sauvegarde");
       }
 
-      const savedEvent = await response.json();
+      let savedEvent = await response.json();
       savedEvent = savedEvent.response;
 
       setEvents((prev) => [

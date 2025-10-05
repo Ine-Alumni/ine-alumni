@@ -10,6 +10,8 @@ import Laureats from "./components/laureats/Laureats";
 import RessourcesLayout from "./components/ressources/RessourcesLayout";
 import RscTextuelles from "./components/ressources/RscTextuelles";
 import RscInteractives from "./components/ressources/RscInteractives";
+import OutilsPratiques from "./components/ressources/OutilsPratiques";
+import RscCertification from "./components/ressources/RscCertification";
 import Login from "./components/authentication/Login";
 import Signup from "./components/authentication/Signup";
 import NotFound from "./components/NotFound";
@@ -20,6 +22,7 @@ import EmailVerification from "./components/authentication/EmailVerification";
 import AuthenticationProvider from "./components/authentication/AuthenticationProvider";
 import HideWhenAuthenticated from "./components/authentication/HideWhenAuthenticated";
 import Clubs from "./components/clubs/Clubs";
+import Profile from "./components/profile/Profile";
 
 function App() {
   
@@ -33,8 +36,6 @@ function App() {
               <Route path="evenements" element={<Evenements />} >
                 <Route path=":id" element={<EventDetails />} />
               </Route>
-              <Route path="about" element={<About />} />
-              <Route path="contactus" element={<Contactus />} />
               <Route path="jobs" element={<Jobs />} />
               <Route path="entreprises" element={<Enreprises />} />
               <Route path="laureats" element={<Laureats />} />
