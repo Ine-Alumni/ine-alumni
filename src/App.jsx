@@ -53,7 +53,6 @@ function App() {
           <Route path="evenements" element={<Evenements />} />
           <Route path="evenements/:id" element={<EventDetails />} />
           <Route path="about" element={<About />} />
-          <Route path="contactus" element={<Contactus />} />
           <Route path="clubs" element={<Clubs />}></Route>
 
           <Route path="*" element={<NotFound />}></Route>

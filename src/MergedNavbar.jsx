@@ -39,11 +39,11 @@ const MergedNavbar = () => {
                     </NavigationMenuItem>
 
                     <NavigationMenuItem>
-                      <Link to="/about" className="text-sm font-medium hover:underline">À propos</Link>
+                      <Link to="/evenements" className="text-sm font-medium hover:underline">Événements</Link>
                     </NavigationMenuItem>
 
                     <NavigationMenuItem>
-                      <Link to="/contactus" className="text-sm font-medium hover:underline">Contactez-nous</Link>
+                      <Link to="/about" className="text-sm font-medium hover:underline">À propos</Link>
                     </NavigationMenuItem>
                   </>
                 )}
@@ -159,8 +159,8 @@ function HamburgerMenu() {
         {!auth ? (
           <>
             <DropdownMenuItem><Link to="/" className="w-full">Accueil</Link></DropdownMenuItem>
+            <DropdownMenuItem><Link to="/evenements" className="w-full">Événements</Link></DropdownMenuItem>
             <DropdownMenuItem><Link to="/about" className="w-full">À propos</Link></DropdownMenuItem>
-            <DropdownMenuItem><Link to="/contactus" className="w-full">Contactez-nous</Link></DropdownMenuItem>
           </>
         ) : (
           <>
