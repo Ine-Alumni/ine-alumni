@@ -35,8 +35,6 @@ function App() {
         
           {/* fully authenticated routes */}
           <Route element={<ProtectedRoute />} > 
-              <Route path="evenements" element={<Evenements />} />
-              <Route path="evenements/:id" element={<EventDetails />} />
               <Route path="jobs" element={<Jobs />} />
               <Route path="entreprises" element={<Enreprises />} />
               <Route path="laureats" element={<Laureats />} />
@@ -52,6 +50,8 @@ function App() {
           </Route>
 
           <Route index element={<Home />} />
+          <Route path="evenements" element={<Evenements />} />
+          <Route path="evenements/:id" element={<EventDetails />} />
           <Route path="about" element={<About />} />
           <Route path="contactus" element={<Contactus />} />
           <Route path="clubs" element={<Clubs />}></Route>

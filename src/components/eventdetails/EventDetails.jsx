@@ -27,7 +27,7 @@ const EventDetails = () => {
   useEffect(() => {
     const API_BASE_URL =
       import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1";
-    fetch(`${API_BASE_URL}/events/${id}`, { method: "GET" , headers: authHeader()})
+    fetch(`${API_BASE_URL}/events/public/${id}`, { method: "GET" , headers: authHeader()})
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch event data");
         return res.json();

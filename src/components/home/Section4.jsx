@@ -18,7 +18,7 @@ const Section4 = () => {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(`${API_BASE_URL}/events`, {
+        const response = await fetch(`${API_BASE_URL}/events/public`, {
           method: 'GET',
           headers: 
             authHeader(),
