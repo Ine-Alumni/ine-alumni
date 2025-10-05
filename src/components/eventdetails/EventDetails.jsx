@@ -26,17 +26,17 @@ const EventDetails = () => {
 
   useEffect(() => {
     const API_BASE_URL =
-      import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
-    fetch(`${API_BASE_URL}/events/${id}`, { method: "GET" , headers: authHeader()})
+      import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1";
+    fetch(`${API_BASE_URL}/events/public/${id}`, { method: "GET" , headers: authHeader()})
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch event data");
         return res.json();
       })
       .then((data) => {
-        if (data.image && data.image.startsWith("/uploads/")) {
-          data.image = `${API_BASE_URL}${data.image}`;
+        if (data.response.image && data.response.image.startsWith("/uploads/")) {
+          data.response.image = `${API_BASE_URL}${data.response.image}`;
         }
-        setEvent(data);
+        setEvent(data.response);
         setLoading(false);
       })
       .catch((err) => {

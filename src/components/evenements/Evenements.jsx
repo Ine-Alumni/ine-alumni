@@ -145,7 +145,7 @@ const Evenements = () => {
         throw new Error("Erreur lors de la sauvegarde");
       }
 
-      const savedEvent = await response.json();
+      let savedEvent = await response.json();
       savedEvent = savedEvent.response;
 
       setEvents((prev) => [
@@ -187,7 +187,7 @@ const Evenements = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/events`, { method: "GET", headers: authHeader()});
+        const response = await fetch(`${API_BASE_URL}/events/public`, { method: "GET", headers: authHeader()});
         if (!response.ok) {
           throw new Error("Erreur lors du chargement des événements");
         }
