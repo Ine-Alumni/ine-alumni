@@ -6,7 +6,7 @@ const HideWhenAuthenticated = () => {
     const {auth, authIsLoading} = useAuth();
   return (
     authIsLoading ? null :
-    !auth? <Outlet /> : <Navigate to="/evenements" replace/>
+    !auth? <Outlet /> : <Navigate to="/jobs" replace/>
   )
 }
 

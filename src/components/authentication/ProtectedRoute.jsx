@@ -33,7 +33,7 @@ const ProtectedRoute = () => {
 
   // If both are verified, restrict access to verification pages
   if(location.pathname === "/verification-email" || location.pathname === "/verification-compte"){
-    return <Navigate to="/evenements" replace/>
+    return <Navigate to="/jobs" replace/>
   }
 
   // Otherwise, allow access

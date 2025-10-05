@@ -28,7 +28,7 @@ const Login = () => {
                         actions.resetForm();
                         setAuth(response.data.response);
                         addAlert(true, response.data.message);
-                        navigate("/evenements");
+                        navigate("/jobs");
                     }else{
                         addAlert(false, "Données invalides.");
                     }
