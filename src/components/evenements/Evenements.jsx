@@ -7,6 +7,11 @@ const Evenements = () => {
   const navigate = useNavigate();
   const API_BASE_URL =
     import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1";
+    // ✅ Base URL pour les fichiers (sans /api/v1)
+const FILE_BASE_URL =
+  import.meta.env.VITE_API_URL?.replace("/api/v1", "") ||
+  "http://localhost:8080";
+
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("All");
   const [selectedCalendarDate, setSelectedCalendarDate] = useState(null);
@@ -98,7 +103,7 @@ const Evenements = () => {
       formData.append("file", file);
 
       try {
-        const res = await fetch(`${API_BASE_URL}/api/upload`, {
+            const res = await fetch(`${API_BASE_URL}/files/upload`, {
           method: "POST",
           body: formData,
         });
@@ -107,7 +112,9 @@ const Evenements = () => {
           throw new Error("Upload failed");
         }
 
-        const imageUrl = await res.text(); // on récupère la chaîne de caractères renvoyée par le backend
+        const data = await res.json();
+const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté backend
+// on récupère la chaîne de caractères renvoyée par le backend
 
         setNewEvent((prev) => ({ ...prev, image: imageUrl }));
       } catch (error) {
@@ -160,7 +167,7 @@ const Evenements = () => {
           status: new Date(savedEvent.date) < new Date() ? "Past" : "Upcoming",
           progress: 0,
           price: 0,
-          image: `${API_BASE_URL}${newEvent.image}`,
+          image: `${FILE_BASE_URL}${newEvent.image}`,
           schedule: newEvent.schedule,
           whatToExpect: newEvent.whatToExpect,
         },
@@ -203,7 +210,10 @@ const Evenements = () => {
           status: new Date(evt.date) < new Date() ? "Past" : "Upcoming",
           progress: 0,
           price: 0,
-          image: evt.image ? `${API_BASE_URL}${evt.image}` : "",
+          image: evt.image
+  ? `${FILE_BASE_URL}${evt.image.startsWith("/") ? evt.image : "/" + evt.image}`
+  : "",
+
           schedule: "",
           whatToExpect: evt.expectations || "",
         }));
@@ -617,7 +627,7 @@ const Evenements = () => {
                     Aperçu de l'image
                   </label>
                   <img
-                    src={`${API_BASE_URL}${newEvent.image}`}
+                    src={`${FILE_BASE_URL}${newEvent.image}`}   // ✅ Bonne URL
                     alt="Aperçu"
                     className="w-full max-h-64 object-contain border border-gray-300 rounded-md"
                   />
