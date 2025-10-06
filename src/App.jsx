@@ -33,9 +33,6 @@ function App() {
         
           {/* fully authenticated routes */}
           <Route element={<ProtectedRoute />} > 
-              <Route path="evenements" element={<Evenements />} >
-                <Route path=":id" element={<EventDetails />} />
-              </Route>
               <Route path="jobs" element={<Jobs />} />
               <Route path="entreprises" element={<Enreprises />} />
               <Route path="laureats" element={<Laureats />} />
@@ -51,8 +48,12 @@ function App() {
           </Route>
 
           <Route index element={<Home />} />
-          <Route path="*" element={<NotFound />}></Route>
+          <Route path="evenements" element={<Evenements />} />
+          <Route path="evenements/:id" element={<EventDetails />} />
+          <Route path="about" element={<About />} />
           <Route path="clubs" element={<Clubs />}></Route>
+
+          <Route path="*" element={<NotFound />}></Route>
 
           <Route element={<HideWhenAuthenticated />}>
             <Route path="se-connecter" element={<Login />} />

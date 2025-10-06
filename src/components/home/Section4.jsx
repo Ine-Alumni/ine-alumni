@@ -17,7 +17,7 @@ const Section4 = () => {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(`${API_BASE_URL}/events`, {
+        const response = await fetch(`${API_BASE_URL}/events/public`, {
           method: 'GET',
           headers: 
             authHeader(),
@@ -63,7 +63,7 @@ const Section4 = () => {
   };
 
   const handleCardClick = (eventId) => {
-    navigate(`/events/${eventId}`);
+    navigate(`/evenements/${eventId}`);
   };
 
   const getImageUrl = (imagePath) => {
@@ -75,20 +75,22 @@ const Section4 = () => {
 
   const HeaderSection = () => {
   return (
-      <div className="flex flex-col items-center gap-[80px] px=6">
-        <div className="bg-[#1AA5FF]/10 rounded-[18px] text-center px-8 py-6 w-full mx-9">
+      <div className="flex flex-col items-center gap-[48px] px-6">
+        <div className="bg-[#1AA5FF]/10 rounded-[18px] text-center px-6 py-6 w-full mx-4">
           <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4">
-            Plateforme de n etworking pour les étudiants de INPT
+            Plateforme de networking pour les étudiants de l'INPT
           </h1>
           <p className="text-base md:text-lg text-gray-700">
-            A bridge between past and present students — share experiences, find
-            mentors, and grow together.
+            Un pont entre les promotions — partagez vos expériences, trouvez des mentors et progressez ensemble.
           </p>
         </div>
-          <h2 className=" font-bold text-gray-800 text-[30px] mb-12">
-            Events
-            <div className="w-[110px] h-0.5 bg-black mx-auto mt-3"></div>
-          </h2>
+          <div className="text-center mb-6">
+          <h2 className="text-3xl font-black text-[#3A7FC2]">Evénements</h2>
+          <div className="mt-2 flex items-center justify-center">
+            <span className="block w-16 h-1 bg-[#3A7FC2] rounded" />
+          </div>
+          <p className="text-sm text-gray-700 mt-3 max-w-xl mx-auto">Trouver les evenements prochains</p>
+        </div>
         </div>
   );
 };
@@ -100,7 +102,7 @@ const Section4 = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-8">
           <div className="flex items-center justify-center py-12">
             <Loader2 className="w-8 h-8 animate-spin text-[#5691cb] mr-3" />
-            <span className="text-gray-600">Loading events...</span>
+            <span className="text-gray-600">Chargement des événements...</span>
           </div>
         </div>
       </section>
@@ -115,25 +117,24 @@ const Section4 = () => {
     <div className="py-12 px-4">
       <div className="max-w-6xl mx-auto">
 
-
-        <div className="flex justify-center gap-14 mb-8">
+        {/* Events Grid */}
+        <div className="flex flex-wrap gap-6 mb-8 justify-center">
           {upcomingEvents.map((event) => (
-            <div 
-              key={event.id} 
+            <article
+              key={event.id}
               onClick={() => handleCardClick(event.id)}
-              className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer w-100"
+              role="button"
+              tabIndex={0}
+              className="bg-white rounded-lg w-100 overflow-hidden shadow-[0_6px_18px_rgba(0,0,0,0.06)] hover:shadow-[0_10px_26px_rgba(0,0,0,0.08)] transition-shadow duration-300 cursor-pointer max-w-md"
             >
-
-              <div className="relative h-48 bg-gray-200">
+              {/* Image Container - keep 16:9 aspect for provided images */}
+              <div className="relative aspect-video bg-gray-200">
                 <img
                   src={getImageUrl(event.image)}
-                  alt={event.title || 'Event'}
+                  alt={event.title || 'Événement sans titre'}
                   className="w-full h-full object-cover"
-                  onError={(e) => { 
-                    e.target.src = '/default-banner.jpg'; 
-                  }}
+                  onError={(e) => { e.target.src = '/default-banner.jpg'; }}
                 />
-                
                 <div className="absolute bottom-3 left-3 bg-[#3A7FC2] text-white px-2 py-1 rounded text-sm font-medium">
                   {formatDate(event.date)}
                 </div>
@@ -173,33 +174,35 @@ const Section4 = () => {
                   </div>
                 </div>
               </div>
-
-            </div>
+            </article>
           ))}
         </div>
 
-        {upcomingEvents.length === 0 && (
-            <div className="text-center -mt-18">
-              <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No Events</h3>
-              <p className="text-gray-500">Check back soon for new events!</p>
-            </div>
-          )}
-
-        <div className="flex justify-center mt-15">
+        {/* Discover More Button */}
+        <div className="flex justify-center mt-12">
           <button 
             onClick={() => navigate('/evenements')}
-            className="bg-[#3A7FC2] hover:bg-[#2c6aab] cursor-pointer text-white font-medium px-6 py-3 rounded-lg flex items-center gap-2 hover:shadow-lg transform hover:scale-105 transition-all duration-200"
+            className="bg-[#3A7FC2] hover:bg-[#2c6aab] cursor-pointer text-white font-medium px-6 py-3 rounded-lg flex items-center gap-2 transition-all duration-200"
           >
-            Discover more
+            Voir plus
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
       </div>
     </div>
+
+    {/* No Events Message */}
+    {upcomingEvents.length === 0 && (
+      <div className="text-center py-12">
+        <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+        <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun événement à venir</h3>
+        <p className="text-gray-500">Revenez bientôt pour découvrir de nouveaux événements !</p>
+      </div>
+    )}
   </div>
 </div>
   );
 };
+
 
 export default Section4;
