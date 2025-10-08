@@ -6,16 +6,21 @@ const Section6 = () => {
 
             <figure className="max-w-screen-md mx-auto text-center">
                 <svg className="w-10 h-10 mx-auto mb-3 text-gray-400 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 14">
-                    <path d="M6 0H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4v1a3 3 0 0 1-3 3H2a1 1 0 0 0 0 2h1a5.006 5.006 0 0 0 5-5V2a2 2 0 0 0-2-2Zm10 0h-4a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4v1a3 3 0 0 1-3 3h-1a1 1 0 0 0 0 2h1a5.006 5.006 0 0 0 5-5V2a2 2 0 0 0-2-2Z"/>
+                    <path d="https://chartwellspeakers.b-cdn.net/wp-content/uploads/2018/04/John-C.-Maxwell.jpg"/>
                 </svg>
                 <blockquote>
-                    <p className="text-2xl italic font-medium text-gray-900 dark:text-white">"Your network is your net worth."</p>
+                    <p className="text-2xl italic font-medium text-gray-900 dark:text-white">"Trouver un mentor, c’est découvrir un raccourci vers l’expérience et la sagesse."</p>
                 </blockquote>
                 <figcaption className="flex items-center justify-center mt-6 space-x-3 rtl:space-x-reverse">
-                    <img className="w-6 h-6 rounded-full" src="/assets/porter_gale.jpg" alt="profile picture" />
+                    
+                <img
+                    className="w-20 h-20 rounded-full"
+                    src="https://chartwellspeakers.b-cdn.net/wp-content/uploads/2018/04/John-C.-Maxwell.jpg"
+                    alt="John C. Maxwell"
+                />
                     <div className="flex items-center divide-x-2 rtl:divide-x-reverse divide-gray-500 dark:divide-gray-700">
-                        <cite className="pe-3 font-medium text-gray-900 dark:text-white">Porter Gale</cite>
-                        <cite className="ps-3 text-sm text-gray-500 dark:text-gray-400">Auteure & Entrepreneure</cite>
+                        <cite className="pe-3 font-medium text-gray-900 dark:text-white">John C. Maxwell</cite>
+                        <cite className="ps-3 text-sm text-gray-500 dark:text-gray-400">auteur et coach en leadership</cite>
                     </div>
                 </figcaption>
             </figure>

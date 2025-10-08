@@ -50,7 +50,6 @@ function App() {
           <Route index element={<Home />} />
           <Route path="evenements" element={<Evenements />} />
           <Route path="evenements/:id" element={<EventDetails />} />
-          <Route path="about" element={<About />} />
           <Route path="clubs" element={<Clubs />}></Route>
 
           <Route path="*" element={<NotFound />}></Route>

@@ -51,6 +51,7 @@ const Section4 = () => {
   const getRecentEvents = (eventsList) => {
   return eventsList
     .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 3);
 };
 
   const formatDate = (dateString) => {
@@ -81,7 +82,7 @@ const Section4 = () => {
             Plateforme de networking pour les étudiants de l'INPT
           </h1>
           <p className="text-base md:text-lg text-gray-700">
-            Un pont entre les promotions — partagez vos expériences, trouvez des mentors et progressez ensemble.
+           Renforcez vos liens à travers des événements exclusifs — rencontres, partages et inspirations au rendez-vous.
           </p>
         </div>
           <div className="text-center mb-6">
@@ -89,7 +90,6 @@ const Section4 = () => {
           <div className="mt-2 flex items-center justify-center">
             <span className="block w-16 h-1 bg-[#3A7FC2] rounded" />
           </div>
-          <p className="text-sm text-gray-700 mt-3 max-w-xl mx-auto">Trouver les evenements prochains</p>
         </div>
         </div>
   );
@@ -118,7 +118,7 @@ const Section4 = () => {
       <div className="max-w-6xl mx-auto">
 
         {/* Events Grid */}
-        <div className="flex flex-wrap gap-6 mb-8 justify-center">
+        <div className="flex flex1-wrap gap-6 mb-8 justify-center">
           {upcomingEvents.map((event) => (
             <article
               key={event.id}
@@ -165,7 +165,7 @@ const Section4 = () => {
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <Calendar className="w-4 h-4 text-blue-500" />
                     <span>
-                      {new Date(`${event.date}T${event.time}`).toLocaleString("fr-FR", { 
+                      {new Date(`${event.date}`).toLocaleString("fr-FR", { 
                         weekday: "short", 
                         hour: "2-digit", 
                         minute: "2-digit" 
@@ -176,29 +176,26 @@ const Section4 = () => {
               </div>
             </article>
           ))}
-        </div>
-
-        {/* Discover More Button */}
-        <div className="flex justify-center mt-12">
-          <button 
-            onClick={() => navigate('/evenements')}
-            className="bg-[#3A7FC2] hover:bg-[#2c6aab] cursor-pointer text-white font-medium px-6 py-3 rounded-lg flex items-center gap-2 transition-all duration-200"
-          >
-            Voir plus
-            <ChevronRight className="w-4 h-4" />
-          </button>
+          {upcomingEvents.length === 0 && (
+              <div className="text-center py-20">
+                <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun événement à venir</h3>
+                <p className="text-gray-500">Revenez bientôt pour découvrir de nouveaux événements !</p>
+              </div> 
+            )}
         </div>
       </div>
     </div>
-
     {/* No Events Message */}
-    {upcomingEvents.length === 0 && (
-      <div className="text-center py-12">
-        <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-        <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun événement à venir</h3>
-        <p className="text-gray-500">Revenez bientôt pour découvrir de nouveaux événements !</p>
-      </div>
-    )}
+    <div className="flex justify-center ">
+            <button 
+              onClick={() => navigate('/evenements')}
+              className="bg-[#3A7FC2] hover:bg-[#2c6aab] cursor-pointer text-white font-medium px-6 py-3 rounded-lg flex items-center gap-2 transition-all duration-200"
+            >
+              Voir plus
+              <ChevronRight className="w-4 h-4" />
+            </button>
+        </div>
   </div>
 </div>
   );

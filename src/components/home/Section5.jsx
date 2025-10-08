@@ -12,9 +12,7 @@ const Section5 = () => {
     return(
         <section className="pb-2 pt-0 sm:py-8 md:py-10 px-4 sm:px-6 md:px-8">
             <div className="max-w-7xl mx-auto text-center">
-
-                {/* Header */}
-                <div className="text-center mb-6 mt-3">
+                <div className="text-center mb-6 mt-10">
                   <h2 className="text-3xl font-black text-[#3A7FC2]">Clubs</h2>
                   <div className="mt-2 flex items-center justify-center">
                     <span className="block w-16 h-1 bg-[#3A7FC2] rounded" />
@@ -22,7 +20,6 @@ const Section5 = () => {
                   <p className="text-sm text-gray-700 mt-3 max-w-xl mx-auto">Découvrez les clubs étudiants et rejoignez la communauté</p>
                 </div>
 
-                {/* Clubs Grid (Section2-style cards) */}
                 <div className="mb-8 sm:mb-10 md:mb-20 mt-12">
                   <div className="max-w-7xl mx-auto px-4">
                     <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
@@ -46,7 +43,6 @@ const Section5 = () => {
                   </div>
                 </div>
 
-                 {/* CTA Button */}
                  <div className="flex justify-center">
                     <Link to="/clubs" 
                           className="inline-flex items-center gap-2 bg-[#3A7FC2] hover:bg-[#2c6aab] text-white font-medium 
