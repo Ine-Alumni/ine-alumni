@@ -391,8 +391,8 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="p-10 pb-30">
-      <div className="mx-auto space-y-8" style={{ maxWidth: '1060px' }}>
+    <div className="mx-auto p-10 pb-30 w-[80%] max-lg:w-[97%]">
+      <div className="space-y-8 w-full  ">
         <div className="bg-white rounded-lg border border-gray-200 p-8 relative">
           
           <div className="flex gap-6 items-start">
