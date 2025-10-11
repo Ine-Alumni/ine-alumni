@@ -1,23 +1,0 @@
-[1mdiff --git a/src/components/offers/JobSubmission.jsx b/src/components/offers/JobSubmission.jsx[m
-[1mindex 8d31406..a509789 100644[m
-[1m--- a/src/components/offers/JobSubmission.jsx[m
-[1m+++ b/src/components/offers/JobSubmission.jsx[m
-[36m@@ -8,6 +8,7 @@[m [mimport { Label } from '../ui/label.jsx';[m
- import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';[m
- import { useLanguage } from '../contexts/LanguageContext.jsx';[m
- import { toast } from 'sonner';[m
-[32m+[m[32mimport axios from 'axios';[m[41m[m
- import authHeader from '../../services/auth-header.js';[m
- [m
- const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8080/api/v1';[m
-[36m@@ -103,9 +104,7 @@[m [mexport function JobSubmission() {[m
-       // Submit to API[m
-       const res = await fetch(`${API_BASE}/offers`, {[m
-         method: 'POST',[m
-[31m-        headers: { [m
-[31m-          ...authHeader(),[m
-[31m-          'Content-Type': 'application/json' },[m
-[32m+[m[32m        headers: { 'Content-Type': 'application/json' },[m[41m[m
-         body: JSON.stringify(payload),[m
-       });[m
- [m
