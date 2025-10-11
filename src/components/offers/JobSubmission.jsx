@@ -9,7 +9,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { useLanguage } from '../contexts/LanguageContext.jsx';
 import { toast } from 'sonner';
 
-
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8080/api/v1';
 
 /**
@@ -55,12 +54,27 @@ export function JobSubmission() {
     e.preventDefault();
     setIsSubmitting(true);
 
+    const auth= JSON.parse(localStorage.getItem("auth"));
+    const token = auth?.token;
+
+    if (!token) {
+      toast.error('Please log in first to submit a job offer');
+      setIsSubmitting(false);
+      return;
+    }
+
     // Client-side validation
     if (!formData.title || !formData.company || !formData.location || !formData.type || !formData.description) {
       toast.error(t('validation.required'));
       setIsSubmitting(false);
       return;
     }
+    if (!token) {
+      toast.error(t('validation.required'));
+      setIsSubmitting(false);
+      return;
+    }
+
 
     // Validate custom type if "autre" is selected
     if (formData.type === 'autre' && !formData.customType.trim()) {
@@ -97,13 +111,15 @@ export function JobSubmission() {
         customType: formData.type === 'autre' ? formData.customType.trim() : null,
         duration: formData.duration?.trim() || null,
         description: formData.description,
-        link: formData.link?.trim() || null,
+        link: formData.link ? formData.link.trim() : null,
       };
 
       // Submit to API
       const res = await fetch(`${API_BASE}/offers`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`  
+         },
         body: JSON.stringify(payload),
       });
 
