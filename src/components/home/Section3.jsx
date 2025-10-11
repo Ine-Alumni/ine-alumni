@@ -34,7 +34,7 @@ const Section3 = () => {
             Plateforme de networking pour les étudiants de l'INPT
           </h1>
           <p className="text-base md:text-lg text-gray-700">
-            Un pont entre les promotions — partagez vos expériences, trouvez des mentors et progressez ensemble.
+           Explorez les annuaires des lauréats et des entreprises — trouvez les bons contacts et saisissez de nouvelles opportunités.
           </p>
         </div>
 
