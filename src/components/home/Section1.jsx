@@ -55,10 +55,11 @@ const Section1 = () => {
 
             {/* Increased size and weight for the intro, larger emphasis on the alumni count */}
             <p className="mt-4 sm:mt-6 text-lg md:text-xl lg:text-[20px] text-[#E6F2FF] max-w-xl leading-relaxed">
-              Votre espace pour créer des liens durables avec vos camarades diplômés -
               
-              réseauter, découvrir des opportunités et rester impliqué auprès de
-              <span className="font-extrabold text-lg md:text-xl ml-1">plus de 2500 anciens</span>.
+            Connectez-vous à
+            <span className="font-extrabold text-lg md:text-xl ml-1">plus de 2500 anciens diplômés</span>. 
+            Élargissez votre réseau professionnel et
+            découvrez des opportunités uniques et restez au cœur de votre communauté.
             </p>
 
             <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
@@ -80,7 +81,7 @@ const Section1 = () => {
 
             {/* Larger, slightly more prominent italic tagline */}
             <p className="mt-5 text-base md:text-lg text-[#DBEAFE] opacity-95 max-w-md italic">
-              « Connecter les générations d'étudiants — construire ensemble un avenir plus solide. »
+              « Connectez-vous aux ingénieurs de votre école et propulsez votre avenir. »
             </p>
           </div>
         </div>
