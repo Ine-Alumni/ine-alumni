@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+#the backend api i'm using, is working for me only(Taha.)
+.env
