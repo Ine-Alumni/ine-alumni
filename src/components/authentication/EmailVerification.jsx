@@ -19,7 +19,7 @@ const EmailVerification = () => {
         if(response.data.isSuccess){
           addAlert(true, response.data.message);
           setAuth({...auth, isEmailVerified: true});
-          navigate("/evenements");
+          navigate("/jobs");
         }else{
           addAlert(false, "Code est invalide ou expiré.");
         }

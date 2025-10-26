@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { FaFacebookF, FaInstagram, FaLinkedinIn } from "react-icons/fa";
-
 import { MapPin, Gift, Camera, Star, Heart } from "lucide-react";
 import authHeader from "../../services/auth-header";
 
@@ -12,6 +11,12 @@ const EventDetails = () => {
   const [liked, setLiked] = useState(false);
   const [error, setError] = useState(null);
   const calendarRef = useRef(null);
+
+  const API_BASE_URL =
+    import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1";
+  const FILE_BASE_URL =
+    import.meta.env.VITE_API_URL?.replace("/api/v1", "") ||
+    "http://localhost:8080";
 
   useEffect(() => {
     const scriptId = "cally-calendar-script";
@@ -25,18 +30,19 @@ const EventDetails = () => {
   }, []);
 
   useEffect(() => {
-    const API_BASE_URL =
-      import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
-    fetch(`${API_BASE_URL}/events/${id}`, { method: "GET" , headers: authHeader()})
+    fetch(`${API_BASE_URL}/events/public/${id}`, {
+      method: "GET",
+      headers: authHeader(),
+    })
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch event data");
         return res.json();
       })
       .then((data) => {
-        if (data.image && data.image.startsWith("/uploads/")) {
-          data.image = `${API_BASE_URL}${data.image}`;
+        if (data.response?.image && data.response.image.startsWith("/uploads/")) {
+          data.response.image = `${FILE_BASE_URL}${data.response.image}`;
         }
-        setEvent(data);
+        setEvent(data.response);
         setLoading(false);
       })
       .catch((err) => {
@@ -45,15 +51,12 @@ const EventDetails = () => {
       });
   }, [id]);
 
-  // Injecter le style dans le Shadow DOM de Cally
   useEffect(() => {
     const applyCallyStyles = () => {
       if (!calendarRef.current) return;
-
       const shadowRoot = calendarRef.current.shadowRoot;
       if (!shadowRoot) return;
 
-      // Créer le style si inexistant
       let styleTag = shadowRoot.getElementById("custom-cally-styles");
       if (!styleTag) {
         styleTag = document.createElement("style");
@@ -61,7 +64,6 @@ const EventDetails = () => {
         shadowRoot.appendChild(styleTag);
       }
 
-      // CSS pour l'effet hand-drawn
       styleTag.textContent = `
         [part="selected-day"] {
           position: relative;
@@ -70,7 +72,6 @@ const EventDetails = () => {
           font-weight: bold !important;
           z-index: 1;
         }
-        
         [part="selected-day"]::after {
           content: "";
           position: absolute;
@@ -84,7 +85,6 @@ const EventDetails = () => {
           z-index: -1;
           animation: handDrawn 0.5s ease-in-out;
         }
-        
         @keyframes handDrawn {
           0% {
             transform: translate(-50%, -50%) scale(0.8) rotate(5deg);
@@ -98,10 +98,7 @@ const EventDetails = () => {
       `;
     };
 
-    // Appliquer immédiatement et après les changements
     applyCallyStyles();
-
-    // Observer les mutations du Shadow DOM
     const observer = new MutationObserver(applyCallyStyles);
     if (calendarRef.current && calendarRef.current.shadowRoot) {
       observer.observe(calendarRef.current.shadowRoot, {
@@ -117,7 +114,6 @@ const EventDetails = () => {
     if (event && event.date && calendarRef.current) {
       const calendarElement = calendarRef.current;
       const isoDate = new Date(event.date).toISOString().slice(0, 10);
-
       if (calendarElement.value !== isoDate) {
         calendarElement.value = isoDate;
         calendarElement.dispatchEvent(new Event("input", { bubbles: true }));
@@ -128,12 +124,12 @@ const EventDetails = () => {
   if (loading) return <div className="p-6 text-center">Loading event...</div>;
   if (error) return <div className="p-6 text-center text-red-500">{error}</div>;
 
-  const { titre, date, description, image, lieu, schedule, expectations } =
-    event;
+  const { titre, date, description, image, lieu, schedule, expectations } = event;
 
   return (
     <div className="flex h-screen font-sans bg-gray-100">
       <main className="flex-1 overflow-y-auto p-6">
+        
         <div className="relative">
           <img
             src={image || "/default-banner.jpg"}
@@ -176,31 +172,13 @@ const EventDetails = () => {
           </div>
 
           <div className="flex items-center gap-4 text-gray-600 text-xl">
-            <a
-              href="https://facebook.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-blue-600"
-              aria-label="Facebook"
-            >
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600" aria-label="Facebook">
               <FaFacebookF />
             </a>
-            <a
-              href="https://instagram.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-pink-500"
-              aria-label="Instagram"
-            >
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-pink-500" aria-label="Instagram">
               <FaInstagram />
             </a>
-            <a
-              href="https://linkedin.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-blue-700"
-              aria-label="LinkedIn"
-            >
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-blue-700" aria-label="LinkedIn">
               <FaLinkedinIn />
             </a>
             <button
@@ -222,55 +200,10 @@ const EventDetails = () => {
           <p className="text-gray-700 leading-relaxed">{description}</p>
         </section>
 
-        {schedule && (
+        {/* Swap: show What to Expect here (was Event Schedule) */}
+        {expectations && (
           <section className="mt-6 bg-white rounded-xl shadow-md p-6">
             <h3 className="text-xl font-semibold mb-4 text-[#5691cb]">
-              Event Schedule
-            </h3>
-            <div className="whitespace-pre-line text-gray-700 leading-relaxed">
-              {schedule}
-            </div>
-          </section>
-        )}
-      </main>
-
-      <aside className="w-96 bg-white shadow-md p-6 flex flex-col">
-        <section>
-          <h3 className="text-xl font-semibold text-[#5691cb] mb-4">
-            Event Calendar
-          </h3>
-          <calendar-date
-            ref={calendarRef}
-            className="bg-white p-4 rounded-2xl shadow-xl border border-gray-200 w-full relative"
-          >
-            <div
-              slot="previous"
-              className="absolute left-2 top-3 cursor-pointer"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                className="w-5 h-5 text-gray-700 hover:text-purple-700"
-              >
-                <path fill="currentColor" d="M15.75 19.5 8.25 12l7.5-7.5" />
-              </svg>
-            </div>
-            <div slot="next" className="absolute right-2 top-3 cursor-pointer">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                className="w-5 h-5 text-gray-700 hover:text-purple-700"
-              >
-                <path fill="currentColor" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-              </svg>
-            </div>
-            <calendar-month></calendar-month>
-          </calendar-date>
-        </section>
-
-        {expectations && (
-          <section className="mt-6">
-            <h3 className="text-xl font-semibold text-[#5691cb] mb-4">
               What to Expect
             </h3>
             <ul className="space-y-3 text-gray-700">
@@ -292,18 +225,55 @@ const EventDetails = () => {
             </ul>
           </section>
         )}
+      </main>
 
-        <div className="mt-auto pt-6">
-          <button
-            onClick={() =>
-              window.open("https://forms.gle/your-form-link", "_blank")
-            }
-            className="bg-[#5691cb] text-white py-2 px-4 rounded-full w-full hover:bg-[#3b7cb7]"
-          >
-            Join the Session
-          </button>
-        </div>
-      </aside>
+      <aside className="w-96 bg-transparent p-4 flex flex-col gap-4">
+
+  {/* Bloc: Organisé par */}
+  <div className="bg-white shadow-sm rounded-xl p-4">
+    <h3 className="text-sm font-semibold text-gray-500 mb-1">Organiser par</h3>
+    <p className="text-lg font-semibold text-[#5691cb]">CAS INPT</p>
+  </div>
+
+  {/* Bloc: Calendrier */}
+  <div className="bg-white shadow-sm rounded-xl p-4">
+    <calendar-date
+      ref={calendarRef}
+      className="bg-white p-4 rounded-xl border border-gray-200 w-full relative"
+    >
+      <div slot="previous" className="absolute left-2 top-3 cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+             className="w-5 h-5 text-gray-700 hover:text-[#5691cb]">
+          <path fill="currentColor" d="M15.75 19.5 8.25 12l7.5-7.5" />
+        </svg>
+      </div>
+      <div slot="next" className="absolute right-2 top-3 cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+             className="w-5 h-5 text-gray-700 hover:text-[#5691cb]">
+          <path fill="currentColor" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+        </svg>
+      </div>
+      <calendar-month></calendar-month>
+    </calendar-date>
+  </div>
+
+  {/* Bloc: Plan */}
+  <div className="bg-white shadow-sm rounded-xl p-4">
+    <h3 className="text-sm font-semibold text-gray-500 mb-1">Plan</h3>
+    <p className="text-gray-700">{lieu || "Atlas, Morocco"}</p>
+  </div>
+
+  {/* Bloc: Similaires */}
+  <div className="bg-white shadow-sm rounded-xl p-4">
+    <h3 className="text-sm font-semibold text-gray-500 mb-2">Similaires</h3>
+    <ul className="list-disc list-inside text-[#5691cb] space-y-1 text-sm">
+      <li>Iftar Salim</li>
+      <li>Entrepreneurial Summit</li>
+      <li>Sortie terrain</li>
+    </ul>
+  </div>
+</aside>
+
     </div>
   );
 };
