@@ -105,7 +105,7 @@ const Section4 = () => {
 
 
   return (
-    <div className="mx-auto text-center pt-25 px-4">
+    <div className="mx-auto text-center pt-25 px-4 py-8">
       <div className="text-center mb-6">
           <h2 className="text-3xl font-black text-[#3A7FC2]">Evénements</h2>
           <div className="mt-2 flex items-center justify-center">
