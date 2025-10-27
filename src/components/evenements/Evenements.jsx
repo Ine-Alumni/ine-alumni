@@ -3,6 +3,11 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import authHeader from "../../services/auth-header";
 import { getUserAuthorities } from "../../services/auth-header";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import EventMenu from "../EventMenu/EventMenu";
+
+
 
 
 
@@ -158,85 +163,92 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
   };
 
   try {
-    let response;
-    if (editingEventId) {
-      // Modifier l'événement existant
-      response = await fetch(`${API_BASE_URL}/events/${editingEventId}`, {
-        method: "PUT",
-        headers: { ...authHeader(), "Content-Type": "application/json" },
-        body: JSON.stringify(eventToSend),
-      });
-    } else {
-      // Ajouter un nouvel événement
-      response = await fetch(`${API_BASE_URL}/events`, {
-        method: "POST",
-        headers: { ...authHeader(), "Content-Type": "application/json" },
-        body: JSON.stringify(eventToSend),
-      });
-    }
-
-    if (!response.ok) throw new Error("Erreur lors de la sauvegarde");
-
-    const savedEvent = (await response.json()).response;
-
-    setEvents((prev) => {
-      if (editingEventId) {
-        return prev.map((e) =>
-          e.id === editingEventId
-            ? {
-                id: savedEvent.id,
-                title: newEvent.title,
-                category: newEvent.category,
-                date: newEvent.date,
-                location: newEvent.location,
-                description: newEvent.description,
-                schedule: newEvent.schedule,
-                image: `${FILE_BASE_URL}${newEvent.image}`,
-                whatToExpect: newEvent.whatToExpect,
-                status:
-                  new Date(newEvent.date) < new Date() ? "Past" : "Upcoming",
-              }
-            : e
-        );
-      } else {
-        return [
-          ...prev,
-          {
-            id: savedEvent.id,
-            title: newEvent.title,
-            category: newEvent.category,
-            date: newEvent.date,
-            location: newEvent.location,
-            description: newEvent.description,
-            schedule: newEvent.schedule,
-            image: `${FILE_BASE_URL}${newEvent.image}`,
-            whatToExpect: newEvent.whatToExpect,
-            status:
-              new Date(newEvent.date) < new Date() ? "Past" : "Upcoming",
-          },
-        ];
-      }
+  let response;
+  if (editingEventId) {
+    // Modifier l'événement existant
+    response = await fetch(`${API_BASE_URL}/events/${editingEventId}`, {
+      method: "PUT",
+      headers: { ...authHeader(), "Content-Type": "application/json" },
+      body: JSON.stringify(eventToSend),
     });
-
-    setNewEvent({
-      title: "",
-      category: "",
-      date: "",
-      location: "",
-      description: "",
-      schedule: "",
-      image: "",
-      whatToExpect: "",
+  } else {
+    // Ajouter un nouvel événement
+    response = await fetch(`${API_BASE_URL}/events`, {
+      method: "POST",
+      headers: { ...authHeader(), "Content-Type": "application/json" },
+      body: JSON.stringify(eventToSend),
     });
-    setEditingEventId(null);
-    setShowAddEventModal(false);
-  } catch (error) {
-    console.error(error);
-    alert("Erreur lors de l'ajout ou modification de l'événement");
   }
-};
 
+  if (!response.ok) throw new Error("Erreur lors de la sauvegarde");
 
+  const savedEvent = (await response.json()).response;
+
+  setEvents((prev) => {
+    if (editingEventId) {
+      return prev.map((e) =>
+        e.id === editingEventId
+          ? {
+              id: savedEvent.id,
+              title: newEvent.title,
+              category: newEvent.category,
+              date: newEvent.date,
+              location: newEvent.location,
+              description: newEvent.description,
+              schedule: newEvent.schedule,
+              image: `${FILE_BASE_URL}${newEvent.image}`,
+              whatToExpect: newEvent.whatToExpect,
+              status:
+                new Date(newEvent.date) < new Date() ? "Past" : "Upcoming",
+            }
+          : e
+      );
+    } else {
+      return [
+        ...prev,
+        {
+          id: savedEvent.id,
+          title: newEvent.title,
+          category: newEvent.category,
+          date: newEvent.date,
+          location: newEvent.location,
+          description: newEvent.description,
+          schedule: newEvent.schedule,
+          image: `${FILE_BASE_URL}${newEvent.image}`,
+          whatToExpect: newEvent.whatToExpect,
+          status:
+            new Date(newEvent.date) < new Date() ? "Past" : "Upcoming",
+        },
+      ];
+    }
+  });
+
+  // 🟢 ✅ Notification de succès selon le cas :
+  if (editingEventId) {
+    toast.success("Événement modifié avec succès !");
+  } else {
+    toast.success("Événement ajouté avec succès !");
+  }
+
+  // Réinitialiser les champs du formulaire
+  setNewEvent({
+    title: "",
+    category: "",
+    date: "",
+    location: "",
+    description: "",
+    schedule: "",
+    image: "",
+    whatToExpect: "",
+  });
+  setEditingEventId(null);
+  setShowAddEventModal(false);
+
+} catch (error) {
+  console.error(error);
+  toast.error("Erreur lors de l'ajout ou modification de l'événement");
+}
+  };
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -512,50 +524,31 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
           </span>
 
           {/* Trois points + menu */}
-          {isAdminOrClub && (
-  <div className="relative">
-    <button
-      className="bg-[#5691cb] text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-[#4578a8] transition-colors"
-      onClick={() =>
-        setOpenMenuId(openMenuId === event.id ? null : event.id)
-      }
-    >
-      ⋮
-    </button>
-
-    {openMenuId === event.id && (
-      <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 shadow-lg rounded-md z-10">
-        <button
-          onClick={() => {
-            setEditingEventId(event.id);
-            setNewEvent({
-              title: event.title,
-              category: event.category,
-              date: event.date,
-              location: event.location,
-              description: event.description,
-              schedule: event.schedule,
-              image: event.image.replace(FILE_BASE_URL, ""),
-              whatToExpect: event.whatToExpect,
-            });
-            setShowAddEventModal(true);
-            setOpenMenuId(null);
-          }}
-          className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
-        >
-          Modifier
-        </button>
-
-        <button
-          onClick={() => setEventToDelete(event)}
-          className="block w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100"
-        >
-          Supprimer
-        </button>
-      </div>
-    )}
-  </div>
+          {/* Trois points + menu */}
+{isAdminOrClub && (
+  <EventMenu
+    eventId={event.id}
+    showMenu={openMenuId}
+    setShowMenu={setOpenMenuId}
+    onEdit={() => {
+      setEditingEventId(event.id);
+      setNewEvent({
+        title: event.title,
+        category: event.category,
+        date: event.date,
+        location: event.location,
+        description: event.description,
+        schedule: event.schedule,
+        image: event.image.replace(FILE_BASE_URL, ""),
+        whatToExpect: event.whatToExpect,
+      });
+      setShowAddEventModal(true);
+      setOpenMenuId(null);
+    }}
+    onDelete={() => setEventToDelete(event)}
+  />
 )}
+
 
         </div>
 
@@ -819,6 +812,7 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
     </div>
   </div>
 )}
+<ToastContainer position="top-right" autoClose={3000} />
 
     </div>
   );
