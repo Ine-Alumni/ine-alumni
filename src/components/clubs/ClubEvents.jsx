@@ -1,57 +1,60 @@
-import { useEffect, useState } from 'react';
-import authHeader from '../../services/auth-header';
+import { useEffect, useState } from "react";
+import authHeader from "../../services/auth-header";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1";
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1";
 
 function ClubEvents({ club }) {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    async function fetchEvents() {
+    const loadEvents = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/events`, {
+        setLoading(true);
+        setError(null);
+
+        const res = await fetch(`${API_BASE_URL}/events/public`, {
           headers: authHeader(),
         });
-        const data = await response.json();
+        if (!res.ok) throw new Error("Failed to fetch events");
 
-        // ✅ Filter events that belong to this club
-        const filtered = data.filter(
-          (event) => event.nameOfClub === club.title
+        const data = await res.json();
+
+        // Filter events by club
+        const filtered = data.response.filter(
+          (e) => e.nameOfClub === club.title,
         );
 
         setEvents(filtered);
-      } catch (error) {
-        console.error("Error fetching events:", error);
+      } catch (err) {
+        setError("Failed to load events");
+        console.error(err);
       } finally {
         setLoading(false);
       }
-    }
+    };
 
-    fetchEvents();
+    loadEvents();
   }, [club.title]); // refetch when club changes
 
-  // 🧩 Loading or empty states
-  if (loading)
-    return <p className="text-gray-500 italic">Chargement des événements...</p>;
-  if (events.length === 0)
-    return (
-      <p className="text-gray-500 italic">
-        Aucun événement trouvé pour ce club.
-      </p>
-    );
+  if (loading) return <p>Loading events...</p>;
+  if (error) return <p>{error}</p>;
+  if (events.length === 0) return <p>No events for this club.</p>;
 
-  // 🧱 Events list
   return (
     <div className="space-y-4">
       {events.map((event) => (
         <div
           key={event.id}
-          className="bg-gray-50 rounded-xl shadow p-4 hover:shadow-md transition"
+          className="bg-gray-50 p-4 rounded shadow hover:shadow-md transition"
         >
-          <h3 className="text-lg font-semibold">{event.title}</h3>
-          <p className="text-sm text-gray-600 mt-1">{event.location}</p>
-          <p className="text-sm text-gray-500">{event.startDate}</p>
+          <h3 className="font-semibold">{event.title}</h3>
+          <p className="text-sm text-gray-600">{event.location}</p>
+          <p className="text-sm text-gray-500">
+            {new Date(event.date).toLocaleDateString("fr-FR")}
+          </p>
         </div>
       ))}
     </div>

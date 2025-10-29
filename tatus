@@ -1,0 +1,205 @@
+* [33mbc7b8d4[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32m10-feat-club-section[m[33m, [m[1;31morigin/10-feat-club-section[m[33m)[m Finish merge before rebase
+* [33ma8c71c9[m Feat: added clubs page, with clubs mock data in Clubdata
+[31m|[m * [33m14ce8a8[m[33m ([m[1;31morigin/feature/profile-page[m[33m)[m "
+[31m|[m * [33m056b851[m Adjust profile page spacing
+[31m|[m * [33md4a6e21[m Update profile page
+[31m|[m *   [33m6f4d444[m Merge https://github.com/slihatim/ine-alumni into feature/profile-page
+[31m|[m [33m|[m[34m\[m  
+[31m|[m * [34m|[m [33mdb494c9[m add profile page
+[31m|[m [34m|[m [34m|[m * [33m1c35453[m[33m ([m[1;31morigin/feat/implement-directories[m[33m)[m fixes
+[31m|[m [34m|[m [34m|[m * [33ma63ca0e[m todo: mark filters as todo tell finishing the backend logic for them
+[31m|[m [34m|[m [34m|[m * [33ma083ce7[m feat: implement laureats directory and update main application
+[31m|[m [34m|[m [34m|[m * [33m678325b[m feat: implement comprehensive entreprises directory
+[31m|[m [34m|[m [34m|[m * [33m9dff66c[m feat: implement services layer for data management
+[31m|[m [34m|[m [34m|[m * [33mf988cb6[m feat: add reusable UI components and common utilities
+[31m|[m [34m|[m [34m|[m * [33m03137a8[m feat: update project configuration and dependencies
+[31m|[m [34m|[m [34m|[m [35m|[m * [33mcb8fe29[m[33m ([m[1;31morigin/feature-event-edit-delete-roles[m[33m)[m Feat: add event edit/delete functionality and hide/show API buttons based on user roles
+[31m|[m [34m|[m [34m|[m [35m|[m[35m/[m  
+[31m|[m [34m|[m [34m|[m * [33m5019d0f[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Add profile page (#31)
+[31m|[m [34m|[m [34m|[m[34m/[m  
+[31m|[m [34m|[m [34m|[m * [33m8b82d7c[m[33m ([m[1;32mfix/job-submission-and-listing[m[33m)[m save my latest changes just after commenting the apply button
+[31m|[m [34m|[m [34m|[m * [33mca290f7[m[33m ([m[1;31morigin/fix/job-submission-and-listing[m[33m)[m fix: removed extra files
+[31m|[m [34m|[m [34m|[m * [33m0d6b70c[m Update .env
+[31m|[m [34m|[m [34m|[m * [33m78fd222[m fix: implement job submission and listing with auth
+[31m|[m [34m|[m [34m|[m * [33m6feaaf7[m[33m ([m[1;31morigin/feature/offers-enhancement[m[33m, [m[1;32mfeature/offers-enhancement[m[33m)[m fix: offers-enhancement
+[31m|[m [34m|[m [34m|[m * [33m3c85265[m fix: offers-enhancement
+[31m|[m [34m|[m[31m_[m[34m|[m[31m/[m  
+[31m|[m[31m/[m[34m|[m [34m|[m   
+* [34m|[m [34m|[m [33m42dc8ea[m[33m ([m[1;32mmain[m[33m)[m save changes before rebase to enahnce offers functionality design
+[1;31m|[m [34m|[m [34m|[m *   [33mac2fb0f[m[33m ([m[1;31morigin/feature/about-page[m[33m)[m Merge branch 'main' into feature/about-page
+[1;31m|[m [34m|[m [34m|[m [1;32m|[m[34m\[m  
+[1;31m|[m [34m|[m [34m|[m [1;32m|[m[34m/[m  
+[1;31m|[m [34m|[m [34m|[m[34m/[m[1;32m|[m   
+[1;31m|[m [34m|[m * [1;32m|[m [33m29575c3[m About page and contact form  (#28)
+[1;31m|[m [34m|[m[34m/[m [1;32m/[m  
+[1;31m|[m [34m|[m * [33m01b177e[m modification de la page à propos
+[1;31m|[m [34m|[m * [33mcb48bc4[m Mise à jour des pages Evenements et EventDetails (affichage image + titre)
+[1;31m|[m [34m|[m[34m/[m  
+[1;31m|[m * [33m3fa2ae2[m Job Fixes (#30)
+[1;31m|[m * [33mddf2cfb[m Fixes (#23)
+[1;31m|[m[1;31m/[m  
+[1;31m|[m * [33mdc79ad2[m[33m ([m[1;31morigin/2-home-pages-update[m[33m)[m fixe update profile page and fix getRecentEvent function
+[1;31m|[m *   [33m60234b8[m Merge branch 'main' into 2-home-pages-update
+[1;31m|[m [1;35m|[m[1;36m\[m  
+[1;31m|[m * [1;36m|[m [33me544f84[m modify logic of events getRecentEvent
+[1;31m|[m * [1;36m|[m [33m4f89e5d[m Merge branch '2-home-pages-update' of https://github.com/slihatim/ine-alumni into 2-home-pages-update
+[1;31m|[m[1;31m/[m[32m|[m [1;36m|[m 
+[1;31m|[m * [1;36m|[m [33mdd56be6[m Fixes in the homw page
+[1;31m|[m * [1;36m|[m   [33m01c1ba7[m Merge branch 'main' into 2-home-pages-update
+[1;31m|[m [33m|[m[34m\[m [1;36m\[m  
+[1;31m|[m * [34m|[m [1;36m|[m [33mb29967e[m Fix: Added lazy loading and fixed some problems related to Home
+[1;31m|[m * [34m|[m [1;36m|[m [33mf38db3a[m Update home page with new design
+[1;31m|[m [34m|[m [34m|[m [1;36m|[m * [33m311daff[m[33m ([m[1;31morigin/feature/images-upload[m[33m, [m[1;32mfeature/images-upload[m[33m)[m Mise à jour des pages Evenements et EventDetails (affichage image + titre)
+[1;31m|[m [34m|[m [34m|[m [1;36m|[m[1;36m/[m  
+[1;31m|[m [34m|[m [34m|[m * [33m09548bf[m Fixes (#23)
+[1;31m|[m [34m|[m[1;31m_[m[34m|[m[1;31m/[m  
+[1;31m|[m[1;31m/[m[34m|[m [34m|[m   
+[1;31m|[m [34m|[m [34m|[m * [33m84bf099[m[33m ([m[1;31morigin/fixes[m[33m)[m fixes3
+[1;31m|[m [34m|[m [34m|[m * [33m9c88539[m fixes2
+[1;31m|[m [34m|[m [34m|[m * [33m3900afb[m initial fixes
+[1;31m|[m [34m|[m[1;31m_[m[34m|[m[1;31m/[m  
+[1;31m|[m[1;31m/[m[34m|[m [34m|[m   
+* [34m|[m [34m|[m [33m856aaae[m Feature/footer&navbar (#20)
+[36m|[m [34m|[m [34m|[m * [33m7f09b51[m[33m ([m[1;31morigin/ma-branche-feature[m[33m)[m Ajout de qlqs modifs dans eventdetails page
+[36m|[m [34m|[m [34m|[m [1;31m|[m * [33m0e7eff5[m[33m ([m[1;31morigin/feature/footer&navbar[m[33m)[m Fixes for navbar and footer
+[36m|[m [34m|[m [34m|[m [1;31m|[m *   [33m3bb68cb[m Merge branch 'main' into feature/footer&navbar
+[36m|[m [34m|[m [34m|[m [1;31m|[m [1;33m|[m[36m\[m  
+[36m|[m [34m|[m[36m_[m[34m|[m[36m_[m[1;31m|[m[36m_[m[1;33m|[m[36m/[m  
+[36m|[m[36m/[m[34m|[m [34m|[m [1;31m|[m [1;33m|[m   
+* [34m|[m [34m|[m [1;31m|[m [1;33m|[m [33m034dd24[m Update home page with new design (#19)
+[34m|[m [34m|[m[34m/[m [1;31m/[m [1;33m/[m  
+[34m|[m[34m/[m[34m|[m [1;31m|[m [1;33m|[m   
+* [34m|[m [1;31m|[m [1;33m|[m [33me9de843[m feat: Implement job offers system and enhance UI component library (#17)
+[1;34m|[m [34m|[m [1;31m|[m * [33m92c9654[m Fix case sensitivity in import statement
+[1;34m|[m [34m|[m [1;31m|[m * [33m02a7c7f[m Edited the navbar to meet the new deisgn
+[1;34m|[m [34m|[m [1;31m|[m [1;34m|[m *   [33m6636254[m[33m ([m[1;32mbackup-6-offers-stages-emplois-v1.4[m[33m)[m Merge branch 'main' into backup-6-offers-stages-emplois-v1.4
+[1;34m|[m [34m|[m [1;31m|[m [1;34m|[m [1;35m|[m[1;34m\[m  
+[1;34m|[m [34m|[m[1;34m_[m[1;31m|[m[1;34m_[m[1;34m|[m[1;34m_[m[1;35m|[m[1;34m/[m  
+[1;34m|[m[1;34m/[m[34m|[m [1;31m|[m [1;34m|[m [1;35m|[m   
+[1;34m|[m [34m|[m [1;31m|[m [1;34m|[m [1;35m|[m * [33maf07660[m[33m ([m[1;31morigin/backup-6-offers-stages-emplois-v1.4[m[33m)[m Merge branch 'main' into backup-6-offers-stages-emplois-v1.4
+[1;34m|[m [34m|[m [1;31m|[m [1;34m|[m [1;35m|[m[1;35m/[m[1;34m|[m 
+[1;34m|[m [34m|[m[1;34m_[m[1;31m|[m[1;34m_[m[1;34m|[m[1;34m_[m[1;35m|[m[1;34m/[m  
+[1;34m|[m[1;34m/[m[34m|[m [1;31m|[m [1;34m|[m [1;35m|[m   
+* [34m|[m [1;31m|[m [1;34m|[m [1;35m|[m [33mc0a7e21[m Email verification + Completing authentication (#18)
+[34m|[m[34m/[m [1;31m/[m [1;34m/[m [1;35m/[m  
+[34m|[m [1;31m|[m [1;34m|[m * [33m00c7a77[m fix: Update pre-commit
+[34m|[m [1;31m|[m [1;34m|[m * [33m393ca19[m Small fix of case sensitivity
+[34m|[m [1;31m|[m [1;34m|[m * [33m3ab0f6e[m[33m ([m[1;32moffers-latest[m[33m)[m feat: add Husky and lint-staged for automated code quality checks
+[34m|[m [1;31m|[m [1;34m|[m *   [33mce236e0[m Merge branch '6-offers-stages-emplois' of https://github.com/slihatim/ine-alumni into backup-6-offers-stages-emplois-v1.4
+[34m|[m [1;31m|[m [1;34m|[m [33m|[m[34m\[m  
+[34m|[m [1;31m|[m [1;34m|[m [33m|[m * [33m721ea14[m[33m ([m[1;31morigin/6-offers-stages-emplois[m[33m, [m[1;32m6-offers-stages-emplois[m[33m)[m Add sonner, @radix-ui/react-label @radix-ui/react-dialognpm install @radix-ui/react-select @radix-ui/react-tabs @radix-ui/react-slot
+[34m|[m [1;31m|[m [1;34m|[m [33m|[m *   [33mb9669c6[m Merge remote-tracking branch 'origin/main' into 6-offers-stages-emplois
+[34m|[m [1;31m|[m [1;34m|[m [33m|[m [35m|[m[34m\[m  
+[34m|[m [1;31m|[m[34m_[m[1;34m|[m[34m_[m[33m|[m[34m_[m[35m|[m[34m/[m  
+[34m|[m[34m/[m[1;31m|[m [1;34m|[m [33m|[m [35m|[m   
+[34m|[m [1;31m|[m [1;34m|[m [33m|[m * [33md04d0c3[m fix: v1.4 Add job offers components and UI enhancements
+[34m|[m [1;31m|[m [1;34m|[m [33m|[m * [33m61d791a[m fix: v1.4 Add job offers components and UI enhancements
+[34m|[m [1;31m|[m [1;34m|[m [33m|[m * [33mb998a8f[m backup for last tested offers functionality
+[34m|[m [1;31m|[m [1;34m|[m [33m|[m * [33mb1f406a[m Fix LanguageProvider context error - wrap Jobs component with provider - remove from App.jsx - add carousel component - fix import paths
+[34m|[m [1;31m|[m [1;34m|[m [33m|[m * [33me67335f[m We modified the carousel file to unify it with other files.
+[34m|[m [1;31m|[m [1;34m|[m [33m|[m * [33m54036f5[m fix: we fixed the offers functionality responsiveness issue, build, test, enhance and test are done in this
+[34m|[m [1;31m|[m [1;34m|[m [33m|[m * [33m285d9f0[m Update ui, offers, and contexts components
+[34m|[m [1;31m|[m [1;34m|[m [33m|[m * [33m76865b4[m feat: add offers funtionality without compilxity or errors
+[34m|[m [1;31m|[m [1;34m|[m [33m|[m * [33m48c6e96[m save current changes
+[34m|[m [1;31m|[m [1;34m|[m * [36m|[m [33md91ed0a[m fix: fixed the routes used in app.jsx with better and more simple structre
+[34m|[m [1;31m|[m [1;34m|[m * [36m|[m [33m5fea0aa[m Trigger Vercel rebuild
+[34m|[m [1;31m|[m [1;34m|[m * [36m|[m [33m1c6ceb9[m Add sonner, @radix-ui/react-label @radix-ui/react-dialognpm install @radix-ui/react-select @radix-ui/react-tabs @radix-ui/react-slot
+[34m|[m [1;31m|[m [1;34m|[m * [36m|[m [33mc20148d[m fix: v1.4 Add job offers components and UI enhancements
+[34m|[m [1;31m|[m [1;34m|[m * [36m|[m [33m609f79b[m fix: v1.4 Add job offers components and UI enhancements
+[34m|[m [1;31m|[m [1;34m|[m * [36m|[m [33m90dfbd1[m backup for last tested offers functionality
+[34m|[m [1;31m|[m [1;34m|[m * [36m|[m [33m68a382d[m Fix LanguageProvider context error - wrap Jobs component with provider - remove from App.jsx - add carousel component - fix import paths
+[34m|[m [1;31m|[m [1;34m|[m * [36m|[m [33mb3d1f07[m We modified the carousel file to unify it with other files.
+[34m|[m [1;31m|[m [1;34m|[m * [36m|[m [33mc44eb85[m fix: we fixed the offers functionality responsiveness issue, build, test, enhance and test are done in this
+[34m|[m [1;31m|[m [1;34m|[m * [36m|[m [33mf260f33[m Update ui, offers, and contexts components
+[34m|[m [1;31m|[m [1;34m|[m * [36m|[m [33m953b8bd[m feat: add offers funtionality without compilxity or errors
+[34m|[m [1;31m|[m [1;34m|[m * [36m|[m [33mcfbde93[m save current changes
+[34m|[m [1;31m|[m[34m_[m[1;34m|[m[34m/[m [36m/[m  
+[34m|[m[34m/[m[1;31m|[m [1;34m|[m [36m|[m   
+[34m|[m [1;31m|[m [1;34m|[m [36m|[m * [33m7cc7b2e[m[33m ([m[1;35mrefs/stash[m[33m)[m On frontend/kaouthar: saving the changes i made in frontend/kaouthar branch: add tsconfig.json, and correct some routes calling in App.jsx issues
+[34m|[m [1;31m|[m [1;34m|[m [36m|[m[1;34m/[m[1;32m|[m 
+[34m|[m [1;31m|[m [1;34m|[m[1;34m/[m[36m|[m [1;32m|[m 
+[34m|[m [1;31m|[m [1;34m|[m [36m|[m * [33m1096209[m index on frontend/kaouthar: 167988b Merge remote-tracking branch 'origin/main' into frontend/kaouthar
+[34m|[m [1;31m|[m [1;34m|[m [36m|[m[1;34m/[m  
+[34m|[m [1;31m|[m [1;34m|[m[1;34m/[m[36m|[m   
+[34m|[m [1;31m|[m * [36m|[m   [33m167988b[m[33m ([m[1;31morigin/frontend/kaouthar[m[33m, [m[1;32mfrontend/kaouthar[m[33m)[m Merge remote-tracking branch 'origin/main' into frontend/kaouthar
+[34m|[m [1;31m|[m [1;33m|[m[34m\[m [36m\[m  
+[34m|[m [1;31m|[m[34m_[m[1;33m|[m[34m/[m [36m/[m  
+[34m|[m[34m/[m[1;31m|[m [1;33m|[m [36m|[m   
+[34m|[m [1;31m|[m * [36m|[m [33m39cc7a7[m Merge public/private UI components with conditional rendering
+[34m|[m [1;31m|[m * [36m|[m [33m7c7f4bd[m Mes changements
+[34m|[m [1;31m|[m [1;34m|[m [36m|[m * [33mf7b466d[m[33m ([m[1;31morigin/email-verification[m[33m)[m Functional authentication with email verification
+[34m|[m [1;31m|[m [1;34m|[m [36m|[m * [33mdaf42b3[m Completing authentication + email verification
+[34m|[m [1;31m|[m[34m_[m[1;34m|[m[34m_[m[36m|[m[34m/[m  
+[34m|[m[34m/[m[1;31m|[m [1;34m|[m [36m|[m   
+* [1;31m|[m [1;34m|[m [36m|[m [33m1c636b8[m Ressources section (#9)
+[1;35m|[m [1;31m|[m [1;34m|[m [36m|[m * [33m3fac48a[m[33m ([m[1;31morigin/8-branch-Ressources[m[33m)[m chore: Update package-lock.json to add react-icons and remove unused dependencies from App.jsx
+[1;35m|[m [1;31m|[m [1;34m|[m [36m|[m *   [33m3a9f5ee[m Merge branch 'main' into 8-branch-Ressources
+[1;35m|[m [1;31m|[m [1;34m|[m [36m|[m [31m|[m[1;35m\[m  
+[1;35m|[m [1;31m|[m[1;35m_[m[1;34m|[m[1;35m_[m[36m|[m[1;35m_[m[31m|[m[1;35m/[m  
+[1;35m|[m[1;35m/[m[1;31m|[m [1;34m|[m [36m|[m [31m|[m   
+* [1;31m|[m [1;34m|[m [36m|[m [31m|[m [33m14cc2df[m Add 404 Page (#15)
+[32m|[m [1;31m|[m [1;34m|[m [36m|[m * [33m6984732[m refactor: Remove DropDownMenu component and update resource components
+[32m|[m [1;31m|[m [1;34m|[m [36m|[m * [33mc7d6a31[m feat: Refactor resource components to use new Card UI and simplify layout
+[32m|[m [1;31m|[m [1;34m|[m [36m|[m *   [33mc8c172a[m Merge branch '8-branch-Ressources' of https://github.com/slihatim/ine-alumni into 8-branch-Ressources
+[32m|[m [1;31m|[m [1;34m|[m [36m|[m [33m|[m[34m\[m  
+[32m|[m [1;31m|[m [1;34m|[m [36m|[m [33m|[m * [33m87ba5a9[m Change styling, Finish all sections UI
+[32m|[m [1;31m|[m [1;34m|[m [36m|[m [33m|[m * [33m8244dad[m Fixed Path
+[32m|[m [1;31m|[m [1;34m|[m [36m|[m [33m|[m * [33m02f9174[m Worked on the logic of the ressources section
+[32m|[m [1;31m|[m [1;34m|[m [36m|[m[1;34m_[m[33m|[m[1;34m/[m  
+[32m|[m [1;31m|[m [1;34m|[m[1;34m/[m[36m|[m [33m|[m   
+[32m|[m [1;31m|[m [1;34m|[m [36m|[m * [33m1efb266[m Change styling, Finish all sections UI
+[32m|[m [1;31m|[m [1;34m|[m [36m|[m * [33ma9f6176[m Fixed Path
+[32m|[m [1;31m|[m [1;34m|[m [36m|[m * [33m868ac5b[m Worked on the logic of the ressources section
+[32m|[m [1;31m|[m [1;34m|[m [36m|[m[36m/[m  
+[32m|[m [1;31m|[m [1;34m|[m [36m|[m *   [33m066b8b6[m[33m ([m[1;31morigin/kaouthar-404-page[m[33m)[m Merge branch 'main' into kaouthar-404-page
+[32m|[m [1;31m|[m [1;34m|[m [36m|[m [35m|[m[32m\[m  
+[32m|[m [1;31m|[m[32m_[m[1;34m|[m[32m_[m[36m|[m[32m_[m[35m|[m[32m/[m  
+[32m|[m[32m/[m[1;31m|[m [1;34m|[m [36m|[m [35m|[m   
+* [1;31m|[m [1;34m|[m [36m|[m [35m|[m [33mf614106[m Add Event Listing & Event Details Pages with Backend Integration (#13)
+[36m|[m [1;31m|[m[36m_[m[1;34m|[m[36m/[m [35m/[m  
+[36m|[m[36m/[m[1;31m|[m [1;34m|[m [35m|[m   
+[36m|[m [1;31m|[m [1;34m|[m * [33m24f0696[m Chnager le nom de boutton retour à lacceuil
+[36m|[m [1;31m|[m [1;34m|[m * [33m3685b2d[m Add useState statement
+[36m|[m [1;31m|[m [1;34m|[m * [33m8756ba1[m add 404 page
+[36m|[m [1;31m|[m[36m_[m[1;34m|[m[36m/[m  
+[36m|[m[36m/[m[1;31m|[m [1;34m|[m   
+[36m|[m [1;31m|[m [1;34m|[m * [33m4212f25[m[33m ([m[1;31morigin/7-evenement[m[33m)[m refactor: Update dependencies, remove unused assets, and refactor event handling
+[36m|[m [1;31m|[m [1;34m|[m[1;31m/[m  
+[36m|[m [1;31m|[m[1;31m/[m[1;34m|[m   
+[36m|[m * [1;34m|[m   [33m2843422[m Merge branch 'main' into 7-evenement
+[36m|[m [1;32m|[m[36m\[m [1;34m\[m  
+[36m|[m [1;32m|[m[36m/[m [1;34m/[m  
+[36m|[m[36m/[m[1;32m|[m [1;34m|[m   
+* [1;32m|[m [1;34m|[m [33mc6ac065[m Add README file for project setup, and CONTRIBUTING file for contributing (#5)
+[1;34m|[m [1;32m|[m[1;34m/[m  
+[1;34m|[m[1;34m/[m[1;32m|[m   
+[1;34m|[m * [33m1edb44e[m adding events
+[1;34m|[m * [33me9c1eba[m Add events page
+[1;34m|[m[1;34m/[m  
+*   [33m52fbd3e[m Merge pull request #3 from slihatim/feature/implement-signup-page
+[1;34m|[m[1;35m\[m  
+[1;34m|[m * [33mc30c1a7[m[33m ([m[1;31morigin/feature/implement-signup-page[m[33m)[m Complete the signup page
+[1;34m|[m * [33mb95f91a[m Added initial signup page
+[1;34m|[m[1;34m/[m  
+[1;34m|[m * [33m98da567[m[33m ([m[1;31morigin/feat-v2-job-offers[m[33m, [m[1;32mfeat-v2-job-offers[m[33m)[m modifying file names, and solve responsiveness errors
+[1;34m|[m [1;36m|[m * [33md6c758b[m[33m ([m[1;31morigin/offres-stage-emplois[m[33m)[m Improve the offers styling, add sidbar, dark-light mode switching and french-english swtiching as well.
+[1;34m|[m [1;36m|[m * [33mdd01dfb[m feat: offres, emplois, stages structure, sidebar, context, i18n, dark mode
+[1;34m|[m [1;36m|[m[1;36m/[m  
+[1;34m|[m [1;36m|[m * [33ma2d04c9[m[33m ([m[1;31morigin/add-readme-file-for-project-setup-and-contributing-guide[m[33m)[m Update Readme
+[1;34m|[m [1;36m|[m * [33m895bcdb[m Add README file for project setup, and CONTRIBUTING file for contributing
+[1;34m|[m [1;36m|[m[1;34m/[m  
+[1;34m|[m[1;34m/[m[1;36m|[m   
+* [1;36m|[m [33m8bc9845[m Implement Login page (#2)
+[1;36m|[m[1;36m/[m  
+[1;36m|[m * [33mca1f310[m[33m ([m[1;31morigin/feature/implement-login-page[m[33m)[m Implement Login page
+[1;36m|[m[1;36m/[m  
+* [33m61e5f34[m Changing quote
+* [33m774fdc9[m Add vercel.json
+*   [33me22cd8b[m Merge pull request #1 from slihatim/deployment
+[34m|[m[35m\[m  
+[34m|[m [35m|[m * [33m425a92c[m[33m ([m[1;31morigin/deployment[m[33m)[m Add vercel.json
+[34m|[m [35m|[m[35m/[m  
+[34m|[m * [33m1988101[m fixing images paths for deployment
+[34m|[m[34m/[m  
+* [33m724479e[m finished Landing page
+* [33m0da0183[m made navbar
