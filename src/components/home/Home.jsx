@@ -14,7 +14,7 @@ const Home = () => {
     <div className='pb-20'>
       <Section1 />
       <Section2 />
-      {auth && <Section3/>}
+      <Section3/>
       <Section4/>
       <Section5 />
       <Section6/>
