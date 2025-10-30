@@ -60,8 +60,8 @@ const Section6 = () => {
 
         <figcaption className="flex items-center justify-center mt-6 space-x-3 rtl:space-x-reverse">
           <img
-            className="w-10 h-10 rounded-full object-cover"
-            src="assets/profile.png"
+            className="mr-5 w-10 h-10 rounded-full object-cover"
+            src="assets/john-crosby.png"
             alt="John C. Crosby"
             />
 
