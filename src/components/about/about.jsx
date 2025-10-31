@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1";
+
 const AboutUs = () => {
   const [formData, setFormData] = useState({
     nom: "",
@@ -19,7 +21,7 @@ const AboutUs = () => {
     setStatus("Envoi en cours...");
 
     try {
-      const response = await fetch("http://localhost:8080/api/contact", {
+      const response = await fetch(`${API_URL}/contact`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
