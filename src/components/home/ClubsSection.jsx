@@ -20,7 +20,7 @@ const Section5 = () => {
                     <span className="block w-16 h-1 bg-[#3A7FC2] rounded" />
                   </div>
                   <p className="text-sm text-gray-700 mt-3 max-w-xl mx-auto">
-                    Découvrez les clubs étudiants et rejoignez la communauté
+                    Découvrez les clubs étudiants et rejoignez la communauté.
                   </p>
                 </div>
 

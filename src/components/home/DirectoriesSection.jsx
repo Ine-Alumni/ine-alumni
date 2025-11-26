@@ -7,13 +7,13 @@ const Section3 = () => {
     {
       icon: <BookOpen className="text-[#3A7FC2] w-10 h-10 sm:w-12 sm:h-12" />,
       title: "Annuaire des Entreprises",
-      description: "Consultez le répertoire d'entreprises de marché.",
+      description: "Consultez le répertoire d'entreprises du marché.",
       link: "/entreprises",
     },
     {
       icon: <GraduationCap className="text-[#3A7FC2] w-10 h-10 sm:w-12 sm:h-12" />,
       title: "Annuaire des Lauréats",
-      description: "Retrouvez et connectez-vous avec les anciens de INPT.",
+      description: "Retrouvez et connectez-vous avec des alumni de INPT.",
       link: "/laureats",
     },
     {
