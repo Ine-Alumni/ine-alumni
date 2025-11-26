@@ -50,4 +50,4 @@ const StatsSection = () => {
   );
 };
 
-export default Section2;
+export default StatsSection;
