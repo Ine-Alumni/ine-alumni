@@ -1,19 +1,19 @@
 import React from "react";
 import { BookOpen, GraduationCap, Calendar } from "lucide-react";
 
-const Section3 = () => {
+const DirectoriesSection = () => {
 
   const cardsData = [
     {
       icon: <BookOpen className="text-[#3A7FC2] w-10 h-10 sm:w-12 sm:h-12" />,
       title: "Annuaire des Entreprises",
-      description: "Consultez le répertoire d'entreprises de marché.",
+      description: "Consultez le répertoire d'entreprises du marché.",
       link: "/entreprises",
     },
     {
       icon: <GraduationCap className="text-[#3A7FC2] w-10 h-10 sm:w-12 sm:h-12" />,
       title: "Annuaire des Lauréats",
-      description: "Retrouvez et connectez-vous avec les anciens de INPT.",
+      description: "Retrouvez et connectez-vous avec des alumni de INPT.",
       link: "/laureats",
     },
     {
@@ -79,4 +79,4 @@ const Section3 = () => {
   );
 }
 
-export default Section3;
+export default DirectoriesSection;

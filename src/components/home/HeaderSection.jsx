@@ -1,6 +1,6 @@
 import { ArrowDownCircle } from "lucide-react";
 
-const Section1 = () => {
+const HeaderSection = () => {
   return (
     <section
       className="w-full bg-gradient-to-r from-[#0C5F95] via-[#5197C5] to-[#3178A7]"
@@ -90,4 +90,4 @@ const Section1 = () => {
   );
 };
 
-export default Section1;
+export default HeaderSection;

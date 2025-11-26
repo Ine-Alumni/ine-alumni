@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Section6 = () => {
+const QuoteSection = () => {
   return (
     <div className="mt-20 mx-10">
       <figure className="max-w-screen-xl mx-auto text-center">
@@ -60,8 +60,8 @@ const Section6 = () => {
 
         <figcaption className="flex items-center justify-center mt-6 space-x-3 rtl:space-x-reverse">
           <img
-            className="mr-5 w-10 h-10 rounded-full object-cover"
-            src="assets/john-crosby.png"
+            className="w-10 h-10 rounded-full object-cover"
+            src="assets/profile.png"
             alt="John C. Crosby"
             />
 
@@ -79,4 +79,4 @@ const Section6 = () => {
   );
 };
 
-export default Section6;
+export default QuoteSection;

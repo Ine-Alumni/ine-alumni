@@ -5,7 +5,7 @@ import authHeader from '../../services/auth-header';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1";
 
-const Section4 = () => {
+const EventsSection = () => {
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -202,4 +202,4 @@ const Section4 = () => {
 };
 
 
-export default Section4;
+export default EventsSection;

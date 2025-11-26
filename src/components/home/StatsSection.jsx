@@ -1,4 +1,4 @@
-const Section2 = () => {
+const StatsSection = () => {
   const stats = [
     { number: "2500+", label: "Anciens" },
     { number: "20+", label: "Clubs étudiants actifs" },
@@ -50,4 +50,4 @@ const Section2 = () => {
   );
 };
 
-export default Section2;
+export default StatsSection;
