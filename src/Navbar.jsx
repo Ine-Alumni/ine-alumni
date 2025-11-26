@@ -16,7 +16,7 @@ import { Link } from 'react-router'
 import { Button } from "@/components/ui/button"
 import { logout } from './services/auth-service'
 
-const MergedNavbar = () => {
+const Navbar = () => {
   const { auth } = useAuth()
 
   return (
@@ -90,7 +90,7 @@ const MergedNavbar = () => {
                     </NavigationMenuItem>
 
                     <NavigationMenuItem>
-                      <Link to="/questions" className="text-sm font-medium hover:underline">Q&R</Link>
+                      <Link to="/about" className="text-sm font-medium hover:underline">À propos</Link>
                     </NavigationMenuItem>
                   </>
                 )}
@@ -144,7 +144,7 @@ const MergedNavbar = () => {
   )
 }
 
-export default MergedNavbar
+export default Navbar
 
 function HamburgerMenu() {
   const { auth } = useAuth()
@@ -185,8 +185,8 @@ function HamburgerMenu() {
             </DropdownMenuItem>
 
             <DropdownMenuItem>
-              <Link to="/questions" className="w-full">
-                Q&R
+              <Link to="/about" className="w-full">
+                À propos
               </Link>
             </DropdownMenuItem>
           </>

@@ -1,8 +1,8 @@
 import React, { useState, useContext } from 'react'
-import NavBar from './MergedNavbar';
 import Footer from './Footer';
 import { Outlet } from 'react-router';
 import Alerts from './components/alerts/Alerts';
+import Navbar from './Navbar';
 
 const AlertContext = React.createContext();
 
@@ -27,7 +27,7 @@ const SharedLayout = () => {
     return (
         <AlertContext.Provider value={{addAlert}}>
             <main className='mt-16'>
-                <NavBar />
+                <Navbar />
                 <div className='min-h-[calc(100vh-341px)]'>
                     <Outlet />
                 </div>

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 
-const Section5 = () => {
+const ClubsSection = () => {
     const clubs = [
       { src: 'assets/club1.png', name: 'A25 Club' },
       { src: 'assets/club2.png', name: 'GameLab INPT' },
@@ -70,4 +70,4 @@ const Section5 = () => {
     );
 }
 
-export default Section5;
+export default ClubsSection;

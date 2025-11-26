@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Section6 = () => {
+const QuoteSection = () => {
   return (
     <div className="mt-20 mx-10">
       <figure className="max-w-screen-xl mx-auto text-center">
@@ -79,4 +79,4 @@ const Section6 = () => {
   );
 };
 
-export default Section6;
+export default QuoteSection;

@@ -1,7 +1,7 @@
 import React from "react";
 import { BookOpen, GraduationCap, Calendar } from "lucide-react";
 
-const Section3 = () => {
+const DirectoriesSection = () => {
 
   const cardsData = [
     {
@@ -79,4 +79,4 @@ const Section3 = () => {
   );
 }
 
-export default Section3;
+export default DirectoriesSection;
