@@ -1,21 +1,20 @@
 import React, { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import authHeader from "../../services/auth-header";
+import { Search, Calendar, Plus, ChevronLeft, ChevronRight, MapPin, Clock } from "lucide-react";
 
 const Evenements = () => {
   const navigate = useNavigate();
   const API_BASE_URL =
     import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1";
-    // ✅ Base URL pour les fichiers (sans /api/v1)
-const FILE_BASE_URL =
-  import.meta.env.VITE_API_URL?.replace("/api/v1", "") ||
-  "http://localhost:8080";
+  const FILE_BASE_URL =
+    import.meta.env.VITE_API_URL?.replace("/api/v1", "") ||
+    "http://localhost:8080";
 
   const [showCalendar, setShowCalendar] = useState(false);
-  const [selectedFilter, setSelectedFilter] = useState("All");
+  const [selectedFilter, setSelectedFilter] = useState("Tous");
   const [selectedCalendarDate, setSelectedCalendarDate] = useState(null);
-  const [selectedDateRange, setSelectedDateRange] = useState("All");
+  const [selectedDateRange, setSelectedDateRange] = useState("Toutes");
   const [searchTerm, setSearchTerm] = useState("");
   const [showAddEventModal, setShowAddEventModal] = useState(false);
   const [newEvent, setNewEvent] = useState({
@@ -29,7 +28,7 @@ const FILE_BASE_URL =
     whatToExpect: "",
   });
 
-  const [events, setEvents] = useState([]); // <-- AJOUT DE CETTE LIGNE
+  const [events, setEvents] = useState([]);
 
   const calendarRef = useRef(null);
   const modalRef = useRef(null);
@@ -38,14 +37,14 @@ const FILE_BASE_URL =
     const calendarEl = calendarRef.current;
     if (!calendarEl) return;
 
-    const rawDate = calendarEl.value; // récupère la date sélectionnée (ex: "2025-07-26")
+    const rawDate = calendarEl.value;
     if (!rawDate) {
-      console.warn("Aucune date sélectionnée");
+      console.warn("No date selected");
       return;
     }
 
     const selectedDate = new Date(rawDate).toISOString().slice(0, 10);
-    console.log("✅ Date sélectionnée depuis DOM:", selectedDate);
+    console.log("✅ Date selected from DOM:", selectedDate);
 
     setSelectedCalendarDate(selectedDate);
     setShowCalendar(false);
@@ -103,7 +102,7 @@ const FILE_BASE_URL =
       formData.append("file", file);
 
       try {
-            const res = await fetch(`${API_BASE_URL}/files/upload`, {
+        const res = await fetch(`${API_BASE_URL}/files/upload`, {
           method: "POST",
           body: formData,
         });
@@ -113,13 +112,12 @@ const FILE_BASE_URL =
         }
 
         const data = await res.json();
-const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté backend
-// on récupère la chaîne de caractères renvoyée par le backend
+        const imageUrl = data.response;
 
         setNewEvent((prev) => ({ ...prev, image: imageUrl }));
       } catch (error) {
         console.error(error);
-        alert("Erreur lors de l'upload de l'image");
+        alert("Erreur lors du téléchargement de l'image");
       }
     }
   };
@@ -135,21 +133,20 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
       club: newEvent.category,
       image: newEvent.image,
       schedule: newEvent.schedule,
-      expectations: newEvent.whatToExpect, // <-- CHANGEMENT ICI
+      expectations: newEvent.whatToExpect,
     };
 
     try {
       const response = await fetch(`${API_BASE_URL}/events`, {
         method: "POST",
         headers: {
-          ...authHeader(),
           "Content-Type": "application/json",
         },
         body: JSON.stringify(eventToSend),
       });
 
       if (!response.ok) {
-        throw new Error("Erreur lors de la sauvegarde");
+        throw new Error("Error saving event");
       }
 
       let savedEvent = await response.json();
@@ -164,7 +161,7 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
           date: savedEvent.date,
           location: savedEvent.lieu,
           description: savedEvent.description,
-          status: new Date(savedEvent.date) < new Date() ? "Past" : "Upcoming",
+          status: new Date(savedEvent.date) < new Date() ? "Passé" : "À venir",
           progress: 0,
           price: 0,
           image: `${FILE_BASE_URL}${newEvent.image}`,
@@ -194,9 +191,11 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/events/public`, { method: "GET", headers: authHeader()});
+        const response = await fetch(`${API_BASE_URL}/events/public`, { 
+          method: "GET"
+        });
         if (!response.ok) {
-          throw new Error("Erreur lors du chargement des événements");
+          throw new Error("Error loading events");
         }
         const data = await response.json();
 
@@ -207,13 +206,12 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
           date: evt.date,
           location: evt.location,
           description: evt.description,
-          status: new Date(evt.date) < new Date() ? "Past" : "Upcoming",
+          status: new Date(evt.date) < new Date() ? "Passé" : "À venir",
           progress: 0,
           price: 0,
           image: evt.image
-  ? `${FILE_BASE_URL}${evt.image.startsWith("/") ? evt.image : "/" + evt.image}`
-  : "",
-
+            ? `${FILE_BASE_URL}${evt.image.startsWith("/") ? evt.image : "/" + evt.image}`
+            : "",
           schedule: "",
           whatToExpect: evt.expectations || "",
         }));
@@ -234,36 +232,42 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
     return diff > 0 && diff < 3;
   };
 
-  const filters = ["All", "Past", "Upcoming"];
+  const filters = ["Tous", "Passé", "À venir"];
+  const filterMap = {
+    "Tous": "All",
+    "Passé": "Past",
+    "À venir": "Upcoming"
+  };
+  
   const isDateInRange = (eventDate, range) => {
     const now = new Date();
     const date = new Date(eventDate);
 
-    if (range === "This Week") {
+    if (range === "Cette semaine") {
       const startOfWeek = new Date(now);
-      startOfWeek.setDate(now.getDate() - now.getDay()); // dimanche
+      startOfWeek.setDate(now.getDate() - now.getDay());
       const endOfWeek = new Date(startOfWeek);
-      endOfWeek.setDate(startOfWeek.getDate() + 6); // samedi
+      endOfWeek.setDate(startOfWeek.getDate() + 6);
       return date >= startOfWeek && date <= endOfWeek;
     }
 
-    if (range === "This Month") {
+    if (range === "Ce mois") {
       return (
         date.getMonth() === now.getMonth() &&
         date.getFullYear() === now.getFullYear()
       );
     }
 
-    if (range === "This Year") {
+    if (range === "Cette année") {
       return date.getFullYear() === now.getFullYear();
     }
 
-    return true; // 'All'
+    return true;
   };
 
   const filteredEvents = events.filter((event) => {
     const matchesFilter =
-      selectedFilter === "All" || event.status === selectedFilter;
+      selectedFilter === "Tous" || event.status === selectedFilter;
 
     const lowerSearch = searchTerm.toLowerCase();
     const matchesSearch =
@@ -278,15 +282,6 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
       ? new Date(event.date).toISOString().slice(0, 10) === selectedCalendarDate
       : true;
 
-    console.log(
-      "event.date:",
-      event.date,
-      "selectedCalendarDate:",
-      selectedCalendarDate,
-      "match:",
-      matchesCalendarDate
-    );
-
     return (
       matchesFilter && matchesSearch && matchesDateRange && matchesCalendarDate
     );
@@ -299,7 +294,7 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
           Nos Événements
         </h1>
         <p className="mt-3 text-gray-600 text-lg max-w-md mx-auto">
-          Tous les temps forts de notre communauté.
+          Tous les moments forts de notre communauté.
         </p>
       </div>
 
@@ -318,7 +313,7 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
               >
                 {filter} (
                 {
-                  events.filter((e) => filter === "All" || e.status === filter)
+                  events.filter((e) => filter === "Tous" || e.status === filter)
                     .length
                 }
                 )
@@ -328,12 +323,10 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
 
           <div className="flex flex-wrap md:flex-nowrap gap-2 items-center flex-1 justify-end relative">
             <div className="relative w-full md:w-auto flex-grow md:flex-grow-0">
-              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                🔍
-              </span>
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-5 h-5" />
               <input
                 type="text"
-                placeholder="Search event"
+                placeholder="Rechercher un événement"
                 className="pl-10 pr-4 py-2 border border-gray-300 rounded-md w-full"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -346,17 +339,17 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
                 value={selectedDateRange}
                 onChange={(e) => setSelectedDateRange(e.target.value)}
               >
-                <option value="All">All Dates</option>
-                <option value="This Week">This Week</option>
-                <option value="This Month">This Month</option>
-                <option value="This Year">This Year</option>
+                <option value="Toutes">Toutes les dates</option>
+                <option value="Cette semaine">Cette semaine</option>
+                <option value="Ce mois">Ce mois</option>
+                <option value="Cette année">Cette année</option>
               </select>
 
               <button
                 onClick={() => setShowCalendar(!showCalendar)}
                 className="p-2 border border-gray-300 rounded-md bg-white hover:bg-gray-100"
               >
-                📅
+                <Calendar className="w-5 h-5 text-[#5691cb]" />
               </button>
 
               <div className="relative group">
@@ -364,10 +357,10 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
                   onClick={() => setShowAddEventModal(true)}
                   className="p-2 rounded-md bg-white text-[#5691cb] hover:bg-gray-100 transition-all border border-gray-300"
                 >
-                  ➕
+                  <Plus className="w-5 h-5 text-[#5691cb]" />
                 </button>
                 <div className="absolute top-full mt-1 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-10">
-                  Add Event
+                  Ajouter un événement
                 </div>
               </div>
 
@@ -381,31 +374,13 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
                       slot="previous"
                       className="absolute left-2 top-3 cursor-pointer"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        className="w-5 h-5 text-gray-700 hover:text-[#5691cb]"
-                      >
-                        <path
-                          fill="currentColor"
-                          d="M15.75 19.5 8.25 12l7.5-7.5"
-                        />
-                      </svg>
+                      <ChevronLeft className="w-5 h-5 text-gray-700 hover:text-[#5691cb]" />
                     </div>
                     <div
                       slot="next"
                       className="absolute right-2 top-3 cursor-pointer"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        className="w-5 h-5 text-gray-700 hover:text-[#5691cb]"
-                      >
-                        <path
-                          fill="currentColor"
-                          d="m8.25 4.5 7.5 7.5-7.5 7.5"
-                        />
-                      </svg>
+                      <ChevronRight className="w-5 h-5 text-gray-700 hover:text-[#5691cb]" />
                     </div>
                     <calendar-month></calendar-month>
                   </calendar-date>
@@ -434,7 +409,8 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: index * 0.1 }}
-              className="bg-white shadow-md rounded-xl overflow-hidden"
+              onClick={() => navigate(`/evenements/${event.id}`)}
+              className="bg-white shadow-md rounded-xl overflow-hidden cursor-pointer hover:shadow-xl transition-shadow duration-300"
             >
               <img
                 src={event.image}
@@ -459,7 +435,8 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
                     </span>
                   )}
                 </h3>
-                <p className="text-sm text-gray-600 mt-1">
+                <p className="text-sm text-gray-600 mt-1 flex items-center gap-1">
+                  <Clock className="w-4 h-4 text-[#5691cb]" />
                   {new Date(event.date).toLocaleString("fr-FR", {
                     weekday: "long",
                     day: "2-digit",
@@ -469,7 +446,9 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
                     minute: "2-digit",
                   })}
                 </p>
-                <p className="text-sm text-gray-500">📍 {event.location}</p>
+                <p className="text-sm text-gray-500 flex items-center gap-1">
+                  <MapPin className="w-4 h-4 text-orange-500" /> {event.location}
+                </p>
 
                 <div className="w-full bg-gray-200 rounded-full h-2 mt-3">
                   <div
@@ -491,17 +470,12 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
                     )}&sf=true&output=xml`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-[#5691cb] hover:underline"
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-sm text-[#5691cb] hover:underline flex items-center gap-1"
                   >
-                    Ajouter à Google Calendar
+                    <Calendar className="w-3 h-3" />
+                    Ajouter à Google Agenda
                   </a>
-
-                  <button
-                    onClick={() => navigate(`/evenements/${event.id}`)}
-                    className="text-sm text-[#5691cb] hover:underline"
-                  >
-                    Voir plus
-                  </button>
                 </div>
               </div>
             </motion.div>
@@ -548,8 +522,8 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
                   className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#5691cb] focus:border-transparent"
                   required
                 >
-                  <option value="">Sélectionner une catégorie</option>
-                  <option value="Entrepreneurship">Entrepreneurship</option>
+                  <option value="">Sélectionnez une catégorie</option>
+                  <option value="Entrepreneurship">Entrepreneuriat</option>
                   <option value="Social">Social</option>
                   <option value="Design">Design</option>
                   <option value="Comite">Comité</option>
@@ -597,14 +571,14 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
               </div>
               <div className="mb-4">
                 <label className="block text-gray-700 mb-2">
-                  Planning / Schedule
+                  Programme
                 </label>
                 <textarea
                   name="schedule"
                   value={newEvent.schedule}
                   onChange={handleInputChange}
                   className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#5691cb] focus:border-transparent"
-                  placeholder="Décrivez le déroulement de l'événement"
+                  placeholder="Décrivez le programme de l'événement"
                   rows="2"
                 />
               </div>
@@ -627,8 +601,8 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
                     Aperçu de l'image
                   </label>
                   <img
-                    src={`${FILE_BASE_URL}${newEvent.image}`}   // ✅ Bonne URL
-                    alt="Aperçu"
+                    src={`${FILE_BASE_URL}${newEvent.image}`}
+                    alt="Preview"
                     className="w-full max-h-64 object-contain border border-gray-300 rounded-md"
                   />
                 </div>
@@ -636,14 +610,14 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
 
               <div className="mb-4">
                 <label className="block text-gray-700 mb-2">
-                  À quoi s’attendre ?
+                  À quoi s'attendre ?
                 </label>
                 <textarea
                   name="whatToExpect"
                   value={newEvent.whatToExpect}
                   onChange={handleInputChange}
                   className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#5691cb] focus:border-transparent"
-                  placeholder="Par exemple : Conférences, ateliers, networking..."
+                  placeholder="Par exemple : Conférences, ateliers, réseautage..."
                   rows="2"
                 />
               </div>
