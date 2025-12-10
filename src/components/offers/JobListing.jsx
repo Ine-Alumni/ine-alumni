@@ -107,7 +107,8 @@ export function JobListing({ onJobSelect }) {
   const [error, setError] = useState('');
   
   // Expandable cards state - tracks which cards are expanded
-  const [expandedCards, setExpandedCards] = useState(new Set());
+  // TODO: Restore expandedCards state when expand/collapse feature is needed
+  //const [expandedCards, setExpandedCards] = useState(new Set());
 
   /**
    * Fetch jobs from API on component mount
@@ -144,7 +145,6 @@ export function JobListing({ onJobSelect }) {
   }, []);
 
   // Extract unique values for filter dropdowns
-  const companies = [...new Set(jobs.map(job => job.company))];
   const locations = [...new Set(jobs.map(job => job.location))];
 
   /**
@@ -206,7 +206,7 @@ export function JobListing({ onJobSelect }) {
   /**
    * Toggle expanded state of a job card
    */
-  const toggleCardExpansion = (jobId) => {
+  /* const toggleCardExpansion = (jobId) => {
     setExpandedCards(prev => {
       const newSet = new Set(prev);
       if (newSet.has(jobId)) {
@@ -217,6 +217,7 @@ export function JobListing({ onJobSelect }) {
       return newSet;
     });
   };
+  */
 
   /**
    * Format job description for display
@@ -334,7 +335,7 @@ export function JobListing({ onJobSelect }) {
           </Card>
         ) : (
           filteredJobs.map(job => {
-            const isExpanded = expandedCards.has(job.id);
+            //const isExpanded = expandedCards.has(job.id);
             
             return (
               <Card 
@@ -346,23 +347,12 @@ export function JobListing({ onJobSelect }) {
                   <div className="flex flex-col sm:flex-row justify-between items-start gap-3">
                     <div className="space-y-2 flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
-                        {/* Expandable arrow and title */}
+                        {/* REPLACE the CardHeader section to remove the arrow button: */}
                         <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => toggleCardExpansion(job.id)}
-                            className="text-[#0C5F95] hover:text-[#053A5F] transition-colors p-1 rounded"
-                            aria-label={isExpanded ? 'Réduire' : 'Développer'}
-                          >
-                            {isExpanded ? (
-                              <ChevronDown className="w-5 h-5" />
-                            ) : (
-                              <ChevronRight className="w-5 h-5" />
-                            )}
-                          </button>
+                          {/* TODO: Restore expand/collapse arrow button */}
                           <CardTitle 
-                            className="text-[18px] font-semibold text-[#053A5F] cursor-pointer" 
+                            className="text-[18px] font-semibold text-[#053A5F]" 
                             style={{ fontFamily: 'Open Sans, sans-serif' }}
-                            onClick={() => toggleCardExpansion(job.id)}
                           >
                             {job.title}
                           </CardTitle>
@@ -416,42 +406,37 @@ export function JobListing({ onJobSelect }) {
 
                 {/* Card Content - White background with description preview or full description */}
                 <CardContent className="bg-white">
-                  {!isExpanded ? (
-                    /* Collapsed state - show preview */
-                    <p className="text-[#053A5F] line-clamp-2 pt-3" style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '14px' }}>
-                      {job.description.split('\n')[0]}
-                    </p>
-                  ) : (
-                    /* Expanded state - show full description */
-                    <div className="pt-3 space-y-2">
-                      <div className="prose prose-sm max-w-none">
-                        {formatDescription(job.description)}
-                      </div>
+                  <div className="pt-3 space-y-2">
+                    <div className="prose prose-sm max-w-none">
+                      {formatDescription(job.description)}
+                    </div>
+                    
+                    {/* TODO: Restore Apply button visibility when backend is ready */}
+                    <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-100">
+                      {/* Apply button hidden - will be restored when backend ready */}
+                      {/* 
+                      <Button
+                        onClick={() => onJobSelect(job)}
+                        className="bg-[#0C5F95] hover:bg-[#053A5F] text-white shadow-md flex-1 sm:flex-none"
+                        style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '14px' }}
+                      >
+                        {t('common.apply')}
+                      </Button>
+                      */}
                       
-                      {/* Action buttons when expanded */}
-                      <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-100">
+                      {job.externalLink && (
                         <Button
-                          onClick={() => onJobSelect(job)}
-                          className="bg-[#0C5F95] hover:bg-[#053A5F] text-white shadow-md flex-1 sm:flex-none"
+                          variant="outline"
+                          onClick={() => window.open(job.externalLink, '_blank')}
+                          className="border-[#3A7FC2] text-[#053A5F] hover:bg-[#E2F2FF] flex-1 sm:flex-none"
                           style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '14px' }}
                         >
-                          {t('common.apply')}
+                          Voir l'offre originale
                         </Button>
-                        
-                        {job.externalLink && (
-                          <Button
-                            variant="outline"
-                            onClick={() => window.open(job.externalLink, '_blank')}
-                            className="border-[#3A7FC2] text-[#053A5F] hover:bg-[#E2F2FF] flex-1 sm:flex-none"
-                            style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '14px' }}
-                          >
-                            Voir l'offre originale
-                          </Button>
-                        )}
-                      </div>
+                      )}
                     </div>
-                  )}
-                </CardContent>
+                  </div>   
+                </CardContent>      
               </Card>
             );
           })

@@ -3,80 +3,85 @@ import { ArrowDownCircle } from "lucide-react";
 const Section1 = () => {
   return (
     <section
-      className="relative w-full h-full"
-      style={{
-        background:
-          "linear-gradient(90deg, #0C5F95 0%, #4188B6 19%, #5197C5 56%, #4990BE 85%, #3178A7 100%)",
-      }}
+      className="w-full bg-gradient-to-r from-[#0C5F95] via-[#5197C5] to-[#3178A7]"
     >
-      <div className="px-6 md:px-12 lg:px-[72px] pt-10">
-        <div className="flex flex-col lg:flex-row items-center lg:items-end justify-center gap-30 max-md:gap-10">
-          <div className="flex gap-4 md:gap-8 items-end">
-            <div className="flex flex-col gap-4 md:gap-6 justify-end">
-              <div className="w-[150px] sm:w-[220px] md:w-[260px] lg:w-[300px] h-[220px] sm:h-[330px] md:h-[380px] lg:h-[442px] overflow-hidden shadow-md">
+      <div className="max-w-7xl mx-auto px-6 py-12 lg:py-20">
+        <div className="flex flex-col-reverse lg:flex-row items-center gap-10 lg:gap-16">
+          {/* Images area */}
+          <div className="w-full lg:w-1/2">
+            {/* Layout behaviour:
+                - mobile: stacked (main then smalls)
+                - md (tablet): main left (2/3) and smalls stacked on the right (1/3)
+                - lg (large screens): column -- main full width on top, two smalls side-by-side below */}
+            <div className="flex flex-col md:flex-row lg:flex-col gap-4 items-stretch max-lg:w-[95%] mx-auto">
+              {/* Main image */}
+              <div className="w-full md:w-2/3 lg:w-full rounded-lg overflow-hidden shadow-lg aspect-video">
                 <img
-                  src="assets/inpt2.jpg"
-                  alt="placeholder"
+                  src="assets/inpt1.jpg"
+                  alt="Photo principale du campus"
                   className="w-full h-full object-cover"
                 />
               </div>
 
-              <div className="w-[150px] sm:w-[220px] md:w-[260px] lg:w-[300px] h-[100px] sm:h-[130px] md:h-[150px] lg:h-[150px] overflow-hidden shadow-md">
-                <img
-                  src="assets/inpt3.jpg"
-                  alt="placeholder"
-                  className="w-full h-full object-cover"
-                />
+              {/* Small images:
+                  - md: stacked vertically on the right
+                  - lg: full width container with small images in a row (two columns) */}
+              <div className="w-full md:w-1/3 lg:w-full flex flex-row md:flex-col lg:flex-row gap-4">
+                <div className="flex-1 rounded-lg overflow-hidden shadow-md aspect-video">
+                  <img
+                    src="assets/inpt2.jpg"
+                    alt="Photo du campus - détail 1"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="flex-1 rounded-lg overflow-hidden shadow-md aspect-video">
+                  <img
+                    src="assets/inpt3.jpg"
+                    alt="Photo du campus - détail 2"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
               </div>
-            </div>
-
-            <div className="w-[180px] sm:w-[280px] md:w-[340px] lg:w-[400px] h-[300px] sm:h-[420px] md:h-[500px] lg:h-[615px] overflow-hidden shadow-lg">
-              <img
-                src="assets/inpt1.jpg"
-                alt="placeholder"
-                className="w-full h-full object-cover"
-              />
             </div>
           </div>
 
-          <div className="text-white flex-1 max-w-lg text-left">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[45px] font-bold leading-tight tracking-wide">
-              <span className="block">WELCOME TO</span>
-              <span className="whitespace-nowrap"> INPT INE-ALUMNI</span>
-              <span className="block">PLATFORM</span>
+          {/* Text area */}
+          <div className="max-lg:w-[90%] lg:w-1/2 text-white">
+            <h1 className="text-4xl sm:text-4xl md:text-5xl lg:text-5xl font-extrabold leading-tight">
+              Bienvenue Sur
+              La Plateforme Ine‑Alumni
+              De L'INPT
             </h1>
 
-            <p className="mt-6 md:mt-8 lg:mt-12 text-base sm:text-lg md:text-xl lg:text-[30px] text-left tracking-widest">
+            {/* Increased size and weight for the intro, larger emphasis on the alumni count */}
+            <p className="mt-4 sm:mt-6 text-lg md:text-xl lg:text-[20px] text-[#E6F2FF] max-w-xl leading-relaxed">
               
-                Your perfect place to
-              
-              <br className="hidden sm:block" />
-              
-                create <span className="font-semibold">connections</span> with
-              
-              <br />
-              
-              more than <span className="font-extrabold">2500+ Alumni</span>
-              
+            Connectez-vous à
+            <span className="font-extrabold text-lg md:text-xl ml-1">plus de 2500 anciens diplômés</span>. 
+            Élargissez votre réseau professionnel et
+            découvrez des opportunités uniques et restez au cœur de votre communauté.
             </p>
 
-            <div className="mt-8 md:mt-7 flex items-center justify-start">
+            <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
               <button
-                onClick={() => {
+                onClick={() =>
                   document
                     .getElementById("section2")
-                    ?.scrollIntoView({ behavior: "smooth" });
-                }}
-                className="flex items-center justify-center bg-white text-[#3A7FC2] text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold rounded-full px-4 sm:px-6 py-3 sm:py-4 hover:bg-gray-100 transition-colors w-[220px] sm:w-[280px] md:w-[250px] lg:w-[300px] h-[55px] sm:h-[60px] md:h-[60px] lg:h-[60px]"
+                    ?.scrollIntoView({ behavior: "smooth" })
+                }
+                className="flex items-center justify-center gap-3 bg-white text-[#0C5F95] font-medium rounded-full px-5 py-2.5 sm:px-6 sm:py-3 shadow-sm hover:bg-gray-100 transition"
+                aria-label="Explorer"
               >
-                <ArrowDownCircle className="w-6 h-6 sm:w-8 sm:h-8 lg:w-9 lg:h-9" />
-                <span className="flex-1 text-center">Explore</span>
-                <ArrowDownCircle className="w-6 h-6 sm:w-8 sm:h-8 lg:w-9 lg:h-9" />
+                <ArrowDownCircle className="w-6 h-6" />
+                <span className="text-base">Explorer</span>
               </button>
+
+              
             </div>
 
-            <p className="mt-6 md:mt-6 text-sm sm:text-base md:text-[16px] text-[#DBEAFE] opacity-100 text-center lg:text-left mb-6 ">
-              "Connecting Generations of Students, Building a Stronger Future Together"
+            {/* Larger, slightly more prominent italic tagline */}
+            <p className="mt-5 text-base md:text-lg text-[#DBEAFE] opacity-95 max-w-md italic">
+              « Connectez-vous aux ingénieurs de votre école et propulsez votre avenir. »
             </p>
           </div>
         </div>

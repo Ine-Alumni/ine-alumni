@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge.jsx';
@@ -8,7 +7,7 @@ import { Textarea } from '../ui/textarea.jsx';
 import { Label } from '../ui/label.jsx';
 import { ArrowLeft, MapPin, Building, Calendar, ExternalLink, Clock } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext.jsx';
-import { toast } from 'sonner';
+
 
 /**
  * Mock job data - retained as fallback if no job passed
@@ -319,6 +318,8 @@ export function JobDetails({ job: jobProp, onBack }) {
    * - isSubmitting: Boolean to handle loading state during form submission
    */
   const { t } = useLanguage(); // Internationalization hook
+  /*
+  // TODO: Restore application modal state when backend is ready
   const [showApplicationModal, setShowApplicationModal] = useState(false);
   const [applicationForm, setApplicationForm] = useState({
     name: '',          // Applicant's full name
@@ -328,7 +329,7 @@ export function JobDetails({ job: jobProp, onBack }) {
     message: '',       // Cover letter/motivation message
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  */
   /**
    * Job data resolution
    * 
@@ -338,6 +339,7 @@ export function JobDetails({ job: jobProp, onBack }) {
    * - Error recovery when API data is malformed
    * - Standalone component usage
    */
+  
   const job = jobProp || mockJobs['1'];
 
   /**
@@ -446,6 +448,14 @@ export function JobDetails({ job: jobProp, onBack }) {
    *   - File upload error handling
    *   - Rate limiting feedback
    */
+
+  // TODO: Restore handleFormSubmit when backend API is ready
+  // This function handles:
+  // - Form validation
+  // - API call to submit application
+  // - Success notification
+  // - Form reset and modal closure
+  /*
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -464,6 +474,7 @@ export function JobDetails({ job: jobProp, onBack }) {
     });
     setIsSubmitting(false);
   };
+  */
 
   /**
    * File upload handler for CV attachment
@@ -491,10 +502,13 @@ export function JobDetails({ job: jobProp, onBack }) {
    * // User cancels file selection
    * handleFileChange(event) // Updates applicationForm.cv with null
    */
+  // TODO: Restore handleFileChange when backend is ready
+  /*
   const handleFileChange = (e) => {
     const file = e.target.files?.[0] || null;
     setApplicationForm(prev => ({ ...prev, cv: file }));
   };
+  */
 
   /**
    * Job description formatting engine
@@ -689,7 +703,8 @@ export function JobDetails({ job: jobProp, onBack }) {
       <Card className="bg-white border-2 border-[#0C5F95] shadow-md">
         <CardContent className="p-6">
           <div className="flex flex-col sm:flex-row gap-4">
-            {/* Apply Button with Modal Dialog */}
+            {/* TODO: Restore Apply button and modal when backend is ready */}
+            {/* Application Modal - Hidden until backend implementation
             <Dialog open={showApplicationModal} onOpenChange={setShowApplicationModal}>
               <DialogTrigger asChild>
                 <Button className="bg-[#0C5F95] hover:bg-[#053A5F] text-white shadow-md flex-1 sm:flex-none" style={{ fontFamily: 'Open Sans, sans-serif' }}>
@@ -704,110 +719,13 @@ export function JobDetails({ job: jobProp, onBack }) {
                 </DialogHeader>
                 
                 <form onSubmit={handleFormSubmit} className="space-y-4 pt-4">
-                  {/* Name and Email Row */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="name" className="text-[#053A5F] font-medium" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-                        {t('job.apply.name')} *
-                      </Label>
-                      <Input
-                        id="name"
-                        value={applicationForm.name}
-                        onChange={(e) => setApplicationForm(prev => ({ ...prev, name: e.target.value }))}
-                        className="border-[#3A7FC2] focus:border-[#0C5F95] focus:ring-[#E2F2FF] bg-white"
-                        required
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="email" className="text-[#053A5F] font-medium" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-                        {t('job.apply.email')} *
-                      </Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={applicationForm.email}
-                        onChange={(e) => setApplicationForm(prev => ({ ...prev, email: e.target.value }))}
-                        className="border-[#3A7FC2] focus:border-[#0C5F95] focus:ring-[#E2F2FF] bg-white"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  {/* Phone Number */}
-                  <div className="space-y-2">
-                    <Label htmlFor="phone" className="text-[#053A5F] font-medium" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-                      {t('job.apply.phone')} *
-                    </Label>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      value={applicationForm.phone}
-                      onChange={(e) => setApplicationForm(prev => ({ ...prev, phone: e.target.value }))}
-                      className="border-[#3A7FC2] focus:border-[#0C5F95] focus:ring-[#E2F2FF] bg-white"
-                      required
-                    />
-                  </div>
-
-                  {/* CV Upload */}
-                  <div className="space-y-2">
-                    <Label htmlFor="cv" className="text-[#053A5F] font-medium" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-                      {t('job.apply.cv')} *
-                    </Label>
-                    <Input
-                      id="cv"
-                      type="file"
-                      accept=".pdf,.doc,.docx"
-                      onChange={handleFileChange}
-                      className="border-[#3A7FC2] focus:border-[#0C5F95] focus:ring-[#E2F2FF] bg-white"
-                      required
-                    />
-                    <p className="text-xs text-[#3A7FC2]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-                      Formats acceptés: PDF, DOC, DOCX (max 5MB)
-                    </p>
-                  </div>
-
-                  {/* Cover Letter */}
-                  <div className="space-y-2">
-                    <Label htmlFor="message" className="text-[#053A5F] font-medium" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-                      {t('job.apply.message')}
-                    </Label>
-                    <Textarea
-                      id="message"
-                      rows={4}
-                      value={applicationForm.message}
-                      onChange={(e) => setApplicationForm(prev => ({ ...prev, message: e.target.value }))}
-                      placeholder="Décrivez votre motivation et vos compétences pertinentes pour ce poste..."
-                      className="border-[#3A7FC2] focus:border-[#0C5F95] focus:ring-[#E2F2FF] bg-white"
-                      style={{ fontFamily: 'Open Sans, sans-serif' }}
-                    />
-                  </div>
-
-                  {/* Form Actions with blue border separator */}
-                  <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t-2 border-[#0C5F95]">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setShowApplicationModal(false)}
-                      className="flex-1 sm:flex-none border-[#3A7FC2] text-[#053A5F] hover:bg-[#E2F2FF] bg-white"
-                      style={{ fontFamily: 'Open Sans, sans-serif' }}
-                    >
-                      {t('common.cancel')}
-                    </Button>
-                    <Button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="bg-[#0C5F95] hover:bg-[#053A5F] text-white shadow-md flex-1 sm:flex-none"
-                      style={{ fontFamily: 'Open Sans, sans-serif' }}
-                    >
-                      {isSubmitting ? t('common.loading') : t('common.submit')}
-                    </Button>
-                  </div>
+                  [... other fields you can find in the JobApplicationForm component ...]
                 </form>
               </DialogContent>
             </Dialog>
+            */}
 
-            {/* External Link Button */}
+            {/* External Link Button - Still visible */}
             {(job.externalLink || job.link) && (
               <Button
                 variant="outline"
