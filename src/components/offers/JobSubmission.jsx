@@ -6,6 +6,7 @@ import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea.jsx';
 import { Label } from '../ui/label.jsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { LocationSelect } from '../shared/LocationSelect';
 import { useLanguage } from '../contexts/LanguageContext.jsx';
 import { toast } from 'sonner';
 import axios from 'axios';
@@ -281,14 +282,11 @@ export function JobSubmission() {
                 <Label htmlFor="location" className="text-[#053A5F] font-semibold" style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '14px' }}>
                   {t('submit.location')} <span className="text-red-500">*</span>
                 </Label>
-                <Input
-                  id="location"
+                <LocationSelect
                   value={formData.location}
-                  onChange={(e) => updateFormData('location', e.target.value)}
-                  placeholder="ex: Paris, France ou Remote"
-                  className="border-[#3A7FC2] focus:border-[#0C5F95] focus:ring-[#E2F2FF] bg-white"
-                  style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '14px' }}
-                  required
+                  onChange={(value) => updateFormData('location', value)}
+                  placeholder="Select location..."
+                  required={true}
                 />
               </div>
             </div>

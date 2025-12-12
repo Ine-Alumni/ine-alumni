@@ -7,6 +7,7 @@ import { Badge } from '../ui/badge';
 import { Search, MapPin, Building, Calendar, Filter, Clock, ChevronDown, ChevronRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext.jsx';
 import authHeader from '../../services/auth-header.js';
+import { LocationSelect } from '../shared/LocationSelect';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8080/api/v1';
 
@@ -295,17 +296,12 @@ export function JobListing({ onJobSelect }) {
           </SelectContent>
         </Select>
 
-        <Select value={locationFilter} onValueChange={setLocationFilter}>
-          <SelectTrigger className="border-[#3A7FC2] focus:border-[#0C5F95] focus:ring-[#E2F2FF] bg-white">
-            <SelectValue placeholder="Localisation" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Tous les lieux</SelectItem>
-            {locations.map(location => (
-              <SelectItem key={location} value={location}>{location}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <LocationSelect
+          value={locationFilter === 'all' ? '' : locationFilter}
+          onChange={(value) => setLocationFilter(value || 'all')}
+          placeholder="Tous les lieux"
+          required={false}
+        />
 
         <Button
           variant="outline"
