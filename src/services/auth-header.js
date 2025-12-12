@@ -7,3 +7,7 @@ export default function authHeader() {
         return {};
     }
 }
+export function getUserAuthorities() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  return user?.roles || []; // Exemple : ["ROLE_USER"] ou ["ROLE_ADMIN"]
+}

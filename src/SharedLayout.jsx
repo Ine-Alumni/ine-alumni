@@ -35,7 +35,7 @@ const SharedLayout = () => {
                 <Alerts alerts={alerts}/>
             </main>
         </AlertContext.Provider>
-      )
+        )
     }
     
 export default SharedLayout;

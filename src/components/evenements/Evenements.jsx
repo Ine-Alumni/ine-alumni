@@ -2,12 +2,36 @@ import React, { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import authHeader from "../../services/auth-header";
+import { getUserAuthorities } from "../../services/auth-header";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import EventMenu from "../EventMenu/EventMenu";
+
+
+
+
 
 const Evenements = () => {
   const navigate = useNavigate();
   const API_BASE_URL =
     import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1";
     // ✅ Base URL pour les fichiers (sans /api/v1)
+
+    const [openMenuId, setOpenMenuId] = useState(null);
+    const [editingEventId, setEditingEventId] = useState(null);
+    const [eventToDelete, setEventToDelete] = useState(null);
+
+const [userRoles, setUserRoles] = useState([]);
+
+useEffect(() => {
+  const roles = getUserAuthorities();
+  setUserRoles(roles);
+}, []);
+
+const isAdminOrClub = userRoles.includes("ROLE_ADMIN") || userRoles.includes("ROLE_BUREAU_CLUB");
+
+
+
 const FILE_BASE_URL =
   import.meta.env.VITE_API_URL?.replace("/api/v1", "") ||
   "http://localhost:8080";
@@ -125,72 +149,106 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
+  
+  const eventToSend = {
+    title: newEvent.title,
+    description: newEvent.description,
+    date: newEvent.date,
+    location: newEvent.location,
+    club: newEvent.category,
+    image: newEvent.image,
+    schedule: newEvent.schedule,
+    expectations: newEvent.whatToExpect,
+  };
 
-    const eventToSend = {
-      title: newEvent.title,
-      description: newEvent.description,
-      date: newEvent.date,
-      location: newEvent.location,
-      club: newEvent.category,
-      image: newEvent.image,
-      schedule: newEvent.schedule,
-      expectations: newEvent.whatToExpect, // <-- CHANGEMENT ICI
-    };
+  try {
+  let response;
+  if (editingEventId) {
+    // Modifier l'événement existant
+    response = await fetch(`${API_BASE_URL}/events/${editingEventId}`, {
+      method: "PUT",
+      headers: { ...authHeader(), "Content-Type": "application/json" },
+      body: JSON.stringify(eventToSend),
+    });
+  } else {
+    // Ajouter un nouvel événement
+    response = await fetch(`${API_BASE_URL}/events`, {
+      method: "POST",
+      headers: { ...authHeader(), "Content-Type": "application/json" },
+      body: JSON.stringify(eventToSend),
+    });
+  }
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/events`, {
-        method: "POST",
-        headers: {
-          ...authHeader(),
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(eventToSend),
-      });
+  if (!response.ok) throw new Error("Erreur lors de la sauvegarde");
 
-      if (!response.ok) {
-        throw new Error("Erreur lors de la sauvegarde");
-      }
+  const savedEvent = (await response.json()).response;
 
-      let savedEvent = await response.json();
-      savedEvent = savedEvent.response;
-
-      setEvents((prev) => [
+  setEvents((prev) => {
+    if (editingEventId) {
+      return prev.map((e) =>
+        e.id === editingEventId
+          ? {
+              id: savedEvent.id,
+              title: newEvent.title,
+              category: newEvent.category,
+              date: newEvent.date,
+              location: newEvent.location,
+              description: newEvent.description,
+              schedule: newEvent.schedule,
+              image: `${FILE_BASE_URL}${newEvent.image}`,
+              whatToExpect: newEvent.whatToExpect,
+              status:
+                new Date(newEvent.date) < new Date() ? "Past" : "Upcoming",
+            }
+          : e
+      );
+    } else {
+      return [
         ...prev,
         {
           id: savedEvent.id,
-          title: savedEvent.titre,
-          category: savedEvent.club,
-          date: savedEvent.date,
-          location: savedEvent.lieu,
-          description: savedEvent.description,
-          status: new Date(savedEvent.date) < new Date() ? "Past" : "Upcoming",
-          progress: 0,
-          price: 0,
-          image: `${FILE_BASE_URL}${newEvent.image}`,
+          title: newEvent.title,
+          category: newEvent.category,
+          date: newEvent.date,
+          location: newEvent.location,
+          description: newEvent.description,
           schedule: newEvent.schedule,
+          image: `${FILE_BASE_URL}${newEvent.image}`,
           whatToExpect: newEvent.whatToExpect,
+          status:
+            new Date(newEvent.date) < new Date() ? "Past" : "Upcoming",
         },
-      ]);
-
-      setNewEvent({
-        title: "",
-        category: "",
-        date: "",
-        location: "",
-        description: "",
-        schedule: "",
-        image: "",
-        whatToExpect: "",
-      });
-
-      setShowAddEventModal(false);
-    } catch (error) {
-      console.error(error);
-      alert("Erreur lors de l'ajout de l'événement");
+      ];
     }
-  };
+  });
 
+  // 🟢 ✅ Notification de succès selon le cas :
+  if (editingEventId) {
+    toast.success("Événement modifié avec succès !");
+  } else {
+    toast.success("Événement ajouté avec succès !");
+  }
+
+  // Réinitialiser les champs du formulaire
+  setNewEvent({
+    title: "",
+    category: "",
+    date: "",
+    location: "",
+    description: "",
+    schedule: "",
+    image: "",
+    whatToExpect: "",
+  });
+  setEditingEventId(null);
+  setShowAddEventModal(false);
+
+} catch (error) {
+  console.error(error);
+  toast.error("Erreur lors de l'ajout ou modification de l'événement");
+}
+  };
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -360,12 +418,15 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
               </button>
 
               <div className="relative group">
-                <button
-                  onClick={() => setShowAddEventModal(true)}
-                  className="p-2 rounded-md bg-white text-[#5691cb] hover:bg-gray-100 transition-all border border-gray-300"
-                >
-                  ➕
-                </button>
+                {isAdminOrClub && (
+  <button
+    onClick={() => setShowAddEventModal(true)}
+    className="p-2 rounded-md bg-white text-[#5691cb] hover:bg-gray-100 transition-all border border-gray-300"
+  >
+    ➕
+  </button>
+)}
+
                 <div className="absolute top-full mt-1 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-10">
                   Add Event
                 </div>
@@ -428,85 +489,128 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
         )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {filteredEvents.map((event, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: index * 0.1 }}
-              className="bg-white shadow-md rounded-xl overflow-hidden"
-            >
-              <img
-                src={event.image}
-                alt={event.title}
-                className="w-full h-40 object-cover"
-              />
-              <div className="p-4">
-                <div className="flex justify-between items-center mb-3">
-                  <span className="bg-gray-100 text-[#5691cb] text-xs font-medium px-3 py-1 rounded-full">
-                    {event.category}
-                  </span>
-                  <span className="bg-[#5691cb] text-white text-xs font-medium px-3 py-1 rounded-full">
-                    {event.status}
-                  </span>
-                </div>
+  {filteredEvents.map((event, index) => (
+    <motion.div
+      key={index}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: index * 0.1 }}
+      className="bg-white shadow-md rounded-xl overflow-hidden relative"
+    >
+      {/* IMAGE + BADGE */}
+      <div className="relative w-full h-40">
+        <img
+          src={event.image}
+          alt={event.title}
+          className="w-full h-full object-cover"
+        />
+        {/* Badge */}
+        <span
+          className={`absolute top-2 right-2 px-3 py-1 text-xs font-semibold rounded-full ${
+            event.status === "Upcoming"
+              ? "bg-green-500 text-white"
+              : "bg-gray-500 text-white"
+          }`}
+        >
+          {event.status}
+        </span>
+      </div>
 
-                <h3 className="text-lg font-semibold flex items-center gap-2">
-                  {event.title}
-                  {isSoon(event.date) && (
-                    <span className="text-xs text-orange-500 font-semibold">
-                      Bientôt
-                    </span>
-                  )}
-                </h3>
-                <p className="text-sm text-gray-600 mt-1">
-                  {new Date(event.date).toLocaleString("fr-FR", {
-                    weekday: "long",
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </p>
-                <p className="text-sm text-gray-500">📍 {event.location}</p>
+      <div className="p-4">
+        {/* Catégorie + Trois points sur la même ligne */}
+        <div className="flex justify-between items-center mb-3">
+          <span className="bg-gray-100 text-[#5691cb] text-xs font-medium px-3 py-1 rounded-full">
+            {event.category}
+          </span>
 
-                <div className="w-full bg-gray-200 rounded-full h-2 mt-3">
-                  <div
-                    className="bg-[#5691cb] h-2 rounded-full"
-                    style={{ width: "100%" }}
-                  ></div>
-                </div>
+          {/* Trois points + menu */}
+          {/* Trois points + menu */}
+{isAdminOrClub && (
+  <EventMenu
+    eventId={event.id}
+    showMenu={openMenuId}
+    setShowMenu={setOpenMenuId}
+    onEdit={() => {
+      setEditingEventId(event.id);
+      setNewEvent({
+        title: event.title,
+        category: event.category,
+        date: event.date,
+        location: event.location,
+        description: event.description,
+        schedule: event.schedule,
+        image: event.image.replace(FILE_BASE_URL, ""),
+        whatToExpect: event.whatToExpect,
+      });
+      setShowAddEventModal(true);
+      setOpenMenuId(null);
+    }}
+    onDelete={() => setEventToDelete(event)}
+  />
+)}
 
-                <div className="mt-3 flex flex-col gap-2">
-                  <a
-                    href={`https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
-                      event.title
-                    )}&dates=${event.date
-                      .replace(/[-:]/g, "")
-                      .replace("T", "")}/${event.date
-                      .replace(/[-:]/g, "")
-                      .replace("T", "")}&location=${encodeURIComponent(
-                      event.location
-                    )}&sf=true&output=xml`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm text-[#5691cb] hover:underline"
-                  >
-                    Ajouter à Google Calendar
-                  </a>
 
-                  <button
-                    onClick={() => navigate(`/evenements/${event.id}`)}
-                    className="text-sm text-[#5691cb] hover:underline"
-                  >
-                    Voir plus
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          ))}
         </div>
+
+        <h3 className="text-lg font-semibold flex items-center gap-2">
+          {event.title}
+          {isSoon(event.date) && (
+            <span className="text-xs text-orange-500 font-semibold">
+              Bientôt
+            </span>
+          )}
+        </h3>
+        <p className="text-sm text-gray-600 mt-1">
+          {new Date(event.date).toLocaleString("fr-FR", {
+            weekday: "long",
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
+        </p>
+        <p className="text-sm text-gray-500">📍 {event.location}</p>
+
+        <div className="w-full bg-gray-200 rounded-full h-2 mt-3">
+          <div
+            className="bg-[#5691cb] h-2 rounded-full"
+            style={{ width: "100%" }}
+          ></div>
+        </div>
+
+        {/* Ajouter à Google Calendar et Voir plus */}
+        <div className="mt-3 flex flex-col gap-2">
+          <a
+            href={`https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
+              event.title
+            )}&dates=${event.date
+              .replace(/[-:]/g, "")
+              .replace("T", "")}/${event.date
+              .replace(/[-:]/g, "")
+              .replace("T", "")}&location=${encodeURIComponent(
+              event.location
+            )}&sf=true&output=xml`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-[#5691cb] hover:underline"
+          >
+            Ajouter à Google Calendar
+          </a>
+
+          <button
+            onClick={() => navigate(`/evenements/${event.id}`)}
+            className="text-sm text-[#5691cb] hover:underline"
+          >
+            Voir plus
+          </button>
+        </div>
+      </div>
+    </motion.div>
+  ))}
+</div>
+
+
       </div>
 
       {showAddEventModal && (
@@ -516,7 +620,10 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
             className="bg-white rounded-xl p-6 w-full max-w-3xl shadow-2xl border border-gray-200 transform transition-all duration-300 scale-95 animate-in fade-in-90 zoom-in-90 max-h-[90vh] overflow-y-auto"
           >
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">Ajouter un nouvel événement</h2>
+              <h2 className="text-xl font-bold">
+  {editingEventId ? "Modifier l'événement" : "Ajouter un nouvel événement"}
+</h2>
+
               <button
                 onClick={() => setShowAddEventModal(false)}
                 className="text-gray-500 hover:text-gray-700 text-xl"
@@ -657,18 +764,59 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
                   Annuler
                 </button>
                 <button
-                  type="submit"
-                  className="px-4 py-2 bg-[#5691cb] text-white rounded-md hover:bg-[#4578a8] transition-colors"
-                >
-                  Ajouter l'événement
-                </button>
+  type="submit"
+  className="px-4 py-2 bg-[#5691cb] text-white rounded-md hover:bg-[#4578a8] transition-colors"
+>
+  {editingEventId ? "Modifier l'événement" : "Ajouter l'événement"}
+</button>
+
               </div>
             </form>
           </div>
         </div>
       )}
+      {eventToDelete && (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-2xl text-center">
+      <h2 className="text-lg font-bold mb-4">
+        Voulez-vous vraiment supprimer "{eventToDelete.title}" ?
+      </h2>
+      <div className="flex justify-center gap-4">
+        <button
+          onClick={() => setEventToDelete(null)}
+          className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+        >
+          Annuler
+        </button>
+        <button
+          onClick={async () => {
+            try {
+              const res = await fetch(`${API_BASE_URL}/events/${eventToDelete.id}`, {
+                method: "DELETE",
+                headers: authHeader(),
+              });
+              if (!res.ok) throw new Error("Erreur lors de la suppression");
+              setEvents((prev) => prev.filter((e) => e.id !== eventToDelete.id));
+              setEventToDelete(null);
+              setOpenMenuId(null);
+            } catch (error) {
+              console.error(error);
+              alert("Impossible de supprimer l'événement");
+            }
+          }}
+          className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
+        >
+          Supprimer
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+<ToastContainer position="top-right" autoClose={3000} />
+
     </div>
   );
+  
 };
 
 export default Evenements;

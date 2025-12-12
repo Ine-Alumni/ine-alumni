@@ -122,6 +122,6 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: "Open Sans", sans-serif;
+    font-family: "Open Sans";
   }
 }

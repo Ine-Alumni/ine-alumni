@@ -126,7 +126,7 @@ const Section4 = () => {
               tabIndex={0}
               className="bg-white rounded-lg w-90 overflow-hidden shadow-[0_6px_18px_rgba(0,0,0,0.06)] 
                           hover:shadow-[0_10px_26px_rgba(0,0,0,0.08)]
-                         transition-shadow duration-300 cursor-pointer max-w-md"
+                          transition-shadow duration-300 cursor-pointer max-w-md"
             >
               <div className="flex-1 relative aspect-video bg-gray-200">
                 <img
