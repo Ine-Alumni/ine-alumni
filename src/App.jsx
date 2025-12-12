@@ -1,11 +1,10 @@
-import { Routes, Route, useNavigate, useLocation } from "react-router";
-import { useEffect } from "react";
+import { Routes, Route } from "react-router";
 import "./App.css";
 import SharedLayout from "./SharedLayout";
 import Home from "./components/home/Home";
 import Evenements from "./components/evenements/Evenements";
-import Jobs from './components/offers/Jobs'
-import Enreprises from "./components/entreprises/Entreprises";
+import Jobs from "./components/offers/Jobs";
+import Entreprises from "./components/entreprises/Entreprises";
 import Laureats from "./components/laureats/Laureats";
 import RessourcesLayout from "./components/ressources/RessourcesLayout";
 import RscTextuelles from "./components/ressources/RscTextuelles";
@@ -25,6 +24,8 @@ import Contactus from "./components/contactus/Contactus";
 import Profile from "./components/profile/Profile";
 import OutilsPratiques from "./components/ressources/OutilsPratiques";
 import RscCertification from "./components/ressources/RscCertification";
+import { LaureateDetailPage } from "./components/laureats/LaureateDetailPage";
+import { CompanyDetailPage } from "./components/entreprises/CompanyDetailPage";
 
 function App() {
   
@@ -36,8 +37,10 @@ function App() {
           {/* fully authenticated routes */}
           <Route element={<ProtectedRoute />} > 
               <Route path="jobs" element={<Jobs />} />
-              <Route path="entreprises" element={<Enreprises />} />
+              <Route path="entreprises" element={<Entreprises />} />
+              <Route path="entreprises/:id" element={<CompanyDetailPage />} />
               <Route path="laureats" element={<Laureats />} />
+              <Route path="laureats/:id" element={<LaureateDetailPage />} />
               <Route path="ressources" element={<RessourcesLayout />}>
                 <Route path="textuelles" element={<RscTextuelles />} />
                 <Route path="interactives" element={<RscInteractives />} />
