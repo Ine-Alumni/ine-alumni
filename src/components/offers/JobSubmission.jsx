@@ -6,8 +6,11 @@ import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea.jsx';
 import { Label } from '../ui/label.jsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { LocationSelect } from '../shared/LocationSelect';
 import { useLanguage } from '../contexts/LanguageContext.jsx';
 import { toast } from 'sonner';
+import axios from 'axios';
+import authHeader from '../../services/auth-header.js';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8080/api/v1';
 
@@ -54,27 +57,12 @@ export function JobSubmission() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const auth= JSON.parse(localStorage.getItem("auth"));
-    const token = auth?.token;
-
-    if (!token) {
-      toast.error('Please log in first to submit a job offer');
-      setIsSubmitting(false);
-      return;
-    }
-
     // Client-side validation
     if (!formData.title || !formData.company || !formData.location || !formData.type || !formData.description) {
       toast.error(t('validation.required'));
       setIsSubmitting(false);
       return;
     }
-    if (!token) {
-      toast.error(t('validation.required'));
-      setIsSubmitting(false);
-      return;
-    }
-
 
     // Validate custom type if "autre" is selected
     if (formData.type === 'autre' && !formData.customType.trim()) {
@@ -111,15 +99,13 @@ export function JobSubmission() {
         customType: formData.type === 'autre' ? formData.customType.trim() : null,
         duration: formData.duration?.trim() || null,
         description: formData.description,
-        link: formData.link ? formData.link.trim() : null,
+        link: formData.link?.trim() || null,
       };
 
       // Submit to API
       const res = await fetch(`${API_BASE}/offers`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`  
-         },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
 
@@ -296,14 +282,11 @@ export function JobSubmission() {
                 <Label htmlFor="location" className="text-[#053A5F] font-semibold" style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '14px' }}>
                   {t('submit.location')} <span className="text-red-500">*</span>
                 </Label>
-                <Input
-                  id="location"
+                <LocationSelect
                   value={formData.location}
-                  onChange={(e) => updateFormData('location', e.target.value)}
-                  placeholder="ex: Paris, France ou Remote"
-                  className="border-[#3A7FC2] focus:border-[#0C5F95] focus:ring-[#E2F2FF] bg-white"
-                  style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '14px' }}
-                  required
+                  onChange={(value) => updateFormData('location', value)}
+                  placeholder="Select location..."
+                  required={true}
                 />
               </div>
             </div>
