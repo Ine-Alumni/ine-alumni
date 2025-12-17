@@ -7,7 +7,6 @@ import { companiesService } from "../../services/companiesService";
 import { companyFilters } from "../../data/sampleData";
 const Entreprises = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [filters, setFilters] = useState({});
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -82,7 +81,7 @@ const Entreprises = () => {
             placeholder="Recherche sur nom, domaine, localisation..."
             onSearch={setSearchQuery}
             filters={
-              <FilterPanel filters={companyFilters} onChange={setFilters} />
+              <FilterPanel filters={companyFilters} onChange={() => {}} />
             }
           />
         </div>
