@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { FaFacebookF, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 import { MapPin, Gift, Camera, Star, Heart } from "lucide-react";
 import authHeader from "../../services/auth-header";
+import { API_BASE_URL, FILE_BASE_URL } from "@/services/api.js";
 
 const EventDetails = () => {
   const { id } = useParams();
@@ -11,12 +12,6 @@ const EventDetails = () => {
   const [liked, setLiked] = useState(false);
   const [error, setError] = useState(null);
   const calendarRef = useRef(null);
-
-  const API_BASE_URL =
-    import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1";
-  const FILE_BASE_URL =
-    import.meta.env.VITE_API_URL?.replace("/api/v1", "") ||
-    "http://localhost:8080";
 
   useEffect(() => {
     const scriptId = "cally-calendar-script";
@@ -34,18 +29,20 @@ const EventDetails = () => {
       method: "GET",
       headers: authHeader(),
     })
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch event data");
+      .then(async (res) => {
+        if (!res.ok) {
+          const errorData = await res
+            .json()
+            .catch(() => ({ message: "Failed to fetch event data" }));
+          throw new Error(errorData.message || "Failed to fetch event data");
+        }
         return res.json();
       })
       .then((data) => {
-        if (
-          data.response?.image &&
-          data.response.image.startsWith("/uploads/")
-        ) {
-          data.response.image = `${FILE_BASE_URL}${data.response.image}`;
+        if (data?.image && data.image.startsWith("/uploads/")) {
+          data.image = `${FILE_BASE_URL}${data.image}`;
         }
-        setEvent(data.response);
+        setEvent(data);
         setLoading(false);
       })
       .catch((err) => {

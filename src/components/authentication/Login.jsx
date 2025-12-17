@@ -3,8 +3,8 @@ import { Link } from "react-router";
 import { useNavigate } from "react-router";
 import { useAlert } from "../../SharedLayout.jsx";
 import { useFormik } from "formik";
-import { signinSchema } from "../../schemas/signinSchema.js";
-import { login } from "../../services/auth-service.js";
+import { signinSchema } from "@/schemas/signinSchema.js";
+import { login } from "@/services/auth-service.js";
 import { useAuth } from "./AuthenticationProvider";
 
 const Login = () => {
@@ -24,10 +24,10 @@ const Login = () => {
           setAuthIsLoading(true);
           const response = await login(values.email, values.password);
 
-          if (response.data.isSuccess) {
+          if (response.status === 200) {
             actions.resetForm();
-            setAuth(response.data.response);
-            addAlert(true, response.data.message);
+            setAuth(response.data);
+            addAlert(true, "Authenticated successfully");
             navigate("/jobs");
           } else {
             addAlert(false, "Données invalides.");

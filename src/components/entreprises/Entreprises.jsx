@@ -3,10 +3,11 @@ import { useNavigate } from "react-router";
 import { CompanyCard } from "./CompanyCard";
 import { SearchBarWithFilters } from "../layout/SearchBarWithFilters";
 import { FilterPanel } from "../common/FilterPanel";
-import { companiesService } from "../../services/companiesService";
-import { companyFilters } from "../../data/sampleData";
+import { companiesService } from "@/services/companiesService.js";
+import { companyFilters } from "@/data/sampleData.js";
 const Entreprises = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [_, setFilters] = useState({});
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -81,7 +82,7 @@ const Entreprises = () => {
             placeholder="Recherche sur nom, domaine, localisation..."
             onSearch={setSearchQuery}
             filters={
-              <FilterPanel filters={companyFilters} onChange={() => {}} />
+              <FilterPanel filters={companyFilters} onChange={setFilters} />
             }
           />
         </div>

@@ -1,5 +1,12 @@
 import axios from "axios";
 
+export const API_BASE_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1";
+// Base URL for files (without /api/v1)
+export const FILE_BASE_URL =
+  import.meta.env.VITE_API_URL?.replace("/api/v1", "") ||
+  "http://localhost:8080";
+
 // Create axios instance with base configuration
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1",
@@ -20,7 +27,7 @@ api.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // Response interceptor for error handling
@@ -33,7 +40,7 @@ api.interceptors.response.use(
       // window.location.href = "/login";
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;

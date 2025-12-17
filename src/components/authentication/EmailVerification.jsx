@@ -9,7 +9,7 @@ import { MailCheck, AlertCircle } from "lucide-react";
 import {
   verifyEmail,
   resendVerificationEmail,
-} from "../../services/auth-service";
+} from "@/services/auth-service.js";
 import { useAlert } from "../../SharedLayout";
 import { useNavigate } from "react-router";
 
@@ -24,17 +24,20 @@ const EmailVerification = () => {
       verifyEmail(otp)
         .then((response) => {
           console.log(response.data);
-          if (response.data.isSuccess) {
-            addAlert(true, response.data.message);
+          if (response.status === 200) {
+            addAlert(true, response.data || "Email verified.");
             setAuth({ ...auth, isEmailVerified: true });
             navigate("/jobs");
           } else {
             addAlert(false, "Code est invalide ou expiré.");
           }
         })
-        .catch(() => {
+        .catch((error) => {
           setOtp("");
-          addAlert(false, "Code est invalide ou expiré.");
+          addAlert(
+            false,
+            error.response?.data?.message || "Code est invalide ou expiré.",
+          );
         });
     }
   }, [otp]);
@@ -42,18 +45,25 @@ const EmailVerification = () => {
   const resendVerification = () => {
     resendVerificationEmail()
       .then((response) => {
-        if (response.data.isSuccess) {
-          addAlert(true, response.data.message);
+        if (response.status === 200) {
+          addAlert(
+            true,
+            response.data || "A verification code has been sent to your email.",
+          );
         } else {
-          addAlert(false, response.data.message);
+          addAlert(
+            false,
+            response.data || "Failed to resend verification code.",
+          );
         }
         setOtp("");
       })
-      .catch(() => {
+      .catch((error) => {
         setOtp("");
         addAlert(
           false,
-          "Une erreur est survenue. Veuillez réessayer plus tard.",
+          error.response?.data?.message ||
+            "Une erreur est survenue. Veuillez réessayer plus tard.",
         );
       });
   };

@@ -113,7 +113,8 @@ const mapApiOfferToUi = (o) => {
  * @param {Object} props
  * @param {Function} props.onJobSelect - Callback when a job is selected for detailed view
  */
-export function JobListing() {
+// eslint-disable-next-line no-unused-vars
+export function JobListing({ onJobSelect }) {
   const { t } = useLanguage();
 
   // Search and filter state
@@ -154,7 +155,7 @@ export function JobListing() {
           return;
         }
         const data = await res.json();
-        if (isMounted) setJobs((data.response || []).map(mapApiOfferToUi));
+        if (isMounted) setJobs((data || []).map(mapApiOfferToUi));
       } catch (e) {
         // Fallback to mock data on error
         if (isMounted) {

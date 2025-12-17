@@ -1,7 +1,5 @@
 import React from "react";
 import { useAuth } from "./components/authentication/AuthenticationProvider";
-import LanguageToggle from "./components/LanguageToggle";
-import DarkModeToggle from "./components/DarkModeToggle";
 import { CircleUser, LogOut } from "lucide-react";
 import {
   NavigationMenu,
@@ -15,9 +13,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuCheckboxItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Menu } from "lucide-react";
 import { Link } from "react-router";

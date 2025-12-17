@@ -11,7 +11,7 @@ const JobsContent = () => {
   const [currentView, setCurrentView] = useState("jobs");
   const [selectedJob, setSelectedJob] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
-  const { language } = useLanguage();
+  const { _, language } = useLanguage();
 
   // Handle URL parameters
   useEffect(() => {
