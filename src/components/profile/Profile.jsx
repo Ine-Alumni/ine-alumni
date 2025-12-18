@@ -11,9 +11,7 @@ import {
   Edit,
   Camera,
 } from "lucide-react";
-
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1";
+import { API_BASE_URL } from "@/services/api.js";
 
 export default function ProfilePage() {
   const [activeSection, setActiveSection] = useState("experiences");
@@ -62,7 +60,13 @@ export default function ProfilePage() {
         const data = await response.json();
         setProfile(data);
       } else {
-        console.error("Erreur lors du chargement du profil");
+        const errorData = await response
+          .json()
+          .catch(() => ({ message: "Erreur lors du chargement du profil" }));
+        console.error(
+          "Erreur lors du chargement du profil:",
+          errorData.message,
+        );
       }
     } catch (error) {
       console.error("Erreur:", error);
@@ -90,7 +94,10 @@ export default function ProfilePage() {
         alert("Profil sauvegardé avec succès !");
         setIsEditing(false);
       } else {
-        alert("Erreur lors de la sauvegarde du profil");
+        const errorData = await response
+          .json()
+          .catch(() => ({ message: "Erreur lors de la sauvegarde du profil" }));
+        alert(errorData.message || "Erreur lors de la sauvegarde du profil");
       }
     } catch (error) {
       console.error("Erreur:", error);
@@ -142,7 +149,12 @@ export default function ProfilePage() {
           if (response.ok) {
             alert("Photo de profil mise à jour !");
           } else {
-            alert("Erreur lors de la mise à jour de la photo");
+            const errorData = await response.json().catch(() => ({
+              message: "Erreur lors de la mise à jour de la photo",
+            }));
+            alert(
+              errorData.message || "Erreur lors de la mise à jour de la photo",
+            );
           }
         } catch (error) {
           console.error("Erreur:", error);

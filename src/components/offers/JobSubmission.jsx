@@ -137,8 +137,10 @@ export function JobSubmission() {
       });
 
       if (!res.ok) {
-        const text = await res.text();
-        throw new Error(text || "Failed to submit");
+        const errorData = await res
+          .json()
+          .catch(() => ({ message: "Failed to submit" }));
+        throw new Error(errorData.message || "Failed to submit");
       }
 
       toast.success(t("submit.success"));

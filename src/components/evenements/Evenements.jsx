@@ -1,17 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
-// eslint-disable-next-line no-unused-vars
-import { motion } from "framer-motion";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import authHeader from "../../services/auth-header";
+import { API_BASE_URL, FILE_BASE_URL } from "@/services/api.js";
 
 const Evenements = () => {
   const navigate = useNavigate();
-  const API_BASE_URL =
-    import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1";
-  // ✅ Base URL pour les fichiers (sans /api/v1)
-  const FILE_BASE_URL =
-    import.meta.env.VITE_API_URL?.replace("/api/v1", "") ||
-    "http://localhost:8080";
 
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("All");
@@ -110,17 +103,18 @@ const Evenements = () => {
         });
 
         if (!res.ok) {
-          throw new Error("Upload failed");
+          const errorData = await res
+            .json()
+            .catch(() => ({ message: "Upload failed" }));
+          throw new Error(errorData.message || "Upload failed");
         }
 
-        const data = await res.json();
-        const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté backend
-        // on récupère la chaîne de caractères renvoyée par le backend
+        const imageUrl = await res.json(); // File upload returns the URL directly
 
         setNewEvent((prev) => ({ ...prev, image: imageUrl }));
       } catch (error) {
         console.error(error);
-        alert("Erreur lors de l'upload de l'image");
+        alert(error.message || "Erreur lors de l'upload de l'image");
       }
     }
   };
@@ -150,11 +144,13 @@ const Evenements = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Erreur lors de la sauvegarde");
+        const errorData = await response
+          .json()
+          .catch(() => ({ message: "Erreur lors de la sauvegarde" }));
+        throw new Error(errorData.message || "Erreur lors de la sauvegarde");
       }
 
       let savedEvent = await response.json();
-      savedEvent = savedEvent.response;
 
       setEvents((prev) => [
         ...prev,
@@ -188,7 +184,7 @@ const Evenements = () => {
       setShowAddEventModal(false);
     } catch (error) {
       console.error(error);
-      alert("Erreur lors de l'ajout de l'événement");
+      alert(error.message || "Erreur lors de l'ajout de l'événement");
     }
   };
 
@@ -200,11 +196,16 @@ const Evenements = () => {
           headers: authHeader(),
         });
         if (!response.ok) {
-          throw new Error("Erreur lors du chargement des événements");
+          const errorData = await response.json().catch(() => ({
+            message: "Erreur lors du chargement des événements",
+          }));
+          throw new Error(
+            errorData.message || "Erreur lors du chargement des événements",
+          );
         }
         const data = await response.json();
 
-        const adaptedEvents = (data.response || []).map((evt) => ({
+        const adaptedEvents = (data || []).map((evt) => ({
           id: evt.id,
           title: evt.title,
           category: evt.club,

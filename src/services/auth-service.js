@@ -50,8 +50,8 @@ export const login = (email, password) => {
       },
     )
     .then((response) => {
-      if (response.data.response) {
-        localStorage.setItem("auth", JSON.stringify(response.data.response));
+      if (response.data) {
+        localStorage.setItem("auth", JSON.stringify(response.data));
       }
       return response;
     });
@@ -76,7 +76,7 @@ export const getAuthenticationState = async () => {
     });
 
     const token = auth.token;
-    return { ...response.data.response, token };
+    return { ...response.data, token };
   } catch {
     localStorage.removeItem("auth");
     return null;

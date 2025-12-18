@@ -13,7 +13,7 @@ export const laureatsService = {
     const response = await api.get("/laureats", {
       params: { page, size, sortBy, sortDir },
     });
-    return response.data.response;
+    return response.data;
   },
 
   // Search laureates
@@ -22,7 +22,7 @@ export const laureatsService = {
     const response = await api.get("/laureats/search", {
       params: { q: searchTerm, page, size },
     });
-    return response.data.response;
+    return response.data;
   },
 
   // Filter laureates with advanced criteria
@@ -31,12 +31,12 @@ export const laureatsService = {
     const response = await api.post("/laureats/filter", filterData, {
       params: { page, size },
     });
-    return response.data.response;
+    return response.data;
   },
 
   // Get laureate details by ID
   getLaureateById: async (id) => {
     const response = await api.get(`/laureats/${id}`);
-    return response.data.response;
+    return response.data;
   },
 };

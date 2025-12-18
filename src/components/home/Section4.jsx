@@ -11,31 +11,36 @@ import {
   Heart,
 } from "lucide-react";
 import authHeader from "../../services/auth-header";
-
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1";
+import { API_BASE_URL } from "@/services/api.js";
 
 const Section4 = () => {
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [_, setError] = useState(null);
 
   useEffect(() => {
     const loadEvents = async () => {
       try {
         setLoading(true);
+        setError(null);
 
         const response = await fetch(`${API_BASE_URL}/events/public`, {
           method: "GET",
           headers: authHeader(),
         });
         if (!response.ok) {
-          throw new Error(`Failed to fetch events: ${response.status}`);
+          const errorData = await response.json().catch(() => ({
+            message: `Failed to fetch events: ${response.status}`,
+          }));
+          throw new Error(
+            errorData.message || `Failed to fetch events: ${response.status}`,
+          );
         }
 
         const data = await response.json();
 
-        const processedEvents = data.response.map((event) => ({
+        const processedEvents = data.map((event) => ({
           ...event,
           image:
             event.image && event.image.startsWith("/uploads")
@@ -45,6 +50,9 @@ const Section4 = () => {
 
         setEvents(processedEvents);
       } catch (err) {
+        setError(
+          err.message || "Failed to load events. Please try again later.",
+        );
         console.error("Error loading events:", err);
       } finally {
         setLoading(false);
