@@ -1,16 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import authHeader from "../../services/auth-header";
+import { API_BASE_URL, FILE_BASE_URL } from "@/services/api.js";
 
 const Evenements = () => {
   const navigate = useNavigate();
-  const API_BASE_URL =
-    import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1";
-    // ✅ Base URL pour les fichiers (sans /api/v1)
-const FILE_BASE_URL =
-  import.meta.env.VITE_API_URL?.replace("/api/v1", "") ||
-  "http://localhost:8080";
 
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("All");
@@ -103,23 +97,24 @@ const FILE_BASE_URL =
       formData.append("file", file);
 
       try {
-            const res = await fetch(`${API_BASE_URL}/files/upload`, {
+        const res = await fetch(`${API_BASE_URL}/files/upload`, {
           method: "POST",
           body: formData,
         });
 
         if (!res.ok) {
-          throw new Error("Upload failed");
+          const errorData = await res
+            .json()
+            .catch(() => ({ message: "Upload failed" }));
+          throw new Error(errorData.message || "Upload failed");
         }
 
-        const data = await res.json();
-const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté backend
-// on récupère la chaîne de caractères renvoyée par le backend
+        const imageUrl = await res.json(); // File upload returns the URL directly
 
         setNewEvent((prev) => ({ ...prev, image: imageUrl }));
       } catch (error) {
         console.error(error);
-        alert("Erreur lors de l'upload de l'image");
+        alert(error.message || "Erreur lors de l'upload de l'image");
       }
     }
   };
@@ -149,11 +144,13 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
       });
 
       if (!response.ok) {
-        throw new Error("Erreur lors de la sauvegarde");
+        const errorData = await response
+          .json()
+          .catch(() => ({ message: "Erreur lors de la sauvegarde" }));
+        throw new Error(errorData.message || "Erreur lors de la sauvegarde");
       }
 
       let savedEvent = await response.json();
-      savedEvent = savedEvent.response;
 
       setEvents((prev) => [
         ...prev,
@@ -187,20 +184,28 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
       setShowAddEventModal(false);
     } catch (error) {
       console.error(error);
-      alert("Erreur lors de l'ajout de l'événement");
+      alert(error.message || "Erreur lors de l'ajout de l'événement");
     }
   };
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/events/public`, { method: "GET", headers: authHeader()});
+        const response = await fetch(`${API_BASE_URL}/events/public`, {
+          method: "GET",
+          headers: authHeader(),
+        });
         if (!response.ok) {
-          throw new Error("Erreur lors du chargement des événements");
+          const errorData = await response.json().catch(() => ({
+            message: "Erreur lors du chargement des événements",
+          }));
+          throw new Error(
+            errorData.message || "Erreur lors du chargement des événements",
+          );
         }
         const data = await response.json();
 
-        const adaptedEvents = (data.response || []).map((evt) => ({
+        const adaptedEvents = (data || []).map((evt) => ({
           id: evt.id,
           title: evt.title,
           category: evt.club,
@@ -211,8 +216,8 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
           progress: 0,
           price: 0,
           image: evt.image
-  ? `${FILE_BASE_URL}${evt.image.startsWith("/") ? evt.image : "/" + evt.image}`
-  : "",
+            ? `${FILE_BASE_URL}${evt.image.startsWith("/") ? evt.image : "/" + evt.image}`
+            : "",
 
           schedule: "",
           whatToExpect: evt.expectations || "",
@@ -284,7 +289,7 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
       "selectedCalendarDate:",
       selectedCalendarDate,
       "match:",
-      matchesCalendarDate
+      matchesCalendarDate,
     );
 
     return (
@@ -481,13 +486,13 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
                 <div className="mt-3 flex flex-col gap-2">
                   <a
                     href={`https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
-                      event.title
+                      event.title,
                     )}&dates=${event.date
                       .replace(/[-:]/g, "")
                       .replace("T", "")}/${event.date
                       .replace(/[-:]/g, "")
                       .replace("T", "")}&location=${encodeURIComponent(
-                      event.location
+                      event.location,
                     )}&sf=true&output=xml`}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -627,7 +632,7 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
                     Aperçu de l'image
                   </label>
                   <img
-                    src={`${FILE_BASE_URL}${newEvent.image}`}   // ✅ Bonne URL
+                    src={`${FILE_BASE_URL}${newEvent.image}`} // ✅ Bonne URL
                     alt="Aperçu"
                     className="w-full max-h-64 object-contain border border-gray-300 rounded-md"
                   />

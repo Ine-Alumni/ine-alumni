@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1";
 
@@ -31,7 +30,12 @@ const AboutUs = () => {
         setStatus("✅ Message envoyé avec succès !");
         setFormData({ nom: "", prenom: "", email: "", objet: "", message: "" });
       } else {
-        setStatus("❌ Erreur lors de l'envoi du message.");
+        const errorData = await response
+          .json()
+          .catch(() => ({ message: "Erreur lors de l'envoi du message." }));
+        setStatus(
+          `❌ ${errorData.message || "Erreur lors de l'envoi du message."}`,
+        );
       }
     } catch (error) {
       console.error(error);

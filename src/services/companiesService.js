@@ -8,7 +8,7 @@ export const companiesService = {
     const response = await api.get("/companies", {
       params: { page, size, sortBy, sortDir },
     });
-    return response.data.response;
+    return response.data;
   },
 
   // Search companies
@@ -17,13 +17,13 @@ export const companiesService = {
     const response = await api.get("/companies/search", {
       params: { q: searchTerm, page, size },
     });
-    return response.data.response;
+    return response.data;
   },
 
   // Get company details by ID
   getCompanyById: async (id) => {
     const response = await api.get(`/companies/${id}`);
-    return response.data.response;
+    return response.data;
   },
 
   // Get company alumni
@@ -32,7 +32,7 @@ export const companiesService = {
     const response = await api.get(`/companies/${id}/alumni`, {
       params: { page, size },
     });
-    return response.data.response;
+    return response.data;
   },
 
   // Get company reviews
@@ -41,6 +41,6 @@ export const companiesService = {
     const response = await api.get(`/companies/${id}/reviews`, {
       params: { page, size },
     });
-    return response.data.response;
+    return response.data;
   },
 };

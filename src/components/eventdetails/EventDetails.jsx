@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { FaFacebookF, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 import { MapPin, Gift, Camera, Star, Heart } from "lucide-react";
 import authHeader from "../../services/auth-header";
+import { API_BASE_URL, FILE_BASE_URL } from "@/services/api.js";
 
 const EventDetails = () => {
   const { id } = useParams();
@@ -11,12 +12,6 @@ const EventDetails = () => {
   const [liked, setLiked] = useState(false);
   const [error, setError] = useState(null);
   const calendarRef = useRef(null);
-
-  const API_BASE_URL =
-    import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1";
-  const FILE_BASE_URL =
-    import.meta.env.VITE_API_URL?.replace("/api/v1", "") ||
-    "http://localhost:8080";
 
   useEffect(() => {
     const scriptId = "cally-calendar-script";
@@ -34,15 +29,20 @@ const EventDetails = () => {
       method: "GET",
       headers: authHeader(),
     })
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch event data");
+      .then(async (res) => {
+        if (!res.ok) {
+          const errorData = await res
+            .json()
+            .catch(() => ({ message: "Failed to fetch event data" }));
+          throw new Error(errorData.message || "Failed to fetch event data");
+        }
         return res.json();
       })
       .then((data) => {
-        if (data.response?.image && data.response.image.startsWith("/uploads/")) {
-          data.response.image = `${FILE_BASE_URL}${data.response.image}`;
+        if (data?.image && data.image.startsWith("/uploads/")) {
+          data.image = `${FILE_BASE_URL}${data.image}`;
         }
-        setEvent(data.response);
+        setEvent(data);
         setLoading(false);
       })
       .catch((err) => {
@@ -124,12 +124,11 @@ const EventDetails = () => {
   if (loading) return <div className="p-6 text-center">Loading event...</div>;
   if (error) return <div className="p-6 text-center text-red-500">{error}</div>;
 
-  const { titre, date, description, image, lieu, schedule, expectations } = event;
+  const { titre, date, description, image, lieu, expectations } = event;
 
   return (
     <div className="flex h-screen font-sans bg-gray-100">
       <main className="flex-1 overflow-y-auto p-6">
-        
         <div className="relative">
           <img
             src={image || "/default-banner.jpg"}
@@ -160,7 +159,7 @@ const EventDetails = () => {
               {lieu || "INPT, Rabat"}
               <a
                 href={`https://maps.google.com?q=${encodeURIComponent(
-                  lieu || "INPT Rabat"
+                  lieu || "INPT Rabat",
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -172,13 +171,31 @@ const EventDetails = () => {
           </div>
 
           <div className="flex items-center gap-4 text-gray-600 text-xl">
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600" aria-label="Facebook">
+            <a
+              href="https://facebook.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-blue-600"
+              aria-label="Facebook"
+            >
               <FaFacebookF />
             </a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-pink-500" aria-label="Instagram">
+            <a
+              href="https://instagram.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-pink-500"
+              aria-label="Instagram"
+            >
               <FaInstagram />
             </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-blue-700" aria-label="LinkedIn">
+            <a
+              href="https://linkedin.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-blue-700"
+              aria-label="LinkedIn"
+            >
               <FaLinkedinIn />
             </a>
             <button
@@ -228,52 +245,63 @@ const EventDetails = () => {
       </main>
 
       <aside className="w-96 bg-transparent p-4 flex flex-col gap-4">
+        {/* Bloc: Organisé par */}
+        <div className="bg-white shadow-sm rounded-xl p-4">
+          <h3 className="text-sm font-semibold text-gray-500 mb-1">
+            Organiser par
+          </h3>
+          <p className="text-lg font-semibold text-[#5691cb]">CAS INPT</p>
+        </div>
 
-  {/* Bloc: Organisé par */}
-  <div className="bg-white shadow-sm rounded-xl p-4">
-    <h3 className="text-sm font-semibold text-gray-500 mb-1">Organiser par</h3>
-    <p className="text-lg font-semibold text-[#5691cb]">CAS INPT</p>
-  </div>
+        {/* Bloc: Calendrier */}
+        <div className="bg-white shadow-sm rounded-xl p-4">
+          <calendar-date
+            ref={calendarRef}
+            className="bg-white p-4 rounded-xl border border-gray-200 w-full relative"
+          >
+            <div
+              slot="previous"
+              className="absolute left-2 top-3 cursor-pointer"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                className="w-5 h-5 text-gray-700 hover:text-[#5691cb]"
+              >
+                <path fill="currentColor" d="M15.75 19.5 8.25 12l7.5-7.5" />
+              </svg>
+            </div>
+            <div slot="next" className="absolute right-2 top-3 cursor-pointer">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                className="w-5 h-5 text-gray-700 hover:text-[#5691cb]"
+              >
+                <path fill="currentColor" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+              </svg>
+            </div>
+            <calendar-month></calendar-month>
+          </calendar-date>
+        </div>
 
-  {/* Bloc: Calendrier */}
-  <div className="bg-white shadow-sm rounded-xl p-4">
-    <calendar-date
-      ref={calendarRef}
-      className="bg-white p-4 rounded-xl border border-gray-200 w-full relative"
-    >
-      <div slot="previous" className="absolute left-2 top-3 cursor-pointer">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-             className="w-5 h-5 text-gray-700 hover:text-[#5691cb]">
-          <path fill="currentColor" d="M15.75 19.5 8.25 12l7.5-7.5" />
-        </svg>
-      </div>
-      <div slot="next" className="absolute right-2 top-3 cursor-pointer">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-             className="w-5 h-5 text-gray-700 hover:text-[#5691cb]">
-          <path fill="currentColor" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-        </svg>
-      </div>
-      <calendar-month></calendar-month>
-    </calendar-date>
-  </div>
+        {/* Bloc: Plan */}
+        <div className="bg-white shadow-sm rounded-xl p-4">
+          <h3 className="text-sm font-semibold text-gray-500 mb-1">Plan</h3>
+          <p className="text-gray-700">{lieu || "Atlas, Morocco"}</p>
+        </div>
 
-  {/* Bloc: Plan */}
-  <div className="bg-white shadow-sm rounded-xl p-4">
-    <h3 className="text-sm font-semibold text-gray-500 mb-1">Plan</h3>
-    <p className="text-gray-700">{lieu || "Atlas, Morocco"}</p>
-  </div>
-
-  {/* Bloc: Similaires */}
-  <div className="bg-white shadow-sm rounded-xl p-4">
-    <h3 className="text-sm font-semibold text-gray-500 mb-2">Similaires</h3>
-    <ul className="list-disc list-inside text-[#5691cb] space-y-1 text-sm">
-      <li>Iftar Salim</li>
-      <li>Entrepreneurial Summit</li>
-      <li>Sortie terrain</li>
-    </ul>
-  </div>
-</aside>
-
+        {/* Bloc: Similaires */}
+        <div className="bg-white shadow-sm rounded-xl p-4">
+          <h3 className="text-sm font-semibold text-gray-500 mb-2">
+            Similaires
+          </h3>
+          <ul className="list-disc list-inside text-[#5691cb] space-y-1 text-sm">
+            <li>Iftar Salim</li>
+            <li>Entrepreneurial Summit</li>
+            <li>Sortie terrain</li>
+          </ul>
+        </div>
+      </aside>
     </div>
   );
 };
