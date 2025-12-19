@@ -26,7 +26,6 @@ dist-ssr
 # Maven / Spring Boot
 # See https://github.com/github/gitignore/blob/main/MAVEN.gitignore for more
 target/
-!.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 

@@ -59,7 +59,7 @@ public class EventController {
 	}
 
 	@DeleteMapping("/{id}")
-  // TODO: reactivate when implementing roles
+	// TODO: reactivate when implementing roles
 	// @PreAuthorize("hasAuthority('events:delete')")
 	public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
 		boolean deleted = eventService.deleteEvent(id);

@@ -2,7 +2,7 @@ Follow the steps below to setup and run the project on your local machine.
 
 # Project setup
 
-- Ensure you have node and npm installed, if not, see: https://nodejs.org/en/download
+- Ensure youdd have node and npm installed, if not, see: https://nodejs.org/en/download
 
 ### Clone the frontend repo
 1. Ensure you have `git` installed and run from your terminal:
