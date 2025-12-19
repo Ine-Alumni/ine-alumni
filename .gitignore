@@ -24,6 +24,48 @@ dist-ssr
 *.sw?
 
 # Maven / Spring Boot
-server/target/
-server/mvnw.cmd
-server/.mvn/wrapper/maven-wrapper.jar
+# See https://github.com/github/gitignore/blob/main/MAVEN.gitignore for more
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS (Spring Tool Suite) ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea/workspace.xml
+!.idea/libraries
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/settings.json
+.vscode/tasks.json
+.vscode/launch.json
+.vscode/extensions.json
+.vscode/**/*.code-snippets
+
+# Local env file containing secrets; DO NOT commit - use .env-template instead
+.env
+server/.env
+
+# Temporary files
+uploads/
+*.tmp
+*.bak
+
+# Logs
+*.log
+server/logs/
