@@ -1,8 +1,0 @@
-package com.ine.backend.entities;
-
-/**
- * Skill categories enum
- */
-public enum SkillCategory {
-	PROGRAMMING_LANGUAGES, FRAMEWORKS_LIBRARIES, DATABASES, CLOUD_PLATFORMS, TOOLS_SOFTWARE, METHODOLOGIES, SOFT_SKILLS, LANGUAGES, CERTIFICATIONS, OTHER
-}
