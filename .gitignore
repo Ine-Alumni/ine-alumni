@@ -57,7 +57,7 @@ target/
 .vscode/**/*.code-snippets
 
 # Local env file containing secrets; DO NOT commit - use .env-template instead
-.env
+client/.env
 server/.env
 
 # Temporary files

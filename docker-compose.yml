@@ -1,9 +1,9 @@
-version: '3.8'
+version: "3.8"
 
 services:
   postgres:
-    container_name: postgres
     image: postgres:15-alpine
+    container_name: postgres
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-hatim}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hatim}
@@ -22,27 +22,9 @@ services:
       timeout: 5s
       retries: 5
 
-  pgadmin:
-    container_name: pgadmin
-    image: dpage/pgadmin4:latest
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin@pgadmin.org}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
-    volumes:
-      - ine-pgadmin:/var/lib/pgadmin
-    networks:
-      - ine-net
-    ports:
-      - "${PGADMIN_PORT:-5050}:80"
-    restart: unless-stopped
-    depends_on:
-      postgres:
-        condition: service_healthy
-
   redis:
-    container_name: redis
     image: redis:8.2.0-alpine
+    container_name: redis
     ports:
       - "${REDIS_PORT:-6379}:6379"
     volumes:
@@ -56,9 +38,9 @@ services:
       timeout: 5s
       retries: 5
 
-  backend:
+  server:
     build:
-      context: .
+      context: ./server
       dockerfile: Dockerfile
     container_name: ine-alumni-backend
     environment:
@@ -75,7 +57,7 @@ services:
       SPRING_MAIL_SMTP_STARTTLS_ENABLE: ${SPRING_MAIL_SMTP_STARTTLS_ENABLE:-true}
       SPRING_DATA_REDIS_HOST: ${SPRING_DATA_REDIS_HOST:-redis}
       SPRING_DATA_REDIS_PORT: ${SPRING_DATA_REDIS_PORT:-6379}
-      CONTACT_TO: ${CONTACT_TO:-inealumni.i@gmail.com}  # ✅ AJOUTÉ ICI
+      CONTACT_TO: ${CONTACT_TO:-inealumni.i@gmail.com}
     ports:
       - "${BACKEND_PORT:-8080}:8080"
     networks:
@@ -87,6 +69,24 @@ services:
       redis:
         condition: service_healthy
 
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: ine-alumni-client
+    environment:
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:8080/api/v1}
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    ports:
+      - "${FRONTEND_PORT:-5173}:5173"
+    networks:
+      - ine-net
+    restart: unless-stopped
+    depends_on:
+      - server
+
 networks:
   ine-net:
     driver: bridge
@@ -95,7 +95,5 @@ networks:
 volumes:
   ine-postgres:
     name: ine-postgres
-  ine-pgadmin:
-    name: ine-pgadmin
   ine-redis:
     name: ine-redis
