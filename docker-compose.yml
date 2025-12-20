@@ -12,7 +12,7 @@ services:
     volumes:
       - ine-postgres:/var/lib/postgres/data
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - "5432"
     networks:
       - ine-net
     restart: unless-stopped
@@ -53,8 +53,6 @@ services:
       SPRING_MAIL_PORT: ${SPRING_MAIL_PORT:-587}
       SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME:-your-email@gmail.com}
       SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD:-your-app-password}
-      SPRING_MAIL_SMTP_AUTH: ${SPRING_MAIL_SMTP_AUTH:-true}
-      SPRING_MAIL_SMTP_STARTTLS_ENABLE: ${SPRING_MAIL_SMTP_STARTTLS_ENABLE:-true}
       SPRING_DATA_REDIS_HOST: ${SPRING_DATA_REDIS_HOST:-redis}
       SPRING_DATA_REDIS_PORT: ${SPRING_DATA_REDIS_PORT:-6379}
       CONTACT_TO: ${CONTACT_TO:-inealumni.i@gmail.com}
