@@ -1,17 +1,34 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { FaFacebookF, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 import { MapPin, Gift, Camera, Star, Heart } from "lucide-react";
-import authHeader from "../../services/auth-header";
-import { API_BASE_URL, FILE_BASE_URL } from "@/services/api.js";
+import { useEvent } from "@/lib/react-query/hooks/useEvents";
+import { getImageUrl } from "@/lib/imageUtils";
 
 const EventDetails = () => {
   const { id } = useParams();
-  const [event, setEvent] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [liked, setLiked] = useState(false);
-  const [error, setError] = useState(null);
   const calendarRef = useRef(null);
+
+  // Use React Query hook for data fetching
+  const {
+    data: eventData,
+    isLoading: loading,
+    error: queryError,
+  } = useEvent(id);
+
+  // Adapt event data format - wrapped in useMemo to stabilize reference
+  const event = useMemo(() => {
+    if (!eventData) return null;
+    return {
+      ...eventData,
+      titre: eventData.title || eventData.titre,
+      lieu: eventData.location || eventData.lieu,
+      image: getImageUrl(eventData.image),
+    };
+  }, [eventData]);
+
+  const error = queryError ? "Failed to fetch event data" : null;
 
   useEffect(() => {
     const scriptId = "cally-calendar-script";
@@ -23,33 +40,6 @@ const EventDetails = () => {
       document.body.appendChild(script);
     }
   }, []);
-
-  useEffect(() => {
-    fetch(`${API_BASE_URL}/events/public/${id}`, {
-      method: "GET",
-      headers: authHeader(),
-    })
-      .then(async (res) => {
-        if (!res.ok) {
-          const errorData = await res
-            .json()
-            .catch(() => ({ message: "Failed to fetch event data" }));
-          throw new Error(errorData.message || "Failed to fetch event data");
-        }
-        return res.json();
-      })
-      .then((data) => {
-        if (data?.image && data.image.startsWith("/uploads/")) {
-          data.image = `${FILE_BASE_URL}${data.image}`;
-        }
-        setEvent(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
-  }, [id]);
 
   useEffect(() => {
     const applyCallyStyles = () => {
@@ -122,7 +112,12 @@ const EventDetails = () => {
   }, [event]);
 
   if (loading) return <div className="p-6 text-center">Loading event...</div>;
-  if (error) return <div className="p-6 text-center text-red-500">{error}</div>;
+  if (error || !event)
+    return (
+      <div className="p-6 text-center text-red-500">
+        {error || "Event not found"}
+      </div>
+    );
 
   const { titre, date, description, image, lieu, expectations } = event;
 

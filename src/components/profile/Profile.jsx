@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Github,
   Linkedin,
@@ -11,13 +11,39 @@ import {
   Edit,
   Camera,
 } from "lucide-react";
-import { API_BASE_URL } from "@/services/api.js";
+import { useProfile } from "@/lib/react-query/hooks/useProfile";
+import {
+  useUpdateProfile,
+  useUploadAvatar,
+} from "@/lib/react-query/hooks/useProfileMutations";
 
 export default function ProfilePage() {
   const [activeSection, setActiveSection] = useState("experiences");
   const [isEditing, setIsEditing] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
+  // Use React Query hooks for data fetching and mutations
+  const { data: profileData, isLoading: isLoadingProfile } = useProfile();
+  const { mutateAsync: updateProfile, isPending: isUpdatingProfile } =
+    useUpdateProfile({
+      onSuccess: () => {
+        alert("Profil sauvegardé avec succès !");
+        setIsEditing(false);
+      },
+      onError: (error) => {
+        alert(error.message || "Erreur lors de la sauvegarde du profil");
+      },
+    });
+  const { mutateAsync: uploadAvatar, isPending: isUploadingAvatar } =
+    useUploadAvatar({
+      onSuccess: () => {
+        alert("Photo de profil mise à jour !");
+      },
+      onError: (error) => {
+        alert(error.message || "Erreur lors de la mise à jour de la photo");
+      },
+    });
+
+  // Initialize profile state from API data
   const [profile, setProfile] = useState({
     name: "",
     title: "",
@@ -35,6 +61,34 @@ export default function ProfilePage() {
     formation: [],
   });
 
+  // Update profile state when data is loaded
+  React.useEffect(() => {
+    if (profileData) {
+      setProfile({
+        name: profileData.name || profileData.fullName || "",
+        title: profileData.title || profileData.currentPosition || "",
+        promo:
+          profileData.promo || profileData.graduationYear?.toString() || "",
+        avatar: profileData.avatar || profileData.profilePicture || null,
+        about: profileData.about || profileData.bio || "",
+        socialLinks: {
+          github: profileData.socialLinks?.github || "",
+          linkedin: profileData.socialLinks?.linkedin || "",
+          whatsapp: profileData.socialLinks?.whatsapp || "",
+          email: profileData.socialLinks?.email || profileData.email || "",
+        },
+        competences:
+          profileData.competences ||
+          profileData.skills?.map((s) => s.name || s) ||
+          [],
+        experiences: profileData.experiences || [],
+        formation: profileData.formation || profileData.educations || [],
+      });
+    }
+  }, [profileData]);
+
+  const isLoading = isLoadingProfile || isUpdatingProfile || isUploadingAvatar;
+
   const menuItems = [
     { id: "about", label: "About", icon: Info },
     { id: "competences", label: "Competences", icon: Award },
@@ -42,69 +96,12 @@ export default function ProfilePage() {
     { id: "formation", label: "Formation", icon: GraduationCap },
   ];
 
-  useEffect(() => {
-    fetchProfile();
-  }, []);
-
-  const fetchProfile = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch(`${API_BASE_URL}/profile`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setProfile(data);
-      } else {
-        const errorData = await response
-          .json()
-          .catch(() => ({ message: "Erreur lors du chargement du profil" }));
-        console.error(
-          "Erreur lors du chargement du profil:",
-          errorData.message,
-        );
-      }
-    } catch (error) {
-      console.error("Erreur:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const handleEdit = () => {
     setIsEditing(!isEditing);
   };
 
   const handleSave = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch(`${API_BASE_URL}/profile`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(profile),
-      });
-
-      if (response.ok) {
-        alert("Profil sauvegardé avec succès !");
-        setIsEditing(false);
-      } else {
-        const errorData = await response
-          .json()
-          .catch(() => ({ message: "Erreur lors de la sauvegarde du profil" }));
-        alert(errorData.message || "Erreur lors de la sauvegarde du profil");
-      }
-    } catch (error) {
-      console.error("Erreur:", error);
-      alert("Erreur de connexion au serveur");
-    } finally {
-      setIsLoading(false);
-    }
+    await updateProfile(profile);
   };
 
   const handleInputChange = (field, value) => {
@@ -137,29 +134,7 @@ export default function ProfilePage() {
 
         handleInputChange("avatar", avatarData);
 
-        try {
-          const response = await fetch(`${API_BASE_URL}/profile/avatar`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ avatar: avatarData }),
-          });
-
-          if (response.ok) {
-            alert("Photo de profil mise à jour !");
-          } else {
-            const errorData = await response.json().catch(() => ({
-              message: "Erreur lors de la mise à jour de la photo",
-            }));
-            alert(
-              errorData.message || "Erreur lors de la mise à jour de la photo",
-            );
-          }
-        } catch (error) {
-          console.error("Erreur:", error);
-          alert("Erreur de connexion au serveur");
-        }
+        await uploadAvatar({ avatar: avatarData });
       };
       reader.readAsDataURL(file);
     }

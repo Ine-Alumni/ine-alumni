@@ -4,13 +4,24 @@ import { useNavigate } from "react-router";
 import { useAlert } from "../../SharedLayout.jsx";
 import { useFormik } from "formik";
 import { signinSchema } from "@/schemas/signinSchema.js";
-import { login } from "@/services/auth-service.js";
+import { useLogin } from "@/lib/react-query/hooks/useAuthMutations";
 import { useAuth } from "./AuthenticationProvider";
 
 const Login = () => {
   const navigate = useNavigate();
   const { addAlert } = useAlert();
   const { setAuth, setAuthIsLoading } = useAuth();
+
+  const { mutateAsync: loginMutation, isPending: isLoggingIn } = useLogin({
+    onSuccess: (response) => {
+      setAuth(response.data);
+      addAlert(true, "Authenticated successfully");
+      navigate("/jobs");
+    },
+    onError: () => {
+      addAlert(false, "Données invalides.");
+    },
+  });
 
   const { values, errors, touched, isSubmitting, handleChange, handleSubmit } =
     useFormik({
@@ -22,19 +33,13 @@ const Login = () => {
       onSubmit: async (values, actions) => {
         try {
           setAuthIsLoading(true);
-          const response = await login(values.email, values.password);
-
-          if (response.status === 200) {
-            actions.resetForm();
-            setAuth(response.data);
-            addAlert(true, "Authenticated successfully");
-            navigate("/jobs");
-          } else {
-            addAlert(false, "Données invalides.");
-          }
+          await loginMutation({
+            email: values.email,
+            password: values.password,
+          });
+          actions.resetForm();
         } catch {
           actions.resetForm();
-          addAlert(false, "Données invalides.");
         } finally {
           setAuthIsLoading(false);
         }
@@ -114,11 +119,11 @@ const Login = () => {
                 </a>
               </div>
               <button
-                disabled={isSubmitting === true}
+                disabled={isSubmitting === true || isLoggingIn}
                 type="submit"
                 className="w-full text-white bg-[#5691cb] hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-bold rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 cursor-pointer hover:bg-[#0c5f95]"
               >
-                Se connecter
+                {isLoggingIn ? "Connexion..." : "Se connecter"}
               </button>
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                 Vous n'avez pas encore de compte ?{" "}

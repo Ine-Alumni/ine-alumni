@@ -3,18 +3,25 @@ import { LaureateDetailsHeader } from "@/components/laureats/LaureateDetailsHead
 import { Timeline } from "@/components/common/Timeline";
 import { SkillsList } from "@/components/laureats/SkillsList";
 import { InfoSection } from "@/components/common/InfoSection";
-import {
-  sampleLaureates,
-  sampleExperiences,
-  sampleSkills,
-  sampleEducation,
-} from "@/data/sampleData";
+import { useLaureate } from "@/lib/react-query/hooks/useLaureates";
 
 export function LaureateDetailPage() {
   const { id } = useParams();
-  const laureate = sampleLaureates.find((l) => l.id === id);
+  const { data: laureate, isLoading, error } = useLaureate(id);
 
-  if (!laureate) {
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-center items-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !laureate) {
     return (
       <div className="min-h-screen bg-gray-50 py-8 text-center">
         <h1 className="text-2xl font-bold">Lauréat non trouvé</h1>
@@ -25,28 +32,29 @@ export function LaureateDetailPage() {
   const aboutContent = (
     <div className="space-y-4">
       <p className="text-gray-700 leading-relaxed">
-        Ingénieur logiciel avec plus de 3 ans d'expérience dans le développement
-        d'applications web modernes. Spécialisé dans les technologies React et
-        Node.js, avec une passion pour l'innovation et les solutions techniques
-        créatives.
-      </p>
-      <p className="text-gray-700 leading-relaxed">
-        Diplômé de l'INPT en 2021, j'ai évolué rapidement dans le domaine du
-        développement logiciel et j'encadre maintenant des équipes junior.
+        {laureate.bio || "Aucune description disponible."}
       </p>
     </div>
+  );
+
+  // Map API data to component props
+  const experiences = laureate.experiences || [];
+  const skills = laureate.skills || [];
+  const educations = laureate.educations || [];
+  const linkedinLink = laureate.externalLinks?.find(
+    (link) => link.linkType === "LINKEDIN",
   );
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
         <LaureateDetailsHeader
-          name={laureate.name}
-          photoUrl={laureate.photoUrl}
-          title={laureate.title}
+          name={laureate.fullName}
+          photoUrl={laureate.profilePicture}
+          title={laureate.currentPosition}
           major={laureate.major}
-          company={laureate.company}
-          location={laureate.location}
+          company={laureate.currentCompany?.name}
+          location={`${laureate.city}, ${laureate.country}`}
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -57,59 +65,74 @@ export function LaureateDetailPage() {
               className="bg-white p-6 rounded-lg shadow-sm border"
             />
 
-            <div className="bg-white p-6 rounded-lg shadow-sm border">
-              <h2 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2 mb-4">
-                Formation
-              </h2>
-              <Timeline
-                items={sampleEducation.map((edu) => ({
-                  ...edu,
-                  title: edu.degree,
-                  subtitle: edu.institution,
-                }))}
-              />
-            </div>
+            {educations.length > 0 && (
+              <div className="bg-white p-6 rounded-lg shadow-sm border">
+                <h2 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2 mb-4">
+                  Formation
+                </h2>
+                <Timeline
+                  items={educations.map((edu) => ({
+                    title: edu.degree || edu.title,
+                    subtitle: edu.institution,
+                    period:
+                      edu.period ||
+                      `${edu.startYear} - ${edu.endYear || "Present"}`,
+                  }))}
+                />
+              </div>
+            )}
 
-            <div className="bg-white p-6 rounded-lg shadow-sm border">
-              <h2 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2 mb-4">
-                Expériences
-              </h2>
-              <Timeline
-                items={sampleExperiences.map((exp) => ({
-                  ...exp,
-                  subtitle: exp.company,
-                }))}
-              />
-            </div>
+            {experiences.length > 0 && (
+              <div className="bg-white p-6 rounded-lg shadow-sm border">
+                <h2 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2 mb-4">
+                  Expériences
+                </h2>
+                <Timeline
+                  items={experiences.map((exp) => ({
+                    title: exp.title,
+                    subtitle: exp.company,
+                    period:
+                      exp.period ||
+                      `${exp.startDate} - ${exp.endDate || "Present"}`,
+                  }))}
+                />
+              </div>
+            )}
           </div>
 
           <div className="space-y-6">
-            <div className="bg-white p-6 rounded-lg shadow-sm border">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Compétences
-              </h3>
-              <SkillsList skills={sampleSkills} />
-            </div>
+            {skills.length > 0 && (
+              <div className="bg-white p-6 rounded-lg shadow-sm border">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  Compétences
+                </h3>
+                <SkillsList skills={skills.map((s) => s.name || s)} />
+              </div>
+            )}
 
             <div className="bg-white p-6 rounded-lg shadow-sm border">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
                 Liens externes
               </h3>
               <div className="space-y-2">
-                <a
-                  href={laureate.linkedinUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-main-blue hover:underline"
-                >
-                  LinkedIn
-                </a>
-                <a
-                  href={`mailto:${laureate.email}`}
-                  className="flex items-center gap-2 text-main-blue hover:underline"
-                >
-                  Email
-                </a>
+                {linkedinLink && (
+                  <a
+                    href={linkedinLink.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-main-blue hover:underline"
+                  >
+                    LinkedIn
+                  </a>
+                )}
+                {laureate.email && (
+                  <a
+                    href={`mailto:${laureate.email}`}
+                    className="flex items-center gap-2 text-main-blue hover:underline"
+                  >
+                    Email
+                  </a>
+                )}
               </div>
             </div>
           </div>

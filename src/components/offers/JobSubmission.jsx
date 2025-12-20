@@ -14,8 +14,7 @@ import {
 } from "../ui/select";
 import { useLanguage } from "../contexts/LanguageContext.jsx";
 import { toast } from "sonner";
-
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1";
+import { useSubmitJob } from "@/lib/react-query/hooks/useJobMutations";
 
 /**
  * JobSubmission Component
@@ -51,21 +50,59 @@ export function JobSubmission() {
     description: "",
     link: "",
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Use React Query mutation for job submission
+  const { mutateAsync: submitJob, isPending: isSubmitting } = useSubmitJob({
+    onSuccess: () => {
+      toast.success(t("submit.success"));
+      // Reset form after successful submission
+      setFormData({
+        title: "",
+        company: "",
+        location: "",
+        type: "",
+        customType: "",
+        duration: "",
+        description: "",
+        link: "",
+      });
+      // Navigate back to job listings
+      navigate("/jobs");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Submission failed");
+    },
+  });
+
+  /**
+   * Normalize job type for API compatibility
+   */
+  const normalizeType = (type) => {
+    switch (type) {
+      case "stage":
+        return "internship";
+      case "emploi":
+        return "job";
+      case "alternance":
+        return "alternance";
+      case "autre":
+        return "other";
+      default:
+        return "other";
+    }
+  };
 
   /**
    * Handle form submission with validation
    */
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
 
     const auth = JSON.parse(localStorage.getItem("auth"));
     const token = auth?.token;
 
     if (!token) {
       toast.error("Please log in first to submit a job offer");
-      setIsSubmitting(false);
       return;
     }
 
@@ -78,92 +115,29 @@ export function JobSubmission() {
       !formData.description
     ) {
       toast.error(t("validation.required"));
-      setIsSubmitting(false);
-      return;
-    }
-    if (!token) {
-      toast.error(t("validation.required"));
-      setIsSubmitting(false);
       return;
     }
 
     // Validate custom type if "autre" is selected
     if (formData.type === "autre" && !formData.customType.trim()) {
       toast.error(t("validation.custom_type"));
-      setIsSubmitting(false);
       return;
     }
 
-    try {
-      /**
-       * Normalize job type for API compatibility
-       */
-      const normalizeType = (type) => {
-        switch (type) {
-          case "stage":
-            return "internship";
-          case "emploi":
-            return "job";
-          case "alternance":
-            return "alternance";
-          case "autre":
-            return "other";
-          default:
-            return "other";
-        }
-      };
+    // Prepare payload for API
+    const payload = {
+      title: formData.title.trim(),
+      company: formData.company.trim(),
+      location: formData.location.trim(),
+      type: normalizeType(formData.type),
+      customType: formData.type === "autre" ? formData.customType.trim() : null,
+      duration: formData.duration?.trim() || null,
+      description: formData.description,
+      link: formData.link ? formData.link.trim() : null,
+    };
 
-      // Prepare payload for API
-      const payload = {
-        title: formData.title.trim(),
-        company: formData.company.trim(),
-        location: formData.location.trim(),
-        type: normalizeType(formData.type),
-        customType:
-          formData.type === "autre" ? formData.customType.trim() : null,
-        duration: formData.duration?.trim() || null,
-        description: formData.description,
-        link: formData.link ? formData.link.trim() : null,
-      };
-
-      // Submit to API
-      const res = await fetch(`${API_BASE}/offers`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        const errorData = await res
-          .json()
-          .catch(() => ({ message: "Failed to submit" }));
-        throw new Error(errorData.message || "Failed to submit");
-      }
-
-      toast.success(t("submit.success"));
-
-      // Reset form after successful submission
-      setFormData({
-        title: "",
-        company: "",
-        location: "",
-        type: "",
-        customType: "",
-        duration: "",
-        description: "",
-        link: "",
-      });
-
-      // Navigate back to job listings
-      navigate("/jobs");
-    } catch (err) {
-      toast.error(err.message || "Submission failed");
-    } finally {
-      setIsSubmitting(false);
-    }
+    // Submit using React Query mutation
+    await submitJob(payload);
   };
 
   /**

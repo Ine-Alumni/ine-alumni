@@ -1,7 +1,7 @@
 import { useFormik } from "formik";
 import { Link, useNavigate } from "react-router";
 import { signupSchema } from "@/schemas/signupSchema.js";
-import { login, register } from "@/services/auth-service.js";
+import { useSignup, useLogin } from "@/lib/react-query/hooks/useAuthMutations";
 import { useAlert } from "../../SharedLayout.jsx";
 import { useAuth } from "./AuthenticationProvider.jsx";
 
@@ -9,6 +9,34 @@ const Signup = () => {
   const navigate = useNavigate();
   const { addAlert } = useAlert();
   const { setAuth } = useAuth();
+
+  const { mutateAsync: loginMutation } = useLogin();
+
+  const { mutateAsync: signupMutation } = useSignup({
+    onSuccess: async (response, variables) => {
+      // After successful signup, automatically log in
+      try {
+        const loginResponse = await loginMutation({
+          email: variables.email,
+          password: variables.password,
+        });
+        if (loginResponse.status === 200) {
+          setAuth(loginResponse.data);
+          navigate("/verification-email");
+        }
+      } catch {
+        // If auto-login fails, still show success for signup
+        navigate("/verification-email");
+      }
+    },
+    onError: (error) => {
+      addAlert(
+        false,
+        error.response?.data?.message ||
+          "Une erreur est survenue. Veuillez réessayer plus tard.",
+      );
+    },
+  });
 
   const { values, errors, touched, isSubmitting, handleChange, handleSubmit } =
     useFormik({
@@ -27,39 +55,21 @@ const Signup = () => {
       validationSchema: signupSchema,
       onSubmit: async (values, actions) => {
         try {
-          const response = await register(
-            values.fullName,
-            values.email,
-            values.password,
-            values.major,
-            values.graduationYear,
-            values.phoneNumber,
-            values.gender,
-            values.country,
-            values.city,
-          );
-
-          if (response.status === 201) {
-            const loginResponse = await login(values.email, values.password);
-            actions.resetForm();
-            addAlert(
-              true,
-              response.data || "User account successfully created!",
-            );
-            if (loginResponse.status === 200) {
-              setAuth(loginResponse.data);
-              navigate("/verification-email");
-            }
-          } else {
-            addAlert(false, response.data.message);
-          }
-        } catch (error) {
+          const response = await signupMutation({
+            fullName: values.fullName,
+            email: values.email,
+            password: values.password,
+            major: values.major,
+            graduationYear: values.graduationYear,
+            phoneNumber: values.phoneNumber,
+            gender: values.gender,
+            country: values.country,
+            city: values.city,
+          });
           actions.resetForm();
-          addAlert(
-            false,
-            error.response?.data?.message ||
-              "Une erreur est survenue. Veuillez réessayer plus tard.",
-          );
+          addAlert(true, response.data || "User account successfully created!");
+        } catch {
+          actions.resetForm();
         }
       },
     });

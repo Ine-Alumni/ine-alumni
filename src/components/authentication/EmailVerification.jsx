@@ -7,9 +7,9 @@ import {
 } from "@/components/ui/input-otp";
 import { MailCheck, AlertCircle } from "lucide-react";
 import {
-  verifyEmail,
-  resendVerificationEmail,
-} from "@/services/auth-service.js";
+  useEmailVerification,
+  useResendVerification,
+} from "@/lib/react-query/hooks/useAuthMutations";
 import { useAlert } from "../../SharedLayout";
 import { useNavigate } from "react-router";
 
@@ -19,53 +19,47 @@ const EmailVerification = () => {
   const { addAlert } = useAlert();
   const navigate = useNavigate();
 
+  const { mutateAsync: verifyEmailMutation } = useEmailVerification({
+    onSuccess: (response) => {
+      addAlert(true, response.data || "Email verified.");
+      setAuth({ ...auth, isEmailVerified: true });
+      navigate("/jobs");
+    },
+    onError: (error) => {
+      setOtp("");
+      addAlert(
+        false,
+        error.response?.data?.message || "Code est invalide ou expiré.",
+      );
+    },
+  });
+
+  const { mutateAsync: resendVerificationMutation } = useResendVerification({
+    onSuccess: (response) => {
+      addAlert(
+        true,
+        response.data || "A verification code has been sent to your email.",
+      );
+      setOtp("");
+    },
+    onError: (error) => {
+      setOtp("");
+      addAlert(
+        false,
+        error.response?.data?.message ||
+          "Une erreur est survenue. Veuillez réessayer plus tard.",
+      );
+    },
+  });
+
   useEffect(() => {
     if (otp.length === 6) {
-      verifyEmail(otp)
-        .then((response) => {
-          console.log(response.data);
-          if (response.status === 200) {
-            addAlert(true, response.data || "Email verified.");
-            setAuth({ ...auth, isEmailVerified: true });
-            navigate("/jobs");
-          } else {
-            addAlert(false, "Code est invalide ou expiré.");
-          }
-        })
-        .catch((error) => {
-          setOtp("");
-          addAlert(
-            false,
-            error.response?.data?.message || "Code est invalide ou expiré.",
-          );
-        });
+      verifyEmailMutation(otp);
     }
-  }, [otp]);
+  }, [otp, verifyEmailMutation]);
 
   const resendVerification = () => {
-    resendVerificationEmail()
-      .then((response) => {
-        if (response.status === 200) {
-          addAlert(
-            true,
-            response.data || "A verification code has been sent to your email.",
-          );
-        } else {
-          addAlert(
-            false,
-            response.data || "Failed to resend verification code.",
-          );
-        }
-        setOtp("");
-      })
-      .catch((error) => {
-        setOtp("");
-        addAlert(
-          false,
-          error.response?.data?.message ||
-            "Une erreur est survenue. Veuillez réessayer plus tard.",
-        );
-      });
+    resendVerificationMutation();
   };
 
   return (

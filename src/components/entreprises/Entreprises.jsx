@@ -1,62 +1,55 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { CompanyCard } from "./CompanyCard";
 import { SearchBarWithFilters } from "../layout/SearchBarWithFilters";
 import { FilterPanel } from "../common/FilterPanel";
-import { companiesService } from "@/services/companiesService.js";
+import {
+  useCompanies,
+  useCompanySearch,
+} from "@/lib/react-query/hooks/useCompanies";
 import { companyFilters } from "@/data/sampleData.js";
+
 const Entreprises = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [_, setFilters] = useState({});
-  const [companies, setCompanies] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [pagination, setPagination] = useState({
+  const [pagination] = useState({
     pageNumber: 0,
     pageSize: 12,
-    totalElements: 0,
-    totalPages: 0,
   });
   const navigate = useNavigate();
 
-  const fetchCompanies = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
+  // Use React Query hooks for data fetching - call all hooks unconditionally
+  const searchQueryTrimmed = searchQuery.trim();
+  const searchQueryHook = useCompanySearch(searchQueryTrimmed, {
+    page: pagination.pageNumber,
+    size: pagination.pageSize,
+  });
+  const companiesHook = useCompanies({
+    page: pagination.pageNumber,
+    size: pagination.pageSize,
+  });
 
-      let response;
-      if (searchQuery.trim()) {
-        response = await companiesService.searchCompanies(searchQuery, {
-          page: pagination.pageNumber,
-          size: pagination.pageSize,
-        });
-      } else {
-        response = await companiesService.getAllCompanies({
-          page: pagination.pageNumber,
-          size: pagination.pageSize,
-        });
-      }
+  // Use the appropriate query based on search state
+  const companiesQuery = searchQueryTrimmed ? searchQueryHook : companiesHook;
+  const {
+    data: response,
+    isLoading: loading,
+    error: queryError,
+  } = companiesQuery;
 
-      setCompanies(response.content || []);
-      setPagination({
-        pageNumber: response.pageNumber || 0,
-        pageSize: response.pageSize || 12,
-        totalElements: response.totalElements || 0,
-        totalPages: response.totalPages || 0,
-      });
-    } catch (err) {
-      console.error("Error fetching companies:", err);
-      setError("Failed to load companies. Please try again.");
-      setCompanies([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [searchQuery, pagination.pageNumber, pagination.pageSize]);
+  // Extract data from response
+  const companies = response?.content || [];
+  const paginationData = {
+    pageNumber: response?.pageNumber ?? 0,
+    pageSize: response?.pageSize ?? 12,
+    totalElements: response?.totalElements ?? 0,
+    totalPages: response?.totalPages ?? 0,
+  };
 
-  // Fetch companies from backend
-  useEffect(() => {
-    fetchCompanies();
-  }, [fetchCompanies]);
+  // Convert query error to string for display
+  const error = queryError
+    ? "Failed to load companies. Please try again."
+    : null;
 
   const handleCompanyClick = (company) => {
     console.log("Clicked company:", company);
@@ -101,7 +94,7 @@ const Entreprises = () => {
           <>
             <div className="mb-6 flex items-center justify-between">
               <p className="text-sm text-gray-600">
-                {pagination.totalElements} entreprises trouvées
+                {paginationData.totalElements} entreprises trouvées
               </p>
             </div>
 
