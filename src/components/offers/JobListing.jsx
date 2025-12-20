@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import {
@@ -21,45 +21,9 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext.jsx";
-import authHeader from "../../services/auth-header.js";
+import { useOffers } from "@/lib/react-query/hooks/useOffers";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1";
-
-// Mock data for demonstration - will be replaced by API data when available
-const mockJobs = [
-  {
-    id: "1",
-    title: "Stage Développeur Frontend React",
-    company: "TechCorp Innovation",
-    location: "Paris, France",
-    type: "stage",
-    customType: "",
-    duration: "6 mois",
-    description: `Rejoignez notre équipe de développement frontend pour travailler sur des projets innovants utilisant React et TypeScript.
-
-**Responsabilités:**
-• Développer des interfaces utilisateur modernes et responsive
-• Collaborer avec l'équipe UX/UI pour implémenter des designs
-• Participer aux revues de code et aux réunions d'équipe
-• Maintenir et améliorer les applications existantes
-
-**Compétences requises:**
-• Maîtrise de JavaScript/TypeScript
-• Expérience avec React et ses écosystèmes
-• Connaissance de HTML5, CSS3 et Tailwind CSS
-• Familiarité avec Git et les workflows collaboratifs
-
-**Ce que nous offrons:**
-• Environnement de travail stimulant et collaboratif
-• Mentorat par des développeurs expérimentés
-• Possibilité de télétravail hybride
-• Gratification attractive selon convention`,
-    posted: "2025-01-15",
-    isNew: true,
-    isRemote: false,
-    externalLink: "https://techcorp.com/careers/frontend-intern",
-  },
-];
+// Mock data removed - now using React Query to fetch from API
 
 // API mapping helper - converts API response to UI format
 const mapApiOfferToUi = (o) => {
@@ -123,53 +87,22 @@ export function JobListing({ onJobSelect }) {
   const [locationFilter, setLocationFilter] = useState("all");
   const [showFilters, setShowFilters] = useState(false);
 
-  // Data state
-  const [jobs, setJobs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  // Use React Query hook for data fetching
+  const {
+    data: offersData,
+    isLoading: loading,
+    error: queryError,
+  } = useOffers();
 
-  // Expandable cards state - tracks which cards are expanded
-  // TODO: Restore expandedCards state when expand/collapse feature is needed
-  //const [expandedCards, setExpandedCards] = useState(new Set());
+  // Map API data to UI format
+  const jobs = useMemo(() => {
+    if (!offersData) return [];
+    return (Array.isArray(offersData) ? offersData : []).map(mapApiOfferToUi);
+  }, [offersData]);
 
-  /**
-   * Fetch jobs from API on component mount
-   * Falls back to mock data if API is not available
-   */
-  useEffect(() => {
-    let isMounted = true;
-    (async () => {
-      setLoading(true);
-      setError("");
-      try {
-        const res = await fetch(`${API_BASE}/offers`, {
-          method: "GET",
-          headers: authHeader(),
-        });
-        if (!res.ok) {
-          // If API fails, use mock data for demonstration
-          if (isMounted) {
-            setJobs(mockJobs);
-            console.warn("API not available, using mock data");
-          }
-          return;
-        }
-        const data = await res.json();
-        if (isMounted) setJobs((data || []).map(mapApiOfferToUi));
-      } catch (e) {
-        // Fallback to mock data on error
-        if (isMounted) {
-          setJobs(mockJobs);
-          console.warn("API error, using mock data:", e.message);
-        }
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    })();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const error = queryError
+    ? "Failed to load job offers. Please try again."
+    : "";
 
   // Extract unique values for filter dropdowns
   const locations = [...new Set(jobs.map((job) => job.location))];

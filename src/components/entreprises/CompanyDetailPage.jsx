@@ -1,49 +1,42 @@
 import { useParams } from "react-router";
-import { useState, useEffect } from "react";
+import {
+  useCompany,
+  useCompanyAlumni,
+  useCompanyReviews,
+} from "@/lib/react-query/hooks/useCompanies";
 import { CompanyDetailsHeader } from "@/components/entreprises/CompanyDetailsHeader";
 import { HRContactSection } from "@/components/entreprises/HRContactSection";
 import { AlumniList } from "@/components/entreprises/AlumniList";
 import { ReviewsList } from "@/components/entreprises/ReviewsList";
 import { InfoSection } from "@/components/common/InfoSection";
-import { companiesService } from "../../services/companiesService";
 
 export function CompanyDetailPage() {
   const { id } = useParams();
-  const [company, setCompany] = useState(null);
-  const [alumni, setAlumni] = useState([]);
-  const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (id) {
-      fetchCompanyData();
-    }
-  }, [id]);
+  // Use React Query hooks for parallel data fetching
+  const {
+    data: company,
+    isLoading: companyLoading,
+    error: companyError,
+  } = useCompany(id);
+  const { data: alumniResponse, isLoading: alumniLoading } = useCompanyAlumni(
+    id,
+    { page: 0, size: 12 },
+  );
+  const { data: reviewsResponse, isLoading: reviewsLoading } =
+    useCompanyReviews(id, { page: 0, size: 10 });
 
-  const fetchCompanyData = async () => {
-    try {
-      setLoading(true);
-      setError(null);
+  // Extract data from responses
+  const alumni = alumniResponse?.content || [];
+  const reviews = reviewsResponse?.content || [];
 
-      // Fetch company details, alumni, and reviews in parallel
-      const [companyResponse, alumniResponse, reviewsResponse] =
-        await Promise.all([
-          companiesService.getCompanyById(id),
-          companiesService.getCompanyAlumni(id),
-          companiesService.getCompanyReviews(id),
-        ]);
+  // Combined loading state
+  const loading = companyLoading || alumniLoading || reviewsLoading;
 
-      setCompany(companyResponse);
-      setAlumni(alumniResponse.content || []);
-      setReviews(reviewsResponse.content || []);
-    } catch (err) {
-      console.error("Error fetching company data:", err);
-      setError("Failed to load company information. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Error state
+  const error = companyError
+    ? "Failed to load company information. Please try again."
+    : null;
 
   const handleAlumniClick = (alumni) => {
     console.log("Clicked alumni:", alumni);
@@ -110,7 +103,7 @@ export function CompanyDetailPage() {
                 company: company.name,
                 location: `${alumnus.city}, ${alumnus.country}`,
                 linkedinUrl: alumnus.externalLinks?.find(
-                  (link) => link.linkType === "LINKEDIN"
+                  (link) => link.linkType === "LINKEDIN",
                 )?.url,
                 email: alumnus.email,
               }))}

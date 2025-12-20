@@ -17,7 +17,7 @@ import {
 import { Menu } from "lucide-react";
 import { Link } from "react-router";
 import { Button } from "@/components/ui/button";
-import { logout } from "./services/auth-service";
+import { authService } from "./services/authService.js";
 
 const Navbar = () => {
   const { auth } = useAuth();
@@ -183,7 +183,7 @@ const Navbar = () => {
                       Profile
                     </DropdownMenuItem>
                   </Link>
-                  <button onClick={logout}>
+                  <button onClick={() => authService.logout()}>
                     <DropdownMenuItem className="cursor-pointer">
                       <LogOut
                         className="inline h-full mb-1 mr-1"

@@ -1,4 +1,4 @@
-import api from "./api";
+import api from "@/lib/api";
 
 export const companiesService = {
   // Get all companies with pagination and sorting
@@ -41,6 +41,15 @@ export const companiesService = {
     const response = await api.get(`/companies/${id}/reviews`, {
       params: { page, size },
     });
+    return response.data;
+  },
+
+  // Create a company review
+  createReview: async (companyId, reviewData) => {
+    const response = await api.post(
+      `/companies/${companyId}/reviews`,
+      reviewData,
+    );
     return response.data;
   },
 };

@@ -1,66 +1,23 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import {
-  ChevronRight,
-  Calendar,
-  MapPin,
-  Users,
-  Share2,
-  Loader2,
-  AlertCircle,
-  Heart,
-} from "lucide-react";
-import authHeader from "../../services/auth-header";
-import { API_BASE_URL } from "@/services/api.js";
+import React, { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import { ChevronRight, Calendar, MapPin, Loader2 } from "lucide-react";
+import { useEvents } from "@/lib/react-query/hooks/useEvents";
+import { getImageUrl } from "@/lib/imageUtils";
 
 const Section4 = () => {
   const navigate = useNavigate();
-  const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [_, setError] = useState(null);
 
-  useEffect(() => {
-    const loadEvents = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+  // Use React Query hook for data fetching
+  const { data: eventsData, isLoading: loading } = useEvents();
 
-        const response = await fetch(`${API_BASE_URL}/events/public`, {
-          method: "GET",
-          headers: authHeader(),
-        });
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({
-            message: `Failed to fetch events: ${response.status}`,
-          }));
-          throw new Error(
-            errorData.message || `Failed to fetch events: ${response.status}`,
-          );
-        }
-
-        const data = await response.json();
-
-        const processedEvents = data.map((event) => ({
-          ...event,
-          image:
-            event.image && event.image.startsWith("/uploads")
-              ? `${API_BASE_URL}${event.image}`
-              : event.image,
-        }));
-
-        setEvents(processedEvents);
-      } catch (err) {
-        setError(
-          err.message || "Failed to load events. Please try again later.",
-        );
-        console.error("Error loading events:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadEvents();
-  }, []);
+  // Process events data
+  const events = useMemo(() => {
+    if (!eventsData) return [];
+    return (Array.isArray(eventsData) ? eventsData : []).map((event) => ({
+      ...event,
+      image: getImageUrl(event.image),
+    }));
+  }, [eventsData]);
 
   const getRecentEvents = (eventsList) => {
     return eventsList
@@ -79,11 +36,6 @@ const Section4 = () => {
 
   const handleCardClick = (eventId) => {
     navigate(`/evenements/${eventId}`);
-  };
-
-  const getImageUrl = (imagePath) => {
-    if (!imagePath) return "/default-banner.jpg";
-    return imagePath;
   };
 
   const upcomingEvents = getRecentEvents(events);

@@ -1,78 +1,80 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useMemo } from "react";
 import { ProfileCard } from "@/components/laureats/ProfileCard";
 import { SearchBarWithFilters } from "../layout/SearchBarWithFilters";
 import { FilterPanel } from "../common/FilterPanel";
-import { laureatsService } from "../../services/laureatsService";
-import { laureateFilters } from "../../data/sampleData";
+import {
+  useLaureates,
+  useLaureateSearch,
+  useLaureateFilters,
+} from "@/lib/react-query/hooks/useLaureates";
+import { laureateFilters } from "@/data/sampleData.js";
 
 const Laureats = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState({});
-  const [laureates, setLaureates] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [pagination, setPagination] = useState({
+  const [pagination] = useState({
     pageNumber: 0,
     pageSize: 12,
-    totalElements: 0,
-    totalPages: 0,
   });
 
-  const fetchLaureates = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
+  // Convert filters to backend format
+  const filterData = useMemo(() => {
+    if (Object.keys(filters).length === 0) return null;
+    return {
+      searchTerm: searchQuery,
+      majors: filters.filiere ? [filters.filiere] : undefined,
+      graduationYears: filters.promotion
+        ? [parseInt(filters.promotion)]
+        : undefined,
+      positions: filters.poste ? [filters.poste] : undefined,
+      cities: filters.localisation ? [filters.localisation] : undefined,
+      domains: filters.domaine ? [filters.domaine] : undefined,
+    };
+  }, [filters, searchQuery]);
 
-      let response;
-      if (searchQuery.trim()) {
-        response = await laureatsService.searchLaureates(searchQuery, {
-          page: pagination.pageNumber,
-          size: pagination.pageSize,
-        });
-      } else if (Object.keys(filters).length > 0) {
-        // Convert filters to backend format
-        const filterData = {
-          searchTerm: searchQuery,
-          majors: filters.filiere ? [filters.filiere] : undefined,
-          graduationYears: filters.promotion
-            ? [parseInt(filters.promotion)]
-            : undefined,
-          positions: filters.poste ? [filters.poste] : undefined,
-          cities: filters.localisation ? [filters.localisation] : undefined,
-          domains: filters.domaine ? [filters.domaine] : undefined,
-        };
+  // Use React Query hooks - call all hooks unconditionally
+  const searchQueryTrimmed = searchQuery.trim();
+  const hasFilters = filterData && Object.keys(filters).length > 0;
 
-        response = await laureatsService.filterLaureates(filterData, {
-          page: pagination.pageNumber,
-          size: pagination.pageSize,
-        });
-      } else {
-        response = await laureatsService.getAllLaureates({
-          page: pagination.pageNumber,
-          size: pagination.pageSize,
-        });
-      }
+  const searchHook = useLaureateSearch(searchQueryTrimmed, {
+    page: pagination.pageNumber,
+    size: pagination.pageSize,
+  });
+  const filtersHook = useLaureateFilters(filterData, {
+    page: pagination.pageNumber,
+    size: pagination.pageSize,
+  });
+  const laureatesHook = useLaureates({
+    page: pagination.pageNumber,
+    size: pagination.pageSize,
+  });
 
-      setLaureates(response.content || []);
-      setPagination({
-        pageNumber: response.pageNumber || 0,
-        pageSize: response.pageSize || 12,
-        totalElements: response.totalElements || 0,
-        totalPages: response.totalPages || 0,
-      });
-    } catch (err) {
-      console.error("Error fetching laureates:", err);
-      setError("Failed to load laureates. Please try again.");
-      setLaureates([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [searchQuery, filters, pagination.pageNumber, pagination.pageSize]);
+  // Use the appropriate query based on search/filter state
+  const laureatesQuery = searchQueryTrimmed
+    ? searchHook
+    : hasFilters
+      ? filtersHook
+      : laureatesHook;
 
-  // Fetch laureates from backend
-  useEffect(() => {
-    fetchLaureates();
-  }, [fetchLaureates]);
+  const {
+    data: response,
+    isLoading: loading,
+    error: queryError,
+  } = laureatesQuery;
+
+  // Extract data from response
+  const laureates = response?.content || [];
+  const paginationData = {
+    pageNumber: response?.pageNumber ?? 0,
+    pageSize: response?.pageSize ?? 12,
+    totalElements: response?.totalElements ?? 0,
+    totalPages: response?.totalPages ?? 0,
+  };
+
+  // Convert query error to string for display
+  const error = queryError
+    ? "Failed to load laureates. Please try again."
+    : null;
 
   return (
     <div className="min-h-screen py-8">
@@ -110,7 +112,7 @@ const Laureats = () => {
           <>
             <div className="mb-6 flex items-center justify-between">
               <p className="text-sm text-gray-600">
-                {pagination.totalElements} lauréats trouvés
+                {paginationData.totalElements} lauréats trouvés
               </p>
             </div>
 
@@ -128,7 +130,7 @@ const Laureats = () => {
                     company: laureate.currentCompany?.name,
                     location: `${laureate.city}, ${laureate.country}`,
                     linkedinUrl: laureate.externalLinks?.find(
-                      (link) => link.linkType === "LINKEDIN"
+                      (link) => link.linkType === "LINKEDIN",
                     )?.url,
                     email: laureate.email,
                   }}

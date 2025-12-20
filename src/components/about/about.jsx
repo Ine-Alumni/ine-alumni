@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1";
+import { useContactForm } from "@/lib/react-query/hooks/useContactMutations";
+// eslint-disable-next-line no-unused-vars
+import { motion } from "framer-motion";
 
 const AboutUs = () => {
   const [formData, setFormData] = useState({
@@ -10,7 +11,21 @@ const AboutUs = () => {
     objet: "",
     message: "",
   });
+
   const [status, setStatus] = useState("");
+
+  const { mutateAsync: submitContact, isPending: isSubmitting } =
+    useContactForm({
+      onSuccess: () => {
+        setStatus("✅ Message envoyé avec succès !");
+        setFormData({ nom: "", prenom: "", email: "", objet: "", message: "" });
+      },
+      onError: (error) => {
+        setStatus(
+          `❌ ${error.message || "Erreur lors de l'envoi du message."}`,
+        );
+      },
+    });
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -18,29 +33,7 @@ const AboutUs = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus("Envoi en cours...");
-
-    try {
-      const response = await fetch(`${API_URL}/contact`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        setStatus("✅ Message envoyé avec succès !");
-        setFormData({ nom: "", prenom: "", email: "", objet: "", message: "" });
-      } else {
-        const errorData = await response
-          .json()
-          .catch(() => ({ message: "Erreur lors de l'envoi du message." }));
-        setStatus(
-          `❌ ${errorData.message || "Erreur lors de l'envoi du message."}`,
-        );
-      }
-    } catch (error) {
-      console.error(error);
-      setStatus("⚠️ Impossible de se connecter au serveur.");
-    }
+    await submitContact(formData);
   };
 
   return (
@@ -204,9 +197,10 @@ const AboutUs = () => {
             </button>
             <button
               type="submit"
-              className="px-6 py-2 bg-gradient-to-r from-[#4f93d2] to-[#5691cb] text-white rounded-lg hover:opacity-90 transition"
+              disabled={isSubmitting}
+              className="px-6 py-2 bg-gradient-to-r from-[#4f93d2] to-[#5691cb] text-white rounded-lg hover:opacity-90 transition disabled:opacity-50"
             >
-              Envoyer
+              {isSubmitting ? "Envoi..." : "Envoyer"}
             </button>
           </div>
         </form>

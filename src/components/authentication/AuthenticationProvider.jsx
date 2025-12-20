@@ -6,7 +6,7 @@ import React, {
   Suspense,
 } from "react";
 import { useLocation } from "react-router";
-import { getAuthenticationState } from "../../services/auth-service";
+import { authService } from "../../services/authService.js";
 
 const AuthenticationContext = createContext();
 
@@ -23,7 +23,7 @@ const AuthenticationProvider = ({ children }) => {
     const syncAuthentication = async () => {
       setAuthIsLoading(true);
       try {
-        const auth = await getAuthenticationState();
+        const auth = await authService.getAuthenticationState();
         setAuth(auth);
       } catch {
         setAuth(null);

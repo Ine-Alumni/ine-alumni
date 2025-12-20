@@ -1,7 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import authHeader from "../../services/auth-header";
-import { API_BASE_URL, FILE_BASE_URL } from "@/services/api.js";
+import { useEvents } from "@/lib/react-query/hooks/useEvents";
+import {
+  useCreateEvent,
+  useUploadEventImage,
+} from "@/lib/react-query/hooks/useEventMutations";
+import { getImageUrl } from "@/lib/imageUtils";
 
 const Evenements = () => {
   const navigate = useNavigate();
@@ -23,10 +27,51 @@ const Evenements = () => {
     whatToExpect: "",
   });
 
-  const [events, setEvents] = useState([]); // <-- AJOUT DE CETTE LIGNE
-
   const calendarRef = useRef(null);
   const modalRef = useRef(null);
+
+  // Use React Query hooks for data fetching
+  const { data: eventsData } = useEvents();
+
+  // Adapt events data to UI format
+  const events = useMemo(() => {
+    if (!eventsData) return [];
+    return (Array.isArray(eventsData) ? eventsData : []).map((evt) => ({
+      id: evt.id,
+      title: evt.title,
+      category: evt.club,
+      date: evt.date,
+      location: evt.location,
+      description: evt.description,
+      status: new Date(evt.date) < new Date() ? "Past" : "Upcoming",
+      progress: 0,
+      price: 0,
+      image: getImageUrl(evt.image) || "",
+      schedule: "",
+      whatToExpect: evt.expectations || "",
+    }));
+  }, [eventsData]);
+
+  // Use React Query mutations
+  const { mutateAsync: uploadImage } = useUploadEventImage();
+  const { mutateAsync: createEvent } = useCreateEvent({
+    onSuccess: () => {
+      setNewEvent({
+        title: "",
+        category: "",
+        date: "",
+        location: "",
+        description: "",
+        schedule: "",
+        image: "",
+        whatToExpect: "",
+      });
+      setShowAddEventModal(false);
+    },
+    onError: (error) => {
+      alert(error.message || "Erreur lors de l'ajout de l'événement");
+    },
+  });
 
   const handleDateChange = () => {
     const calendarEl = calendarRef.current;
@@ -97,20 +142,7 @@ const Evenements = () => {
       formData.append("file", file);
 
       try {
-        const res = await fetch(`${API_BASE_URL}/files/upload`, {
-          method: "POST",
-          body: formData,
-        });
-
-        if (!res.ok) {
-          const errorData = await res
-            .json()
-            .catch(() => ({ message: "Upload failed" }));
-          throw new Error(errorData.message || "Upload failed");
-        }
-
-        const imageUrl = await res.json(); // File upload returns the URL directly
-
+        const imageUrl = await uploadImage(formData);
         setNewEvent((prev) => ({ ...prev, image: imageUrl }));
       } catch (error) {
         console.error(error);
@@ -130,107 +162,11 @@ const Evenements = () => {
       club: newEvent.category,
       image: newEvent.image,
       schedule: newEvent.schedule,
-      expectations: newEvent.whatToExpect, // <-- CHANGEMENT ICI
+      expectations: newEvent.whatToExpect,
     };
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/events`, {
-        method: "POST",
-        headers: {
-          ...authHeader(),
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(eventToSend),
-      });
-
-      if (!response.ok) {
-        const errorData = await response
-          .json()
-          .catch(() => ({ message: "Erreur lors de la sauvegarde" }));
-        throw new Error(errorData.message || "Erreur lors de la sauvegarde");
-      }
-
-      let savedEvent = await response.json();
-
-      setEvents((prev) => [
-        ...prev,
-        {
-          id: savedEvent.id,
-          title: savedEvent.titre,
-          category: savedEvent.club,
-          date: savedEvent.date,
-          location: savedEvent.lieu,
-          description: savedEvent.description,
-          status: new Date(savedEvent.date) < new Date() ? "Past" : "Upcoming",
-          progress: 0,
-          price: 0,
-          image: `${FILE_BASE_URL}${newEvent.image}`,
-          schedule: newEvent.schedule,
-          whatToExpect: newEvent.whatToExpect,
-        },
-      ]);
-
-      setNewEvent({
-        title: "",
-        category: "",
-        date: "",
-        location: "",
-        description: "",
-        schedule: "",
-        image: "",
-        whatToExpect: "",
-      });
-
-      setShowAddEventModal(false);
-    } catch (error) {
-      console.error(error);
-      alert(error.message || "Erreur lors de l'ajout de l'événement");
-    }
+    await createEvent(eventToSend);
   };
-
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/events/public`, {
-          method: "GET",
-          headers: authHeader(),
-        });
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({
-            message: "Erreur lors du chargement des événements",
-          }));
-          throw new Error(
-            errorData.message || "Erreur lors du chargement des événements",
-          );
-        }
-        const data = await response.json();
-
-        const adaptedEvents = (data || []).map((evt) => ({
-          id: evt.id,
-          title: evt.title,
-          category: evt.club,
-          date: evt.date,
-          location: evt.location,
-          description: evt.description,
-          status: new Date(evt.date) < new Date() ? "Past" : "Upcoming",
-          progress: 0,
-          price: 0,
-          image: evt.image
-            ? `${FILE_BASE_URL}${evt.image.startsWith("/") ? evt.image : "/" + evt.image}`
-            : "",
-
-          schedule: "",
-          whatToExpect: evt.expectations || "",
-        }));
-
-        setEvents(adaptedEvents);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchEvents();
-  }, []);
 
   const isSoon = (dateStr) => {
     const eventDate = new Date(dateStr);
@@ -632,7 +568,7 @@ const Evenements = () => {
                     Aperçu de l'image
                   </label>
                   <img
-                    src={`${FILE_BASE_URL}${newEvent.image}`} // ✅ Bonne URL
+                    src={getImageUrl(newEvent.image) || "/default-banner.jpg"}
                     alt="Aperçu"
                     className="w-full max-h-64 object-contain border border-gray-300 rounded-md"
                   />
