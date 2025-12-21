@@ -6,6 +6,8 @@ import { getUserAuthorities } from "../../services/auth-header";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import EventMenu from "../EventMenu/EventMenu";
+import { useLoader } from '../loader/LoaderContext';
+
 
 
 
@@ -249,7 +251,10 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
   toast.error("Erreur lors de l'ajout ou modification de l'événement");
 }
   };
+
+  const { showLoader, hideLoader } = useLoader();
   useEffect(() => {
+    showLoader();
     const fetchEvents = async () => {
       try {
         const response = await fetch(`${API_BASE_URL}/events/public`, { method: "GET", headers: authHeader()});
@@ -279,6 +284,8 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
         setEvents(adaptedEvents);
       } catch (error) {
         console.error(error);
+      }finally {
+        hideLoader();
       }
     };
 
@@ -353,7 +360,7 @@ const imageUrl = data.response; // ✅ correspond à ton ApiResponseDto côté b
   return (
     <div className="p-6 font-sans bg-white">
       <div className="bg-[#fafafa] rounded-xl py-10 px-4 mb-8 text-center">
-        <h1 className="text-4xl font-extrabold text-gray-800">
+        <h1 className="text-4xl font-extrabold text-[#3A7FC2]">
           Nos Événements
         </h1>
         <p className="mt-3 text-gray-600 text-lg max-w-md mx-auto">

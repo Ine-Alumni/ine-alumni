@@ -5,6 +5,7 @@ import { JobSubmission } from './JobSubmission';
 import { JobDetails } from './JobDetails.jsx';
 import { Button } from '../ui/button';
 import { useLanguage, LanguageProvider } from '../contexts/LanguageContext.jsx';
+import { useLoader } from "../loader/LoaderContext";
 
 // Main Jobs component content that uses the language context
 const JobsContent = () => {
@@ -14,13 +15,20 @@ const JobsContent = () => {
   const { t, language } = useLanguage();
 
   // Handle URL parameters
+  const { showLoader, hideLoader } = useLoader();
+
   useEffect(() => {
+    showLoader();
     const viewParam = searchParams.get('view');
     if (viewParam === 'submit') {
       setCurrentView('submit');
     } else {
       setCurrentView('jobs');
     }
+
+    const timer = setTimeout(() => {
+      hideLoader(); // 🔹 cacher le loader après un délai
+    }, 100);
   }, [searchParams]);
 
   const handleViewChange = (view) => {

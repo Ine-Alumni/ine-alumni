@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { Lock, GraduationCap, Globe } from "lucide-react";
+
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1";
 
 const AboutUs = () => {
@@ -36,6 +38,7 @@ const AboutUs = () => {
       console.error(error);
       setStatus("⚠️ Impossible de se connecter au serveur.");
     }
+    
   };
 
   return (
@@ -47,7 +50,7 @@ const AboutUs = () => {
         transition={{ duration: 0.8 }}
         className="text-center mb-20"
       >
-        <h1 className="text-5xl font-extrabold bg-gradient-to-r from-[#4f93d2] to-[#5691cb] text-transparent bg-clip-text">
+        <h1 className="text-5xl font-extrabold bg-gradient-to-r from-[#3A7FC2] to-[#5691cb] text-transparent bg-clip-text">
           À propos d’INE Alumni
         </h1>
         <p className="text-gray-500 mt-3 text-lg">
@@ -87,31 +90,33 @@ const AboutUs = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
             {
-              icon: "/assets/icons/key.svg",
+              icon: Lock,
               text: "Faciliter l’accès aux opportunités professionnelles (stages, emplois, mentorat).",
             },
             {
-              icon: "/assets/icons/Mortarboard.svg",
+              icon: GraduationCap,
               text: "Construire un lien durable entre les étudiants et les Alumni.",
             },
             {
-              icon: "/assets/icons/world.svg",
+              icon: Globe,
               text: "Promouvoir les événements, les échanges et la collaboration.",
             },
-          ].map((obj, i) => (
-            <motion.div
-              key={i}
-              whileHover={{ scale: 1.05 }}
-              className="bg-white rounded-2xl shadow-lg p-8 border-t-4 border-[#4f93d2] hover:shadow-xl transition-all duration-300"
-            >
-              <img
-                src={obj.icon}
-                alt=""
-                className="w-12 h-12 mx-auto mb-4 opacity-90"
-              />
-              <p className="text-gray-600 text-lg">{obj.text}</p>
-            </motion.div>
-          ))}
+          ].map((obj, i) => {
+            const Icon = obj.icon;
+            return (
+              <motion.div
+                key={i}
+                whileHover={{ scale: 1.05 }}
+                className="bg-white rounded-2xl shadow-lg p-8 border-t-4 border-[#4f93d2] hover:shadow-xl transition-all duration-300"
+              >
+                <Icon
+                  size={40}
+                  className="mx-auto mb-4 text-[#4f93d2] opacity-90"
+                />
+                <p className="text-gray-600 text-lg">{obj.text}</p>
+              </motion.div>
+            );
+          })}
         </div>
       </section>
 
@@ -152,7 +157,7 @@ const AboutUs = () => {
             {["nom", "prenom", "email", "objet"].map((field) => (
               <div key={field}>
                 <label className="block text-gray-700 font-medium capitalize mb-2">
-                  {field}*
+                  {field} <span className='text-red-400'>*</span>
                 </label>
                 <input
                   type={field === "email" ? "email" : "text"}
@@ -168,7 +173,7 @@ const AboutUs = () => {
 
           <div>
             <label className="block text-gray-700 font-medium mb-2">
-              Message*
+              Message <span className='text-red-400'>*</span>
             </label>
             <textarea
               name="message"

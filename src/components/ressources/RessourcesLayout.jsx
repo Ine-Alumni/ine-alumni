@@ -2,6 +2,7 @@ import { Outlet, useNavigate, useLocation } from "react-router";
 import { useState, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
+import { useLoader } from "../loader/LoaderContext";
 
 const tabs = [
   { key: "textuelles", label: "Ressources textuelles" },
@@ -29,8 +30,9 @@ export default function RessourcesLayout() {
         return "Rechercher...";
     }
   };
-
+  const { showLoader, hideLoader } = useLoader();
   useEffect(() => {
+    showLoader();
     // derive tab from current path (/ressources/:tab)
     const parts = location.pathname.split("/").filter(Boolean);
     const last = parts[parts.length - 1];
@@ -42,6 +44,11 @@ export default function RessourcesLayout() {
     ) {
       setActiveTab("textuelles");
     }
+
+    const timer = setTimeout(() => {
+      hideLoader();
+    }, 100); 
+
   }, [location.pathname]);
 
   const handleTabChange = (value) => {

@@ -1,5 +1,8 @@
 import { Routes, Route } from "react-router";
 import "./App.css";
+import Loader from "./components/loader/Loader";
+import { LoaderProvider, useLoader } from "./components/loader/LoaderContext";
+import "./App.css";
 import SharedLayout from "./SharedLayout";
 import Home from "./components/home/Home";
 import Evenements from "./components/evenements/Evenements";
@@ -27,29 +30,30 @@ import RscCertification from "./components/ressources/RscCertification";
 import { LaureateDetailPage } from "./components/laureats/LaureateDetailPage";
 import { CompanyDetailPage } from "./components/entreprises/CompanyDetailPage";
 
-function App() {
-  
+function AppContent() {
+  const { loading } = useLoader();
+
   return (
-    <AuthenticationProvider>
+    <>
+      {loading && <Loader />}
       <Routes>
         <Route path="/" element={<SharedLayout />}>
-        
           {/* fully authenticated routes */}
-          <Route element={<ProtectedRoute />} > 
-              <Route path="jobs" element={<Jobs />} />
-              <Route path="entreprises" element={<Entreprises />} />
-              <Route path="entreprises/:id" element={<CompanyDetailPage />} />
-              <Route path="laureats" element={<Laureats />} />
-              <Route path="laureats/:id" element={<LaureateDetailPage />} />
-              <Route path="ressources" element={<RessourcesLayout />}>
-                <Route path="textuelles" element={<RscTextuelles />} />
-                <Route path="interactives" element={<RscInteractives />} />
-                <Route path="outils" element={<OutilsPratiques />} />
-                <Route path="certification" element={<RscCertification />} />
-              </Route>
-              <Route path="verification-email" element={<EmailVerification/>} />
-              <Route path="verification-compte" element={<AccountVerification/>} />
-              <Route path="profile" element={<Profile />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="jobs" element={<Jobs />} />
+            <Route path="entreprises" element={<Entreprises />} />
+            <Route path="entreprises/:id" element={<CompanyDetailPage />} />
+            <Route path="laureats" element={<Laureats />} />
+            <Route path="laureats/:id" element={<LaureateDetailPage />} />
+            <Route path="ressources" element={<RessourcesLayout />}>
+              <Route path="textuelles" element={<RscTextuelles />} />
+              <Route path="interactives" element={<RscInteractives />} />
+              <Route path="outils" element={<OutilsPratiques />} />
+              <Route path="certification" element={<RscCertification />} />
+            </Route>
+            <Route path="verification-email" element={<EmailVerification />} />
+            <Route path="verification-compte" element={<AccountVerification />} />
+            <Route path="profile" element={<Profile />} />
           </Route>
 
           <Route index element={<Home />} />
@@ -64,12 +68,20 @@ function App() {
             <Route path="se-connecter" element={<Login />} />
             <Route path="nouveau-compte" element={<Signup />} />
           </Route>
-
         </Route>
       </Routes>
-    </AuthenticationProvider>
+    </>
   );
 }
 
+function App() {
+  return (
+    <AuthenticationProvider>
+      <LoaderProvider>
+        <AppContent />
+      </LoaderProvider>
+    </AuthenticationProvider>
+  );
+}
 
 export default App;
