@@ -95,3 +95,26 @@ export const resendVerificationEmail = () => {
     headers: authHeader(),
   });
 };
+
+// Password reset
+export const forgotPassword = (email) => {
+  return axios.post(
+    API_URL + "/password/forgot",
+    { email },
+    {
+      // Treat 4xx as handled responses to read server messages if needed
+      validateStatus: (status) => status < 500,
+    }
+  );
+};
+
+export const resetPassword = (email, token, newPassword) => {
+  return axios.post(
+    API_URL + "/password/reset",
+    { email, token, newPassword },
+    {
+      // 200 = success, 400 = invalid/expired code, both <500
+      validateStatus: (status) => status < 500,
+    }
+  );
+};

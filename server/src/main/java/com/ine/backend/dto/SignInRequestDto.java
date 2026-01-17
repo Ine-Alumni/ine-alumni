@@ -8,10 +8,10 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class SignInRequestDto {
-	@Email(message = "L'adresse email n'est pas valide.")
-	@NotBlank(message = "L'adresse email est obligatoire.")
+	@Email(message = "Email address is not valid.")
+	@NotBlank(message = "Email address is required.")
 	private String email;
 
-	@NotBlank(message = "Le mot de passe est obligatoire.")
+	@NotBlank(message = "Password is required.")
 	private String password;
 }

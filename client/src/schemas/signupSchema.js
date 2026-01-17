@@ -1,14 +1,29 @@
 import * as yup from 'yup';
 
 export const signupSchema = yup.object().shape({
-    fullName: yup.string().required("Le nom complet est requis"),
-    email: yup.string().email("Email invalide").required("L'email est requis"),
-    password: yup.string().min(8, "Le mot de passe doit contenir au moins 8 caractères").required("Le mot de passe est requis"),
-    confirmPassword: yup.string().oneOf([yup.ref('password'), null], "Les mots de passe ne correspondent pas").required("La confirmation du mot de passe est requise"),
-    major: yup.string().required("La filière est requise"),
-    graduationYear: yup.number().min(1961, "Année invalide").max(2200, "Année invalide").required("L'année de promotion est requise"),
-    phoneNumber: yup.string().min(7, "Numéro de téléphone invalide").max(15, "Numéro de téléphone invalide"),
-    gender: yup.string().required("Le sexe est requis"),
+    fullName: yup.string().required("Full name is required."),
+    email: yup.string().email("Email address is not valid.").required("Email address is required."),
+    password: yup
+      .string()
+      .min(8, "Password must be at least 8 characters long.")
+      .max(25, "Password must not exceed 25 characters.")
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-={}:;"'<>,.?]).{8,25}$/,
+        "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character."
+      )
+      .required("Password is required"),
+    confirmPassword: yup
+      .string()
+      .oneOf([yup.ref('password'), null], "Passwords do not match.")
+      .required("Password confirmation is required."),
+    major: yup.string().required("Major is required."),
+    graduationYear: yup
+      .number()
+      .min(1961, "Graduation year must be greater than or equal to 1961.")
+      .max(2200, "Graduation year must be less than or equal to 2200.")
+      .required("Graduation year is required."),
+    phoneNumber: yup.string().min(7, "Invalid phone number.").max(15, "Invalid phone number."),
+    gender: yup.string().required("Gender is required."),
     country: yup.string(),
     city: yup.string(),
 })

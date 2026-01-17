@@ -14,9 +14,11 @@ import com.ine.backend.dto.ErrorResponseDto;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+	private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
 	@ExceptionHandler(value = MethodArgumentNotValidException.class)
 	public ResponseEntity<ErrorResponseDto> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-		Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+		
 
 		java.util.Map<String, String> errors = new java.util.HashMap<>();
 		ex.getBindingResult().getFieldErrors().forEach(error -> {
@@ -41,8 +43,9 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(value = ResponseStatusException.class)
 	public ResponseEntity<ErrorResponseDto> handleResponseStatusException(ResponseStatusException ex) {
+		String reason = ex.getReason() != null ? ex.getReason() : "Unable to process request.";
 		return ResponseEntity.status(ex.getStatusCode())
-				.body(ErrorResponseDto.builder().message(ex.getMessage()).build());
+				.body(ErrorResponseDto.builder().message(reason).build());
 	}
 
 	@ExceptionHandler(value = ProfileNotFoundException.class)
@@ -67,12 +70,11 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(value = IllegalArgumentException.class)
 	public ResponseEntity<ErrorResponseDto> handleIllegalArgumentException(IllegalArgumentException ex) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-				.body(ErrorResponseDto.builder().message(ex.getMessage()).build());
+				.body(ErrorResponseDto.builder().message("Unable to process request. Please try again.").build());
 	}
 
 	@ExceptionHandler(value = Exception.class)
 	public ResponseEntity<ErrorResponseDto> handleException(Exception ex) {
-		Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 		logger.error("Unexpected error occurred: {}", ex.getMessage(), ex);
 
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -99,7 +101,6 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(value = NullPointerException.class)
 	public ResponseEntity<ErrorResponseDto> handleNullPointerException(NullPointerException ex) {
-		Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 		logger.error("NullPointerException occurred: {}", ex.getMessage(), ex);
 
 		// This typically happens when Principal is null due to authentication failure

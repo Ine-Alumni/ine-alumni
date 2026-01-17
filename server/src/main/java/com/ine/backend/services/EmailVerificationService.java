@@ -4,6 +4,9 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.ine.backend.entities.User;
 import com.ine.backend.exceptions.EmailAlreadyVerifiedException;
@@ -17,21 +20,31 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class EmailVerificationService {
+	private static final Logger LOG = LoggerFactory.getLogger(EmailVerificationService.class);
+
 	private final OtpService otpService;
 	private final UserService userService;
 	private final JavaMailSender mailSender;
 
+	@Value("${spring.mail.username}")
+	private String mailFrom;
+
 	@Async
 	public void sendVerificationToken(String email) {
-		final String token = otpService.generateAndStoreOtp(email);
+		try {
+			final String token = otpService.generateAndStoreOtp(email);
 
-		SimpleMailMessage message = new SimpleMailMessage();
-		message.setTo(email);
-		message.setSubject("Ine Alumni Email Verification");
-		message.setFrom("System");
-		message.setText("Verification code: " + token);
+			SimpleMailMessage message = new SimpleMailMessage();
+			message.setTo(email);
+			message.setSubject("INE Alumni - Email Verification");
+			message.setFrom(mailFrom);
+			message.setText("Your verification code: " + token);
 
-		mailSender.send(message);
+			mailSender.send(message);
+			LOG.debug("Verification email dispatched to {}", email);
+		} catch (Exception ex) {
+			LOG.error("Failed to send verification email to {}: {}", email, ex.getMessage(), ex);
+		}
 	}
 
 	public void resendVerificationToken(String email) {

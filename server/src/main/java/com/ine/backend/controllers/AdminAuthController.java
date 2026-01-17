@@ -20,9 +20,17 @@ public class AdminAuthController {
 	private AuthService authService;
 
 	@PostMapping("/signin")
-	public ResponseEntity<SignInResponseDto> signInAdmin(@RequestBody @Valid SignInRequestDto requestDto) {
-		SignInResponseDto response = authService.signInUser(requestDto, true);
-		return ResponseEntity.ok(response);
+	public ResponseEntity<?> signInAdmin(@RequestBody @Valid SignInRequestDto requestDto) {
+		try {
+			SignInResponseDto response = authService.signInUser(requestDto, true);
+			return ResponseEntity.ok(response);
+		} catch (IllegalArgumentException ex) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				.body("Unable to process admin signin. Please try again.");
+		} catch (Exception ex) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+				.body("Unable to process admin signin. Please try again.");
+		}
 	}
 
 	@GetMapping("/validate")

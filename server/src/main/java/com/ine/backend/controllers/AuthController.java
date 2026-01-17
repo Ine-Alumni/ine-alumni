@@ -24,15 +24,18 @@ public class AuthController {
 	private EmailVerificationService emailVerificationService;
 
 	@PostMapping("/signup")
-	public ResponseEntity<String> registerUser(@RequestBody @Valid SignUpRequestDto requestDto)
-			throws UserAlreadyExistsException {
-
-		authService.signUpUser(requestDto);
-
-		// Directly after registering the user, we send the verification email
-		emailVerificationService.sendVerificationToken(requestDto.getEmail());
-
-		return ResponseEntity.status(HttpStatus.CREATED).body("User account successfully created!");
+	public ResponseEntity<String> registerUser(@RequestBody @Valid SignUpRequestDto requestDto) {
+		try {
+			authService.signUpUser(requestDto);
+			emailVerificationService.sendVerificationToken(requestDto.getEmail());
+			return ResponseEntity.status(HttpStatus.CREATED).body("User account successfully created!");
+		} catch (UserAlreadyExistsException | IllegalArgumentException ex) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				.body("Unable to process registration. Please try again.");
+		} catch (Exception ex) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+				.body("Unable to process registration. Please try again.");
+		}
 	}
 
 	@PostMapping("/signin")
