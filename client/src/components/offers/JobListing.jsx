@@ -1,40 +1,26 @@
-import { useState, useMemo, useEffect } from "react";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Badge } from "../ui/badge";
-import {
-  Search,
-  MapPin,
-  Building,
-  Calendar,
-  Filter,
-  Clock,
-  ChevronDown,
-  ChevronRight,
-} from "lucide-react";
-import { useLanguage } from "../contexts/LanguageContext.jsx";
-import authHeader from "../../services/auth-header.js";
+import { useState, useMemo, useEffect } from 'react';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Badge } from '../ui/badge';
+import { Search, MapPin, Building, Calendar, Filter, Clock, ChevronDown, ChevronRight } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext.jsx';
+import authHeader from '../../services/auth-header.js';
+import { LocationSelect } from '../shared/LocationSelect';
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1";
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8080/api/v1';
 
 // Mock data for demonstration - will be replaced by API data when available
 const mockJobs = [
   {
-    id: "1",
-    title: "Stage Développeur Frontend React",
-    company: "TechCorp Innovation",
-    location: "Paris, France",
-    type: "stage",
-    customType: "",
-    duration: "6 mois",
+    id: '1',
+    title: 'Stage Développeur Frontend React',
+    company: 'TechCorp Innovation',
+    location: 'Paris, France',
+    type: 'stage',
+    customType: '',
+    duration: '6 mois',
     description: `Rejoignez notre équipe de développement frontend pour travailler sur des projets innovants utilisant React et TypeScript.
 
 **Responsabilités:**
@@ -54,33 +40,27 @@ const mockJobs = [
 • Mentorat par des développeurs expérimentés
 • Possibilité de télétravail hybride
 • Gratification attractive selon convention`,
-    posted: "2025-01-15",
+    posted: '2025-01-15',
     isNew: true,
     isRemote: false,
-    externalLink: "https://techcorp.com/careers/frontend-intern",
-  },
+    externalLink: 'https://techcorp.com/careers/frontend-intern',
+  }
 ];
 
 // API mapping helper - converts API response to UI format
 const mapApiOfferToUi = (o) => {
-  const type = (o.type || "").toLowerCase();
-  const mappedType =
-    type === "internship"
-      ? "stage"
-      : type === "job"
-        ? "emploi"
-        : type === "alternance"
-          ? "alternance"
-          : "autre";
-  const customType = type === "benevolat" ? "Bénévolat" : o.customType || "";
+  const type = (o.type || '').toLowerCase();
+  const mappedType = type === 'internship' ? 'stage'
+    : type === 'job' ? 'emploi'
+    : type === 'alternance' ? 'alternance'
+    : 'autre';
+  const customType = type === 'benevolat' ? 'Bénévolat' : (o.customType || '');
   const posted = o.postedAt || new Date().toISOString();
   const isNew = (() => {
     try {
       const d = new Date(posted);
-      return Date.now() - d.getTime() <= 7 * 24 * 60 * 60 * 1000;
-    } catch {
-      return false;
-    }
+      return (Date.now() - d.getTime()) <= 7 * 24 * 60 * 60 * 1000;
+    } catch { return false; }
   })();
   return {
     id: String(o.id),
@@ -89,8 +69,8 @@ const mapApiOfferToUi = (o) => {
     location: o.location,
     type: mappedType,
     customType,
-    duration: o.duration || "",
-    description: o.description || "",
+    duration: o.duration || '',
+    description: o.description || '',
     posted,
     isNew,
     isRemote: false,
@@ -101,7 +81,7 @@ const mapApiOfferToUi = (o) => {
 
 /**
  * JobListing Component
- *
+ * 
  * Main component for displaying job listings with search, filter, and expandable card functionality.
  * Features:
  * - Real-time search across job titles, companies, and custom types
@@ -109,25 +89,24 @@ const mapApiOfferToUi = (o) => {
  * - Expandable job cards with arrow toggle (► to ▼)
  * - Responsive design with proper spacing
  * - White cards with gray headers and proper borders
- *
+ * 
  * @param {Object} props
  * @param {Function} props.onJobSelect - Callback when a job is selected for detailed view
  */
-// eslint-disable-next-line no-unused-vars
 export function JobListing({ onJobSelect }) {
   const { t } = useLanguage();
-
+  
   // Search and filter state
-  const [searchTerm, setSearchTerm] = useState("");
-  const [typeFilter, setTypeFilter] = useState("all");
-  const [locationFilter, setLocationFilter] = useState("all");
+  const [searchTerm, setSearchTerm] = useState('');
+  const [typeFilter, setTypeFilter] = useState('all');
+  const [locationFilter, setLocationFilter] = useState('all');
   const [showFilters, setShowFilters] = useState(false);
-
+  
   // Data state
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
+  const [error, setError] = useState('');
+  
   // Expandable cards state - tracks which cards are expanded
   // TODO: Restore expandedCards state when expand/collapse feature is needed
   //const [expandedCards, setExpandedCards] = useState(new Set());
@@ -140,55 +119,47 @@ export function JobListing({ onJobSelect }) {
     let isMounted = true;
     (async () => {
       setLoading(true);
-      setError("");
+      setError('');
       try {
-        const res = await fetch(`${API_BASE}/offers`, {
-          method: "GET",
-          headers: authHeader(),
-        });
+        const res = await fetch(`${API_BASE}/offers`, { method: 'GET', headers: authHeader() });
         if (!res.ok) {
           // If API fails, use mock data for demonstration
           if (isMounted) {
             setJobs(mockJobs);
-            console.warn("API not available, using mock data");
+            console.warn('API not available, using mock data');
           }
           return;
         }
         const data = await res.json();
-        if (isMounted) setJobs((data || []).map(mapApiOfferToUi));
+        if (isMounted) setJobs((data.response || []).map(mapApiOfferToUi));
       } catch (e) {
         // Fallback to mock data on error
         if (isMounted) {
           setJobs(mockJobs);
-          console.warn("API error, using mock data:", e.message);
+          console.warn('API error, using mock data:', e.message);
         }
       } finally {
         if (isMounted) setLoading(false);
       }
     })();
-    return () => {
-      isMounted = false;
-    };
+    return () => { isMounted = false; };
   }, []);
 
   // Extract unique values for filter dropdowns
-  const locations = [...new Set(jobs.map((job) => job.location))];
+  const locations = [...new Set(jobs.map(job => job.location))];
 
   /**
    * Filter jobs based on search term and selected filters
    * Searches across job title, company name, and custom type
    */
   const filteredJobs = useMemo(() => {
-    return jobs.filter((job) => {
-      const matchesSearch =
-        job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        job.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (job.customType &&
-          job.customType.toLowerCase().includes(searchTerm.toLowerCase()));
-      const matchesType = typeFilter === "all" || job.type === typeFilter;
-      const matchesLocation =
-        locationFilter === "all" || job.location === locationFilter;
-
+    return jobs.filter(job => {
+      const matchesSearch = job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           job.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           (job.customType && job.customType.toLowerCase().includes(searchTerm.toLowerCase()));
+      const matchesType = typeFilter === 'all' || job.type === typeFilter;
+      const matchesLocation = locationFilter === 'all' || job.location === locationFilter;
+      
       return matchesSearch && matchesType && matchesLocation;
     });
   }, [jobs, searchTerm, typeFilter, locationFilter]);
@@ -198,10 +169,10 @@ export function JobListing({ onJobSelect }) {
    */
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("fr-FR", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
+    return date.toLocaleDateString('fr-FR', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
     });
   };
 
@@ -210,16 +181,16 @@ export function JobListing({ onJobSelect }) {
    */
   const getTypeColor = (type) => {
     switch (type) {
-      case "stage":
-        return "bg-blue-50 text-blue-700 border-blue-200";
-      case "emploi":
-        return "bg-green-50 text-green-700 border-green-200";
-      case "alternance":
-        return "bg-purple-50 text-purple-700 border-purple-200";
-      case "autre":
-        return "bg-orange-50 text-orange-700 border-orange-200";
+      case 'stage':
+        return 'bg-blue-50 text-blue-700 border-blue-200';
+      case 'emploi':
+        return 'bg-green-50 text-green-700 border-green-200';
+      case 'alternance':
+        return 'bg-purple-50 text-purple-700 border-purple-200';
+      case 'autre':
+        return 'bg-orange-50 text-orange-700 border-orange-200';
       default:
-        return "bg-gray-50 text-gray-700 border-gray-200";
+        return 'bg-gray-50 text-gray-700 border-gray-200';
     }
   };
 
@@ -227,7 +198,7 @@ export function JobListing({ onJobSelect }) {
    * Get display text for job type, handling custom types
    */
   const getTypeDisplayText = (job) => {
-    if (job.type === "autre" && job.customType) {
+    if (job.type === 'autre' && job.customType) {
       return job.customType;
     }
     return t(`type.${job.type}`);
@@ -254,18 +225,15 @@ export function JobListing({ onJobSelect }) {
    * Handles markdown-like formatting (**, •)
    */
   const formatDescription = (description) => {
-    return description.split("\n").map((paragraph, index) => {
-      if (paragraph.startsWith("**") && paragraph.endsWith("**")) {
+    return description.split('\n').map((paragraph, index) => {
+      if (paragraph.startsWith('**') && paragraph.endsWith('**')) {
         return (
-          <h4
-            key={index}
-            className="font-semibold text-gray-900 mt-4 mb-2 first:mt-0"
-          >
+          <h4 key={index} className="font-semibold text-gray-900 mt-4 mb-2 first:mt-0">
             {paragraph.slice(2, -2)}
           </h4>
         );
       }
-      if (paragraph.startsWith("•")) {
+      if (paragraph.startsWith('•')) {
         return (
           <div key={index} className="flex items-start space-x-2 mb-1">
             <span className="text-blue-600 font-bold">•</span>
@@ -285,17 +253,11 @@ export function JobListing({ onJobSelect }) {
   };
 
   return (
-    <div
-      className="space-y-6 pb-8"
-      style={{ fontFamily: "Open Sans, sans-serif" }}
-    >
+    <div className="space-y-6 pb-8" style={{ fontFamily: 'Open Sans, sans-serif' }}>
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h1
-          className="text-[22px] font-bold text-[#053A5F]"
-          style={{ fontFamily: "Open Sans, sans-serif" }}
-        >
-          {t("jobs.title")}
+        <h1 className="text-[22px] font-bold text-[#053A5F]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+          {t('jobs.title')}
         </h1>
         <Button
           variant="outline"
@@ -315,84 +277,65 @@ export function JobListing({ onJobSelect }) {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="pl-10 border-[#3A7FC2] focus:border-[#0C5F95] focus:ring-[#E2F2FF] bg-white"
-          style={{ fontFamily: "Open Sans, sans-serif", fontSize: "14px" }}
+          style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '14px' }}
         />
       </div>
 
       {/* Filters */}
-      <div
-        className={`grid grid-cols-1 md:grid-cols-3 gap-4 ${showFilters ? "block" : "hidden md:grid"}`}
-      >
+      <div className={`grid grid-cols-1 md:grid-cols-3 gap-4 ${showFilters ? 'block' : 'hidden md:grid'}`}>
         <Select value={typeFilter} onValueChange={setTypeFilter}>
           <SelectTrigger className="border-[#3A7FC2] focus:border-[#0C5F95] focus:ring-[#E2F2FF] bg-white">
             <SelectValue placeholder="Type d'offre" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Tous les types</SelectItem>
-            <SelectItem value="stage">{t("type.stage")}</SelectItem>
-            <SelectItem value="alternance">{t("type.alternance")}</SelectItem>
-            <SelectItem value="emploi">{t("type.emploi")}</SelectItem>
-            <SelectItem value="autre">{t("type.autre")}</SelectItem>
+            <SelectItem value="stage">{t('type.stage')}</SelectItem>
+            <SelectItem value="alternance">{t('type.alternance')}</SelectItem>
+            <SelectItem value="emploi">{t('type.emploi')}</SelectItem>
+            <SelectItem value="autre">{t('type.autre')}</SelectItem>
           </SelectContent>
         </Select>
 
-        <Select value={locationFilter} onValueChange={setLocationFilter}>
-          <SelectTrigger className="border-[#3A7FC2] focus:border-[#0C5F95] focus:ring-[#E2F2FF] bg-white">
-            <SelectValue placeholder="Localisation" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Tous les lieux</SelectItem>
-            {locations.map((location) => (
-              <SelectItem key={location} value={location}>
-                {location}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <LocationSelect
+          value={locationFilter === 'all' ? '' : locationFilter}
+          onChange={(value) => setLocationFilter(value || 'all')}
+          placeholder="Tous les lieux"
+          required={false}
+        />
 
         <Button
           variant="outline"
           onClick={() => {
-            setSearchTerm("");
-            setTypeFilter("all");
-            setLocationFilter("all");
+            setSearchTerm('');
+            setTypeFilter('all');
+            setLocationFilter('all');
           }}
           className="border-[#3A7FC2] text-[#053A5F] hover:bg-[#E2F2FF] bg-white"
         >
-          {t("common.reset")}
+          {t('common.reset')}
         </Button>
       </div>
 
       {/* Results Count */}
-      <div
-        className="text-sm text-[#3A7FC2]"
-        style={{ fontFamily: "Open Sans, sans-serif", fontSize: "14px" }}
-      >
-        {loading
-          ? "Chargement..."
-          : error
-            ? "Erreur de chargement"
-            : `${filteredJobs.length} résultat(s)`}
+      <div className="text-sm text-[#3A7FC2]" style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '14px' }}>
+        {loading ? 'Chargement...' : error ? 'Erreur de chargement' : `${filteredJobs.length} résultat(s)`}
       </div>
 
       {/* Job Cards */}
       <div className="space-y-6">
         {filteredJobs.length === 0 ? (
           <Card className="p-8 text-center bg-white border-[#3A7FC2] shadow-sm">
-            <p
-              className="text-[#053A5F]"
-              style={{ fontFamily: "Open Sans, sans-serif", fontSize: "14px" }}
-            >
+            <p className="text-[#053A5F]" style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '14px' }}>
               Aucune offre ne correspond à vos critères de recherche.
             </p>
           </Card>
         ) : (
-          filteredJobs.map((job) => {
+          filteredJobs.map(job => {
             //const isExpanded = expandedCards.has(job.id);
-
+            
             return (
-              <Card
-                key={job.id}
+              <Card 
+                key={job.id} 
                 className="bg-white border-2 border-[#0C5F95] shadow-md hover:shadow-lg transition-all duration-200 overflow-hidden"
               >
                 {/* Card Header - Gray background with job info */}
@@ -403,41 +346,29 @@ export function JobListing({ onJobSelect }) {
                         {/* REPLACE the CardHeader section to remove the arrow button: */}
                         <div className="flex items-center gap-2">
                           {/* TODO: Restore expand/collapse arrow button */}
-                          <CardTitle
-                            className="text-[18px] font-semibold text-[#053A5F]"
-                            style={{ fontFamily: "Open Sans, sans-serif" }}
+                          <CardTitle 
+                            className="text-[18px] font-semibold text-[#053A5F]" 
+                            style={{ fontFamily: 'Open Sans, sans-serif' }}
                           >
                             {job.title}
                           </CardTitle>
                         </div>
-
+                        
                         {/* Badges */}
                         {job.isNew && (
-                          <Badge
-                            variant="secondary"
-                            className="bg-[#0C5F95] text-white border-[#0C5F95]"
-                          >
-                            {t("common.new")}
+                          <Badge variant="secondary" className="bg-[#0C5F95] text-white border-[#0C5F95]">
+                            {t('common.new')}
                           </Badge>
                         )}
                         {job.isRemote && (
-                          <Badge
-                            variant="outline"
-                            className="border-[#3A7FC2] text-[#053A5F] bg-white"
-                          >
-                            {t("common.remote")}
+                          <Badge variant="outline" className="border-[#3A7FC2] text-[#053A5F] bg-white">
+                            {t('common.remote')}
                           </Badge>
                         )}
                       </div>
-
+                      
                       {/* Job metadata */}
-                      <div
-                        className="flex items-center space-x-4 text-sm text-[#3A7FC2] flex-wrap gap-y-1"
-                        style={{
-                          fontFamily: "Open Sans, sans-serif",
-                          fontSize: "14px",
-                        }}
-                      >
+                      <div className="flex items-center space-x-4 text-sm text-[#3A7FC2] flex-wrap gap-y-1" style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '14px' }}>
                         <div className="flex items-center space-x-1">
                           <Building className="w-4 h-4" />
                           <span>{job.company}</span>
@@ -456,15 +387,12 @@ export function JobListing({ onJobSelect }) {
                         </div>
                       </div>
                     </div>
-
+                    
                     {/* Job type badge */}
                     <div className="flex flex-col gap-2">
-                      <Badge
+                      <Badge 
                         className={`${getTypeColor(job.type)} font-semibold border`}
-                        style={{
-                          fontFamily: "Open Sans, sans-serif",
-                          fontSize: "14px",
-                        }}
+                        style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '14px' }}
                       >
                         {getTypeDisplayText(job)}
                       </Badge>
@@ -478,7 +406,7 @@ export function JobListing({ onJobSelect }) {
                     <div className="prose prose-sm max-w-none">
                       {formatDescription(job.description)}
                     </div>
-
+                    
                     {/* TODO: Restore Apply button visibility when backend is ready */}
                     <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-100">
                       {/* Apply button hidden - will be restored when backend ready */}
@@ -491,25 +419,20 @@ export function JobListing({ onJobSelect }) {
                         {t('common.apply')}
                       </Button>
                       */}
-
+                      
                       {job.externalLink && (
                         <Button
                           variant="outline"
-                          onClick={() =>
-                            window.open(job.externalLink, "_blank")
-                          }
+                          onClick={() => window.open(job.externalLink, '_blank')}
                           className="border-[#3A7FC2] text-[#053A5F] hover:bg-[#E2F2FF] flex-1 sm:flex-none"
-                          style={{
-                            fontFamily: "Open Sans, sans-serif",
-                            fontSize: "14px",
-                          }}
+                          style={{ fontFamily: 'Open Sans, sans-serif', fontSize: '14px' }}
                         >
                           Voir l'offre originale
                         </Button>
                       )}
                     </div>
-                  </div>
-                </CardContent>
+                  </div>   
+                </CardContent>      
               </Card>
             );
           })
