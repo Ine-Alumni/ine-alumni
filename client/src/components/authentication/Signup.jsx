@@ -54,12 +54,16 @@ const Signup = () => {
             addAlert(false, response.data.message);
           }
         } catch (error) {
-          actions.resetForm();
-          addAlert(
-            false,
-            error.response?.data?.message ||
-              "Une erreur est survenue. Veuillez réessayer plus tard.",
-          );
+          // Show a clear message when the email is already registered
+          const status = error?.response?.status;
+          const data = error?.response?.data;
+          const backendMsg = typeof data === "string" ? data : data?.message;
+
+          const message = status === 409
+            ? "An account with this email already exists. Please sign in."
+            : backendMsg || "Unable to sign up. Please try again.";
+
+          addAlert(false, message);
         }
       },
     });
@@ -70,7 +74,7 @@ const Signup = () => {
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-xl xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-700 md:text-2xl dark:text-white">
-              Créer un compte
+              Create an account
             </h1>
             <form
               noValidate
@@ -83,16 +87,16 @@ const Signup = () => {
                     htmlFor="fullName"
                     className="block mb-2 text-sm font-medium text-gray-700 dark:text-white"
                   >
-                    Nom complet <span className="text-red-400">*</span>
+                    Full name <span className="text-red-400">*</span>
                   </label>
                   <input
                     value={values.fullName}
                     onChange={handleChange}
                     type="text"
                     name="fullName"
-                    id="fullname"
+                    id="fullName"
                     className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="Nom"
+                    placeholder="Full name"
                   />
                   {errors.fullName && touched.fullName && (
                     <p className="text-red-400 text-sm mt-1">
@@ -128,7 +132,7 @@ const Signup = () => {
                     htmlFor="password"
                     className="block mb-2 text-sm font-medium text-gray-700 dark:text-white"
                   >
-                    Mot de passe <span className="text-red-400">*</span>
+                    Password <span className="text-red-400">*</span>
                   </label>
                   <input
                     value={values.password}
@@ -150,7 +154,7 @@ const Signup = () => {
                     htmlFor="confirmPassword"
                     className="block mb-2 text-sm font-medium text-gray-700 dark:text-white"
                   >
-                    Confirmer le mot de passe{" "}
+                    Confirm password{" "}
                     <span className="text-red-400">*</span>
                   </label>
                   <input
@@ -175,7 +179,7 @@ const Signup = () => {
                     htmlFor="major"
                     className="block mb-2 text-sm font-medium text-gray-700 dark:text-white"
                   >
-                    Filière <span className="text-red-400">*</span>
+                    Major <span className="text-red-400">*</span>
                   </label>
                   <select
                     value={values.major}
@@ -191,7 +195,7 @@ const Signup = () => {
                     <option value="SESNUM">SESNUM</option>
                     <option value="AMOA">AMOA</option>
                     <option value="CYBER_SECURITY">CYBER SECURITY</option>
-                    <option value="OTHER">Autre</option>
+                    <option value="OTHER">Other</option>
                   </select>
                   {errors.major && touched.major && (
                     <p className="text-red-400 text-sm mt-1">{errors.major}</p>
@@ -202,7 +206,7 @@ const Signup = () => {
                     htmlFor="graduationYear"
                     className="block mb-2 text-sm font-medium text-gray-700 dark:text-white"
                   >
-                    Promotion <span className="text-red-400">*</span>
+                    Graduation year <span className="text-red-400">*</span>
                   </label>
                   <input
                     value={values.graduationYear}
@@ -228,7 +232,7 @@ const Signup = () => {
                     htmlFor="phoneNumber"
                     className="block mb-2 text-sm font-medium text-gray-700 dark:text-white"
                   >
-                    Numéro du teléphone
+                    Phone number
                   </label>
                   <input
                     value={values.phoneNumber}
@@ -250,7 +254,7 @@ const Signup = () => {
                     htmlFor="gender"
                     className="block mb-2 text-sm font-medium text-gray-700 dark:text-white"
                   >
-                    Sexe <span className="text-red-400">*</span>
+                    Gender <span className="text-red-400">*</span>
                   </label>
                   <select
                     value={values.gender}
@@ -259,8 +263,8 @@ const Signup = () => {
                     id="gender"
                     className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   >
-                    <option value="MALE">Homme</option>
-                    <option value="FEMALE">Femme</option>
+                    <option value="MALE">Male</option>
+                    <option value="FEMALE">Female</option>
                   </select>
                   {errors.gender && touched.gender && (
                     <p className="text-red-400 text-sm mt-1">{errors.gender}</p>
@@ -274,7 +278,7 @@ const Signup = () => {
                     htmlFor="country"
                     className="block mb-2 text-sm font-medium text-gray-700 dark:text-white"
                   >
-                    Pays
+                    Country
                   </label>
                   <select
                     value={values.country}
@@ -284,7 +288,7 @@ const Signup = () => {
                     className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   >
                     <option value="">--</option>
-                    <option value="Maroc">Maroc</option>
+                    <option value="Morocco">Morocco</option>
                   </select>
                 </div>
                 <div className="flex-1">
@@ -292,7 +296,7 @@ const Signup = () => {
                     htmlFor="city"
                     className="block mb-2 text-sm font-medium text-gray-700 dark:text-white"
                   >
-                    Ville
+                    City
                   </label>
                   <select
                     value={values.city}
@@ -312,15 +316,15 @@ const Signup = () => {
                 type="submit"
                 className="w-full text-white bg-[#5691cb] mt-3 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-bold rounded-lg text-sm px-5 py-3 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 hover:bg-[#0c5f95] cursor-pointer"
               >
-                S'inscrire
+                Sign up
               </button>
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                Vous avez déjà un compte ?{" "}
+                Already have an account?{" "}
                 <Link
                   to="/se-connecter"
                   className="font-medium text-primary-600 hover:underline dark:text-primary-500 "
                 >
-                  Se connecter
+                  Sign in
                 </Link>
               </p>
             </form>

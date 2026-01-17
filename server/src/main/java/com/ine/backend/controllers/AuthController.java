@@ -29,7 +29,10 @@ public class AuthController {
 			authService.signUpUser(requestDto);
 			emailVerificationService.sendVerificationToken(requestDto.getEmail());
 			return ResponseEntity.status(HttpStatus.CREATED).body("User account successfully created!");
-		} catch (UserAlreadyExistsException | IllegalArgumentException ex) {
+		} catch (UserAlreadyExistsException ex) {
+			return ResponseEntity.status(HttpStatus.CONFLICT)
+				.body("An account with this email already exists. Please sign in.");
+		} catch (IllegalArgumentException ex) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 				.body("Unable to process registration. Please try again.");
 		} catch (Exception ex) {
