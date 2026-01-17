@@ -12,13 +12,59 @@ dist
 dist-ssr
 *.local
 .vite
+.idea
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
-.idea
 .DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# Maven / Spring Boot
+# See https://github.com/github/gitignore/blob/main/MAVEN.gitignore for more
+target/
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS (Spring Tool Suite) ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea/workspace.xml
+!.idea/libraries
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/settings.json
+.vscode/tasks.json
+.vscode/launch.json
+.vscode/extensions.json
+.vscode/**/*.code-snippets
+
+# Local env file containing secrets; DO NOT commit - use .env-template instead
+client/.env
+server/.env
+
+# Temporary files
+uploads/
+*.tmp
+*.bak
+
+# Logs
+*.log
+server/logs/
