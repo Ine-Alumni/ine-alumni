@@ -29,6 +29,9 @@ Start all services:
 docker compose up -d --build
 ```
 
+Having issues? See: [TROUBLESHOOTING.md](./server/TROUBLESHOOTING.md)
+
+
 URLs:
 - Frontend: http://localhost:5173
 - Backend API: http://localhost:8080
@@ -93,3 +96,19 @@ cd server
 - Frontend lint: `npm run lint` (client)
 - Backend format checks: Spotless plugin (runs on build)
 - Open PRs against the feature branches as needed.
+
+
+## Documentation
+
+- [CONTRIBUTING.md](./CONTRIBUTING.md) - How to contribute
+- [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) - Common issues and solutions
+- [client/README.md](./client/README.md) - Frontend-specific docs
+- [server/README.md](./server/README.md) - Backend-specific docs
+
+
+## Contact:
+
+- GitHub Issues: Report bugs or request features
+- Pull Requests: Welcome! See CONTRIBUTING.md
+- Team: Tag maintainers in issues/PRs for review
+- mail: inealumni.i@gmail.com
