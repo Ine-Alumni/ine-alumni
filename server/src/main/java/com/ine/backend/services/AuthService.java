@@ -56,11 +56,13 @@ public class AuthService {
 	 * appropriate repository based on their role
 	 */
 	private User findUserByEmailAndRole(String email, Role role) {
-		if (role == Role.ROLE_ADMIN || role == Role.ROLE_SUPER_ADMIN) {
-			return adminRepository.findByEmail(email);
-		} else {
-			return userService.findByEmail(email);
+		User user = (role == Role.ROLE_ADMIN || role == Role.ROLE_SUPER_ADMIN)
+			? adminRepository.findByEmail(email)
+			: userService.findByEmail(email);
+		if (user == null) {
+			throw new IllegalStateException("Authenticated user not found in the database.");
 		}
+		return user;
 	}
 
 	private InptUser createUser(SignUpRequestDto requestDto) {

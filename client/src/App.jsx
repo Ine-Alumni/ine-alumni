@@ -26,6 +26,8 @@ import OutilsPratiques from "./components/ressources/OutilsPratiques";
 import RscCertification from "./components/ressources/RscCertification";
 import { LaureateDetailPage } from "./components/laureats/LaureateDetailPage";
 import { CompanyDetailPage } from "./components/entreprises/CompanyDetailPage";
+import ForgotPassword from "./components/authentication/ForgotPassword";
+import ResetPassword from "./components/authentication/ResetPassword";
 
 function App() {
   
@@ -57,6 +59,9 @@ function App() {
           <Route path="evenements/:id" element={<EventDetails />} />
           <Route path="about" element={<About />} />
           <Route path="clubs" element={<Clubs />}></Route>
+
+          <Route path="forgot-password" element={<ForgotPassword />} />
+          <Route path="reset-password" element={<ResetPassword />} />
 
           <Route path="*" element={<NotFound />}></Route>
 

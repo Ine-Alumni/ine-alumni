@@ -20,21 +20,17 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class AuthEntryPointJwt implements AuthenticationEntryPoint {
 
-	private static final Logger logger = LoggerFactory.getLogger(AuthEntryPointJwt.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AuthEntryPointJwt.class);
 
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException authException) throws IOException, ServletException {
-		logger.error("Unauthorized error: {}", authException.getMessage());
+		LOG.error("Unauthorized error: {}", authException.getMessage());
 
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-		String errorMessage = authException.getMessage() != null
-				? authException.getMessage()
-				: "Full authentication is required to access this resource";
-
-		ErrorResponseDto errorResponse = ErrorResponseDto.builder().message(errorMessage).build();
+		ErrorResponseDto errorResponse = ErrorResponseDto.builder().message("Unauthorized").build();
 
 		final ObjectMapper mapper = new ObjectMapper();
 		mapper.writeValue(response.getOutputStream(), errorResponse);

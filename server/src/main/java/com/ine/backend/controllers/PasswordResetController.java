@@ -20,12 +20,12 @@ public class PasswordResetController {
 	@PostMapping("/forgot")
 	public ResponseEntity<String> forgotPassword(@RequestBody @Valid ForgotPasswordRequestDto requestDto) {
 		passwordResetService.sendPasswordResetToken(requestDto.getEmail());
-		return ResponseEntity.ok("Un code de réinitialisation a été envoyé à votre adresse email.");
+		return ResponseEntity.ok("A reset code has been sent to your email address.");
 	}
 
 	@PostMapping("/reset")
 	public ResponseEntity<String> resetPassword(@RequestBody @Valid ResetPasswordRequestDto requestDto) {
 		passwordResetService.resetPassword(requestDto.getEmail(), requestDto.getToken(), requestDto.getNewPassword());
-		return ResponseEntity.ok("Votre mot de passe a été réinitialisé avec succès.");
+		return ResponseEntity.ok("Your password has been reset successfully.");
 	}
 }
