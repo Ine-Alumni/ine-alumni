@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -7,133 +8,168 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { X } from "lucide-react";
+import { X, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { filterService } from "@/services/filterService";
 
-// TODO: Implement filter logic and state management
-// This component currently shows UI placeholders for filters
-// Need to implement:
-// - Filter state management
-// - Filter update logic
-// - Clear filter functionality
-// - Active filters tracking
-// - onChange handler integration
+export function FilterPanel({ onFilterChange, onApplyFilters, className }) {
+  const [options, setOptions] = useState({});
+  const [filters, setFilters] = useState({});
+  const [loading, setLoading] = useState(true);
 
-export function FilterPanel({ filters, onChange, className }) {
-  // TODO: Implement filter rendering logic with proper state management and event handling
-  const renderFilter = (filter) => {
-    switch (filter.type) {
-      case "select":
-        return (
-          <div key={filter.key} className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">
-              {filter.label}
-            </label>
-            <Select
-              onValueChange={(value) =>
-                onChange({ type: filter.type, key: filter.key, value })
-              }
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Tous" />
-              </SelectTrigger>
-              <SelectContent>
-                {filter.options?.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        );
+  useEffect(() => {
+    filterService
+      .getFilterOptions()
+      .then(setOptions)
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
 
-      case "multiselect":
-        return (
-          <div key={filter.key} className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">
-              {filter.label}
-            </label>
-            <div className="space-y-2">
-              {filter.options?.map((option) => (
-                <label
-                  key={option.value}
-                  className="flex items-center space-x-2"
-                >
-                  <input
-                    type="checkbox"
-                    onChange={(e) =>
-                      onChange({
-                        type: filter.type,
-                        key: filter.key,
-                        value: option.value,
-                        checked: e.target.checked,
-                      })
-                    }
-                    className="rounded border-gray-300 text-main-blue focus:ring-blue-500"
-                  />
-                  <span className="text-sm text-gray-700">{option.label}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-        );
-
-      case "checkbox":
-        return (
-          <div key={filter.key} className="space-y-2">
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                onChange={(e) =>
-                  onChange({
-                    type: filter.type,
-                    key: filter.key,
-                    checked: e.target.checked,
-                  })
-                }
-                className="rounded border-gray-300 text-main-blue focus:ring-blue-500"
-              />
-              <span className="text-sm font-medium text-gray-700">
-                {filter.label}
-              </span>
-            </label>
-          </div>
-        );
-
-      default:
-        return null;
+  const updateFilter = (key, value) => {
+    const updated = { ...filters };
+    if (value && value !== "all") {
+      updated[key] = value;
+    } else {
+      delete updated[key];
     }
+    setFilters(updated);
+    onFilterChange?.(updated);
   };
+
+  const clearAll = () => {
+    setFilters({});
+    onFilterChange?.({});
+    onApplyFilters?.({});
+  };
+
+  const removeFilter = (key) => {
+    const updated = { ...filters };
+    delete updated[key];
+    setFilters(updated);
+    onApplyFilters?.(updated);
+  };
+
+  const hasFilters = Object.keys(filters).length > 0;
+
+  if (loading) {
+    return (
+      <div className={cn("space-y-6", className)}>
+        <div className="flex justify-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-main-blue"></div>
+        </div>
+      </div>
+    );
+  }
+
+  const FilterSelect = ({ label, filterKey, items, valueKey, labelKey }) => (
+    <div className="space-y-2">
+      <label className="text-sm font-medium text-gray-700">{label}</label>
+      <Select
+        value={filters[filterKey] || "all"}
+        onValueChange={(v) => updateFilter(filterKey, v)}
+      >
+        <SelectTrigger className="w-full">
+          <SelectValue placeholder="Tous" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">Tous</SelectItem>
+          {items.map((item) => {
+            const value = valueKey ? String(item[valueKey]) : item;
+            const displayLabel = labelKey
+              ? typeof labelKey === "function"
+                ? labelKey(item)
+                : item[labelKey]
+              : item;
+            return (
+              <SelectItem key={value} value={value}>
+                {displayLabel}
+              </SelectItem>
+            );
+          })}
+        </SelectContent>
+      </Select>
+    </div>
+  );
 
   return (
     <div className={cn("space-y-6", className)}>
-      {/* Filter Controls */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filters.map(renderFilter)}
+        <FilterSelect
+          label="Promotion"
+          filterKey="promotion"
+          items={options.graduationYears || []}
+        />
+        <FilterSelect
+          label="Poste"
+          filterKey="poste"
+          items={options.positions || []}
+        />
+        <FilterSelect
+          label="Filière"
+          filterKey="filiere"
+          items={options.majors || []}
+        />
+        <FilterSelect
+          label="Entreprise"
+          filterKey="entreprise"
+          items={options.companies || []}
+          valueKey="id"
+          labelKey="name"
+        />
+        <FilterSelect
+          label="Localisation"
+          filterKey="localisation"
+          items={options.cities || []}
+        />
+        <FilterSelect
+          label="Domaine"
+          filterKey="domaine"
+          items={options.domains || []}
+          labelKey={(domain) => domain.replace(/_/g, " ")}
+        />
       </div>
 
-      {/* TODO: Implement active filters display with proper state management */}
-      {/* This section will show selected filters and allow clearing them */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <h4 className="text-sm font-medium text-gray-700">Filtres actifs:</h4>
-          <Button variant="ghost" size="sm" disabled className="text-gray-400">
-            Effacer tout
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearAll}
+              disabled={!hasFilters}
+            >
+              Effacer tout
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => onApplyFilters?.(filters)}
+              disabled={!hasFilters}
+              className="bg-main-blue hover:bg-secondary-blue text-white"
+            >
+              <Search className="w-4 h-4 mr-1" />
+              Rechercher
+            </Button>
+          </div>
         </div>
 
-        <div className="flex flex-wrap gap-2">
-          <Badge
-            variant="secondary"
-            className="flex items-center gap-1 opacity-50"
-          >
-            <span className="text-xs">Exemple de filtre</span>
-            <button disabled className="ml-1 rounded-full p-0.5">
-              <X className="w-3 h-3" />
-            </button>
-          </Badge>
-        </div>
+        {hasFilters && (
+          <div className="flex flex-wrap gap-2">
+            {Object.entries(filters).map(([key, value]) => (
+              <Badge
+                key={key}
+                variant="secondary"
+                className="flex items-center gap-1 cursor-pointer hover:bg-gray-300 transition-colors"
+                onClick={() => removeFilter(key)}
+              >
+                <span className="text-xs">
+                  {filterService.getFilterLabel(key, value, options.companies)}
+                </span>
+                <X className="w-3 h-3" />
+              </Badge>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

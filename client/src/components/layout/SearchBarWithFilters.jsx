@@ -15,17 +15,21 @@ export function SearchBarWithFilters({
   placeholder,
   filters,
   onSearch,
+  onSortChange,
   showFilters = true,
   className,
 }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [showFiltersPanel, setShowFiltersPanel] = useState(false);
-  const [sortValue, setSortValue] = useState("name");
+  const [sortValue, setSortValue] = useState("");
 
-  const handleSearchChange = (e) => {
-    const query = e.target.value;
-    setSearchQuery(query);
-    onSearch(query);
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") onSearch(searchQuery);
+  };
+
+  const handleSortChange = (value) => {
+    setSortValue(value);
+    onSortChange?.(value);
   };
 
   return (
@@ -38,7 +42,8 @@ export function SearchBarWithFilters({
             type="text"
             placeholder={placeholder}
             value={searchQuery}
-            onChange={handleSearchChange}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
             className="pl-10"
           />
         </div>
@@ -49,14 +54,13 @@ export function SearchBarWithFilters({
               <label htmlFor="sort" className="text-sm text-gray-600">
                 Trier par :
               </label>
-              <Select value={sortValue} onValueChange={setSortValue}>
+              <Select value={sortValue} onValueChange={handleSortChange}>
                 <SelectTrigger className="w-[140px] text-sm bg-white">
                   <SelectValue placeholder="Sélectionner..." />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="name">Nom</SelectItem>
                   <SelectItem value="promotion">Promotion</SelectItem>
-                  <SelectItem value="company">Entreprise</SelectItem>
                 </SelectContent>
               </Select>
             </div>

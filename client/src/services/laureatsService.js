@@ -13,30 +13,40 @@ export const laureatsService = {
     const response = await api.get("/laureats", {
       params: { page, size, sortBy, sortDir },
     });
-    return response.data;
+    return response.data.response;
   },
 
   // Search laureates
   searchLaureates: async (searchTerm, params = {}) => {
-    const { page = 0, size = 12 } = params;
+    const {
+      page = 0,
+      size = 12,
+      sortBy = "fullName",
+      sortDir = "asc",
+    } = params;
     const response = await api.get("/laureats/search", {
-      params: { q: searchTerm, page, size },
+      params: { q: searchTerm, page, size, sortBy, sortDir },
     });
-    return response.data;
+    return response.data.response;
   },
 
   // Filter laureates with advanced criteria
   filterLaureates: async (filterData, params = {}) => {
-    const { page = 0, size = 12 } = params;
+    const {
+      page = 0,
+      size = 12,
+      sortBy = "fullName",
+      sortDir = "asc",
+    } = params;
     const response = await api.post("/laureats/filter", filterData, {
-      params: { page, size },
+      params: { page, size, sortBy, sortDir },
     });
-    return response.data;
+    return response.data.response;
   },
 
   // Get laureate details by ID
   getLaureateById: async (id) => {
     const response = await api.get(`/laureats/${id}`);
-    return response.data;
+    return response.data.response;
   },
 };
