@@ -63,4 +63,11 @@ public interface LaureatRepository extends JpaRepository<Laureat, Long> {
 
 	@Query("SELECT l.city, l.country, COUNT(l) FROM Laureat l WHERE l.isAccountVerified = true AND l.city IS NOT NULL AND l.country IS NOT NULL GROUP BY l.city, l.country ORDER BY COUNT(l) DESC")
 	List<Object[]> countByLocation();
+
+	// Filter options queries
+	@Query("SELECT DISTINCT l.currentPosition FROM Laureat l WHERE l.isAccountVerified = true AND l.currentPosition IS NOT NULL ORDER BY l.currentPosition")
+	List<String> findDistinctPositions();
+
+	@Query("SELECT DISTINCT l.city FROM Laureat l WHERE l.isAccountVerified = true AND l.city IS NOT NULL ORDER BY l.city")
+	List<String> findDistinctCities();
 }

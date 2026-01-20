@@ -94,6 +94,14 @@ public class LaureatService {
 				.collect(Collectors.toList());
 	}
 
+	public List<String> getAvailablePositions() {
+		return laureatRepository.findDistinctPositions();
+	}
+
+	public List<String> getAvailableCities() {
+		return laureatRepository.findDistinctCities();
+	}
+
 	private LaureatDTO convertToDTO(Laureat laureat) {
 		LaureatDTO dto = new LaureatDTO();
 		dto.setId(laureat.getId());

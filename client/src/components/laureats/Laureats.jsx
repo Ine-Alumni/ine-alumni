@@ -1,15 +1,17 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { ProfileCard } from "@/components/laureats/ProfileCard";
 import { SearchBarWithFilters } from "../layout/SearchBarWithFilters";
 import { FilterPanel } from "../common/FilterPanel";
-import { laureatsService } from "../../services/laureatsService";
-import { laureateFilters } from "../../data/sampleData";
+import { laureatsService } from "@/services/laureatsService";
+import { filterService } from "@/services/filterService";
 
 const Laureats = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [filters, setFilters] = useState({});
+  const [appliedFilters, setAppliedFilters] = useState({});
+  const [sortBy, setSortBy] = useState("");
   const [laureates, setLaureates] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState(null);
   const [pagination, setPagination] = useState({
     pageNumber: 0,
@@ -17,62 +19,88 @@ const Laureats = () => {
     totalElements: 0,
     totalPages: 0,
   });
+  const sentinelRef = useRef(null);
 
-  const fetchLaureates = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
+  const fetchLaureates = useCallback(
+    async (page, append = false) => {
+      try {
+        append ? setLoadingMore(true) : setLoading(true);
+        setError(null);
 
-      let response;
-      if (searchQuery.trim()) {
-        response = await laureatsService.searchLaureates(searchQuery, {
-          page: pagination.pageNumber,
-          size: pagination.pageSize,
-        });
-      } else if (Object.keys(filters).length > 0) {
-        // Convert filters to backend format
-        const filterData = {
-          searchTerm: searchQuery,
-          majors: filters.filiere ? [filters.filiere] : undefined,
-          graduationYears: filters.promotion
-            ? [parseInt(filters.promotion)]
-            : undefined,
-          positions: filters.poste ? [filters.poste] : undefined,
-          cities: filters.localisation ? [filters.localisation] : undefined,
-          domains: filters.domaine ? [filters.domaine] : undefined,
-        };
+        await new Promise((resolve) => setTimeout(resolve, 500));
 
-        response = await laureatsService.filterLaureates(filterData, {
-          page: pagination.pageNumber,
-          size: pagination.pageSize,
+        const filterData = filterService.buildFilterData(appliedFilters);
+        const params = { page, size: 12 };
+        if (sortBy) {
+          params.sortBy = sortBy;
+          params.sortDir = "asc";
+        }
+
+        const response = searchQuery.trim()
+          ? await laureatsService.searchLaureates(searchQuery, params)
+          : filterData
+            ? await laureatsService.filterLaureates(filterData, params)
+            : await laureatsService.getAllLaureates(params);
+
+        setLaureates((prev) =>
+          append ? [...prev, ...response.content] : response.content,
+        );
+        setPagination({
+          pageNumber: response.pageNumber,
+          pageSize: response.pageSize,
+          totalElements: response.totalElements,
+          totalPages: response.totalPages,
         });
-      } else {
-        response = await laureatsService.getAllLaureates({
-          page: pagination.pageNumber,
-          size: pagination.pageSize,
-        });
+      } catch (err) {
+        console.error("Error fetching laureates:", err);
+        setError("Failed to load laureates. Please try again.");
+        if (!append) setLaureates([]);
+      } finally {
+        setLoading(false);
+        setLoadingMore(false);
       }
+    },
+    [searchQuery, appliedFilters, sortBy],
+  );
 
-      setLaureates(response.content || []);
-      setPagination({
-        pageNumber: response.pageNumber || 0,
-        pageSize: response.pageSize || 12,
-        totalElements: response.totalElements || 0,
-        totalPages: response.totalPages || 0,
-      });
-    } catch (err) {
-      console.error("Error fetching laureates:", err);
-      setError("Failed to load laureates. Please try again.");
-      setLaureates([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [searchQuery, filters, pagination.pageNumber, pagination.pageSize]);
-
-  // Fetch laureates from backend
+  // Fetch initial data and reset on search/filter change
   useEffect(() => {
-    fetchLaureates();
+    fetchLaureates(0, false);
   }, [fetchLaureates]);
+
+  // Infinite scroll
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (
+          entry.isIntersecting &&
+          !loading &&
+          !loadingMore &&
+          pagination.pageNumber < pagination.totalPages - 1
+        ) {
+          fetchLaureates(pagination.pageNumber + 1, true);
+        }
+      },
+      { threshold: 0.1 },
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [
+    loading,
+    loadingMore,
+    pagination.pageNumber,
+    pagination.totalPages,
+    fetchLaureates,
+  ]);
+
+  const handleSortChange = (sortValue) => {
+    const mapping = { name: "fullName", promotion: "graduationYear" };
+    setSortBy(mapping[sortValue] || "");
+  };
 
   return (
     <div className="min-h-screen py-8">
@@ -90,8 +118,12 @@ const Laureats = () => {
           <SearchBarWithFilters
             placeholder="Recherche par nom, entreprise ou filière..."
             onSearch={setSearchQuery}
+            onSortChange={handleSortChange}
             filters={
-              <FilterPanel filters={laureateFilters} onChange={setFilters} />
+              <FilterPanel
+                onFilterChange={() => {}}
+                onApplyFilters={setAppliedFilters}
+              />
             }
           />
         </div>
@@ -141,6 +173,16 @@ const Laureats = () => {
                 <p className="text-gray-500">Aucun lauréat trouvé.</p>
               </div>
             )}
+
+            {/* Infinite scroll sentinel */}
+            {laureates.length > 0 &&
+              pagination.pageNumber < pagination.totalPages - 1 && (
+                <div ref={sentinelRef} className="py-8 flex justify-center">
+                  {loadingMore && (
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                  )}
+                </div>
+              )}
           </>
         )}
       </div>
