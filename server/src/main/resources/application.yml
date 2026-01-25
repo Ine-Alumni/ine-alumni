@@ -1,13 +1,14 @@
 spring:
   application:
     name: ine-alumni-backend
-
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
-
+  cache:
+    type: simple
+    cache-names: locationStrings
   jpa:
     hibernate:
       ddl-auto: update
@@ -16,7 +17,6 @@ spring:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     open-in-view: false
-
   flyway:
     baseline-on-migrate: true
     enabled: false
@@ -24,7 +24,6 @@ spring:
     baseline-version: 0
     user: ${spring.datasource.username}
     password: ${spring.datasource.password}
-
   mail:
     host: smtp.gmail.com
     port: 587
@@ -39,23 +38,18 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
-
   data:
     redis:
       host: ${SPRING_DATA_REDIS_HOST}
       port: ${SPRING_DATA_REDIS_PORT}
-
 app:
   jwtSecret: ${APP_JWT_SECRET}
   jwtExpirationMs: ${APP_JWT_EXPIRATION_MS}
   contact:
     to: ${CONTACT_TO:inealumni.i@gmail.com}
-
-
 server:
   port: 8080
   address: 0.0.0.0
-
 management:
   endpoints:
     web:
@@ -66,11 +60,10 @@ management:
       show-details: never
   health:
     mail:
-      enabled: false  # Disable mail health check - Mail is optional and credentials may not be configured
+      enabled: false
     defaults:
       enabled: true
-
 logging:
   level:
     org.springframework.data.redis: WARN
-    com.ine.backend.services: INFO  # Pour voir les logs du ContactMessageService
+    com.ine.backend.services: INFO
