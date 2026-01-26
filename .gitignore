@@ -68,3 +68,6 @@ uploads/
 # Logs
 *.log
 server/logs/
+
+
+docker-compose.yml

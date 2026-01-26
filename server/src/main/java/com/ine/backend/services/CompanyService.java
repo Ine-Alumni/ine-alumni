@@ -16,6 +16,7 @@ import com.ine.backend.entities.*;
 import com.ine.backend.exceptions.ResourceNotFoundException;
 import com.ine.backend.repositories.*;
 
+
 @Service
 @Transactional(readOnly = true)
 public class CompanyService {
@@ -48,9 +49,16 @@ public class CompanyService {
 		}
 	}
 
-	public PageResponseDTO<CompanyDTO> searchCompanies(String searchTerm, int page, int size) {
+	public PageResponseDTO<CompanyDTO> searchCompanies(String searchTerm, int page, int size, CompanyFiltersDTO filters) {
 		Pageable pageable = PageRequest.of(page, size, Sort.by("name"));
-		Page<Company> companyPage = companyRepository.searchCompaniesWithVerifiedLaureats(searchTerm, pageable);
+		Page<Company> companyPage = companyRepository
+				.searchCompaniesWithVerifiedLaureats(
+							searchTerm, 
+							filters.getIndustry(), 
+							filters.getLocation(), 
+							Integer.parseInt(filters.getMinAlumni()), 
+							pageable
+						);
 		return PageResponseDTO.from(companyPage.map(this::convertToDTO));
 	}
 

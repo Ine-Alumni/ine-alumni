@@ -3,7 +3,7 @@ import { ProfileCard } from "@/components/laureats/ProfileCard";
 import { SearchBarWithFilters } from "../layout/SearchBarWithFilters";
 import { FilterPanel } from "../common/FilterPanel";
 import { laureatsService } from "@/services/laureatsService";
-import { filterService } from "@/services/filterService";
+import { laureatFilterService } from "@/services/filterService";
 
 const Laureats = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -29,7 +29,7 @@ const Laureats = () => {
 
         await new Promise((resolve) => setTimeout(resolve, 500));
 
-        const filterData = filterService.buildFilterData(appliedFilters);
+        const filterData = laureatFilterService.buildFilterData(appliedFilters);
         const params = { page, size: 12 };
         if (sortBy) {
           params.sortBy = sortBy;
@@ -121,6 +121,7 @@ const Laureats = () => {
             onSortChange={handleSortChange}
             filters={
               <FilterPanel
+                filterService={laureatFilterService}
                 onFilterChange={() => {}}
                 onApplyFilters={setAppliedFilters}
               />

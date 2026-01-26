@@ -113,39 +113,6 @@ export const sampleCompanies = [
   },
 ];
 
-export const companyFilters = [
-  {
-    key: "domain",
-    label: "Domaine",
-    type: "select",
-    options: [
-      { value: "technologie", label: "Technologie" },
-      { value: "finance", label: "Finance" },
-      { value: "consulting", label: "Consulting" },
-    ],
-  },
-  {
-    key: "location",
-    label: "Localisation",
-    type: "select",
-    options: [
-      { value: "rabat", label: "Rabat" },
-      { value: "casablanca", label: "Casablanca" },
-      { value: "marrakech", label: "Marrakech" },
-    ],
-  },
-  {
-    key: "hasContact",
-    label: "Contient un contact RH",
-    type: "checkbox",
-  },
-  {
-    key: "hasDuration",
-    label: "Contient des durées",
-    type: "checkbox",
-  },
-];
-
 export const sampleLaureates = [
   {
     id: "1",
@@ -385,6 +352,65 @@ export const laureateFilters = [
   {
     key: "hasEmail",
     label: "A une adresse email",
+    type: "checkbox",
+  },
+];
+
+export const companyFilters = [
+  {
+    key: "industry",
+    label: "Industrie",
+    type: "select",
+    options: [
+      { value: "Technologie", label: "Technologie" },
+      { value: "Finance", label: "Finance" },
+      { value: "Consulting", label: "Consulting" },
+      { value: "Éducation", label: "Éducation" },
+      { value: "Santé", label: "Santé" },
+      { value: "Énergie", label: "Énergie" },
+      { value: "Télécommunications", label: "Télécommunications" },
+      { value: "Retail", label: "Retail" },
+      { value: "Transport & Logistique", label: "Transport & Logistique" },
+      { value: "Médias & Divertissement", label: "Médias & Divertissement" },
+      { value: "Industrie manufacturière", label: "Industrie manufacturière" },
+      { value: "Autre", label: "Autre" },
+    ],
+  },
+  {
+    key: "location",
+    label: "Localisation",
+    type: "select",
+    options: [
+      { value: "Casablanca", label: "Casablanca" },
+      { value: "Rabat", label: "Rabat" },
+      { value: "Marrakech", label: "Marrakech" },
+      { value: "Tanger", label: "Tanger" },
+      { value: "Fès", label: "Fès" },
+      { value: "Agadir", label: "Agadir" },
+      { value: "Kenitra", label: "Kenitra" },
+      { value: "Oujda", label: "Oujda" },
+      { value: "Meknès", label: "Meknès" },
+      { value: "Tétouan", label: "Tétouan" },
+      { value: "Autre", label: "Autre" },
+      { value: "Remote", label: "Télétravail" },
+    ],
+  },
+  {
+    key: "minAlumni",
+    label: "Nombre minimum d'anciens élèves",
+    type: "number",
+    min: 1,
+    max: 100,
+    placeholder: "ex: 3",
+  },
+  {
+    key: "hasEmail",
+    label: "Contient un email RH",
+    type: "checkbox",
+  },
+  {
+    key: "hasNumber",
+    label: "Contient un numéro de téléphone RH",
     type: "checkbox",
   },
 ];

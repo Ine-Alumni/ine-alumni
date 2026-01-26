@@ -38,6 +38,42 @@ services:
       timeout: 5s
       retries: 5
 
+  # server:
+  #   build:
+  #     context: ./server
+  #     dockerfile: Dockerfile.dev 
+  #   container_name: ine-alumni-backend-dev
+  #   environment:
+  #     SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ine
+  #     SPRING_DATASOURCE_USERNAME: hatim
+  #     SPRING_DATASOURCE_PASSWORD: hatim
+  #     APP_JWT_SECRET: ${APP_JWT_SECRET:-O0hOgZ6YAriDGf+TgjvhH5iUb6DbLz/G3TMblS11mSI=}
+  #     APP_JWT_EXPIRATION_MS: "86400000"
+  #     SPRING_MAIL_HOST: smtp.gmail.com
+  #     SPRING_MAIL_PORT: "587"
+  #     SPRING_MAIL_USERNAME: inealumni.i@gmail.com
+  #     SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD:-kfllckedwbbxlmio}
+  #     SPRING_DATA_REDIS_HOST: redis
+  #     SPRING_DATA_REDIS_PORT: "6379"
+  #     CONTACT_TO: inealumni.i@gmail.com
+  #     # Enable devtools remote secret (optional but recommended)
+  #     SPRING_DEVTOOLS_REMOTE_SECRET: my-secret
+  #   volumes:
+  #     - ./server/src:/app/src          # mount source
+  #     - ./server/target:/app/target    # mount compiled classes
+  #   ports:
+  #     - "${BACKEND_PORT:-8080}:8080"
+  #     - "5005:5005"  # remote debug port
+  #   networks:
+  #     - ine-net
+  #   restart: unless-stopped
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+
+
   server:
     build:
       context: ./server
@@ -47,12 +83,12 @@ services:
       SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL:-jdbc:postgresql://postgres:5432/ine}
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME:-hatim}
       SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:-hatim}
-      APP_JWT_SECRET: ${APP_JWT_SECRET:-local-dev-jwt-secret-key-change-in-production-min-256-bits-required-for-security}
+      APP_JWT_SECRET: ${APP_JWT_SECRET:-}
       APP_JWT_EXPIRATION_MS: ${APP_JWT_EXPIRATION_MS:-86400000}
       SPRING_MAIL_HOST: ${SPRING_MAIL_HOST:-smtp.gmail.com}
       SPRING_MAIL_PORT: ${SPRING_MAIL_PORT:-587}
-      SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME:-your-email@gmail.com}
-      SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD:-your-app-password}
+      SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME:-inealumni.i@gmail.com}
+      SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD:-}
       SPRING_DATA_REDIS_HOST: ${SPRING_DATA_REDIS_HOST:-redis}
       SPRING_DATA_REDIS_PORT: ${SPRING_DATA_REDIS_PORT:-6379}
       CONTACT_TO: ${CONTACT_TO:-inealumni.i@gmail.com}

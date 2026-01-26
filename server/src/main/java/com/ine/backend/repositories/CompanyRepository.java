@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import com.ine.backend.entities.Company;
 
+
 @Repository
 public interface CompanyRepository extends JpaRepository<Company, Long> {
 
@@ -21,10 +22,29 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
 			+ "(SELECT l FROM Laureat l WHERE l.currentCompany = c AND l.isAccountVerified = true)")
 	Page<Company> findCompaniesWithVerifiedLaureats(Pageable pageable);
 
-	@Query("SELECT DISTINCT c FROM Company c WHERE "
-			+ "LOWER(c.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) AND EXISTS "
-			+ "(SELECT l FROM Laureat l WHERE l.currentCompany = c AND l.isAccountVerified = true)")
-	Page<Company> searchCompaniesWithVerifiedLaureats(@Param("searchTerm") String searchTerm, Pageable pageable);
+	@Query("""
+    SELECT DISTINCT c FROM Company c 
+    WHERE 
+        LOWER(c.name) LIKE LOWER(CONCAT('%', :searchTerm, '%'))
+        AND EXISTS (
+            SELECT l FROM Laureat l 
+            WHERE l.currentCompany = c AND l.isAccountVerified = true
+        )
+        AND (:industry IS NULL OR c.industry = :industry)
+        AND (:location IS NULL OR LOWER(c.location) LIKE LOWER(CONCAT('%', :location, '%')))
+        AND (:minAlumni IS NULL OR (
+            SELECT COUNT(l2) 
+            FROM Laureat l2 
+            WHERE l2.currentCompany = c AND l2.isAccountVerified = true
+        ) >= :minAlumni)
+    """)
+Page<Company> searchCompaniesWithVerifiedLaureats(
+    @Param("searchTerm") String searchTerm,
+    @Param("industry") String industry,
+    @Param("location") String location,
+    @Param("minAlumni") int minAlumni,
+    Pageable pageable
+);
 
 	@Query("SELECT c FROM Company c WHERE LOWER(c.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR "
 			+ "LOWER(c.industry) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR "

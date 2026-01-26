@@ -1,6 +1,6 @@
 import api from "./api";
 
-export const filterService = {
+export const laureatFilterService = {
   // Get all filter options from backend
   getFilterOptions: async () => {
     const [majors, years, positions, cities, domains, companies] =
@@ -60,6 +60,82 @@ export const filterService = {
         return `Domaine: ${value.replace(/_/g, " ")}`;
       default:
         return value;
+    }
+  },
+};
+
+export const companyFilterService = {
+  /**
+   * Fetch filter options from backend (if needed)
+   * For now, returns static options since industry/location are free-text or predefined
+   */
+  getFilterOptions: async () => {
+    // Optional: fetch dynamic options from backend if needed
+    // For simplicity, we return static values matching your DTO
+    return {
+      industries: [
+        "Technologie",
+        "Finance",
+        "Consulting",
+        "Éducation",
+        "Santé",
+        "Énergie",
+        "Télécommunications",
+        "Retail",
+        "Transport & Logistique",
+        "Médias & Divertissement",
+        "Industrie manufacturière",
+        "Autre"
+      ],
+      locations: [
+        "Casablanca",
+        "Rabat",
+        "Marrakech",
+        "Tanger",
+        "Fès",
+        "Agadir",
+        "Kenitra",
+        "Oujda",
+        "Meknès",
+        "Tétouan",
+        "Remote"
+      ]
+    };
+  },
+
+  /**
+   * Build filter data for backend API call
+   * Converts UI filters to backend-compatible format
+   */
+  buildFilterData: (filters) => {
+    if (Object.keys(filters).length === 0) return null;
+
+    return {
+      industry: filters.industry || undefined,
+      location: filters.location || undefined,
+      minAlumni: filters.minAlumni ? parseInt(filters.minAlumni, 10) : undefined,
+      hasEmail: filters.hasEmail !== undefined ? Boolean(filters.hasEmail) : undefined,
+      hasNumber: filters.hasNumber !== undefined ? Boolean(filters.hasNumber) : undefined,
+    };
+  },
+
+  /**
+   * Get human-readable label for active filter badges
+   */
+  getFilterLabel: (key, value) => {
+    switch (key) {
+      case "industry":
+        return `Industrie: ${value}`;
+      case "location":
+        return `Localisation: ${value}`;
+      case "minAlumni":
+        return `Min. anciens élèves: ${value}`;
+      case "hasEmail":
+        return value ? "Avec email RH" : "Sans email RH";
+      case "hasNumber":
+        return value ? "Avec téléphone RH" : "Sans téléphone RH";
+      default:
+        return String(value);
     }
   },
 };

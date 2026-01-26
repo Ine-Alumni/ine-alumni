@@ -5,9 +5,12 @@ import { SearchBarWithFilters } from "../layout/SearchBarWithFilters";
 import { FilterPanel } from "../common/FilterPanel";
 import { companiesService } from "@/services/companiesService.js";
 import { companyFilters } from "@/data/sampleData.js";
+import { companyFilterService } from "@/services/filterService";
+
+
 const Entreprises = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [_, setFilters] = useState({});
+  const [filters, setFilters] = useState({});
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -29,6 +32,11 @@ const Entreprises = () => {
         response = await companiesService.searchCompanies(searchQuery, {
           page: pagination.pageNumber,
           size: pagination.pageSize,
+          industry: filters.industry || undefined,
+          location: filters.location || undefined,
+          minAlumni: filters.minAlumni ? parseInt(filters.minAlumni, 10) : 0,
+          hasEmail: filters.hasEmail ?? undefined,
+          hasNumber: filters.hasNumber ?? undefined,
         });
       } else {
         response = await companiesService.getAllCompanies({
@@ -82,7 +90,19 @@ const Entreprises = () => {
             placeholder="Recherche sur nom, domaine, localisation..."
             onSearch={setSearchQuery}
             filters={
-              <FilterPanel filters={companyFilters} onChange={setFilters} />
+              <FilterPanel
+              filterService={companyFilterService}
+              onFilterChange={(newFilters) => {
+                setFilters(newFilters);
+                // Optional: auto-fetch on filter change
+                // fetchCompanies();
+              }}
+              // Or use onApplyFilters for manual apply
+              onApplyFilters={(newFilters) => {
+                setFilters(newFilters);
+                fetchCompanies(); // trigger search immediately
+              }}
+            />
             }
           />
         </div>

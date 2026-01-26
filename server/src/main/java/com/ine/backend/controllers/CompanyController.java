@@ -33,16 +33,18 @@ public class CompanyController {
 	}
 
 	@GetMapping("/search")
-	@Operation(summary = "Search companies", description = "Search companies by name, industry, or location")
+	@Operation(summary = "Search companies", description = "Search companies by name, industry, or location with optional filters")
 	public ResponseEntity<PageResponseDTO<CompanyDTO>> searchCompanies(
-			@Parameter(description = "Search term") @RequestParam String q,
-			@Parameter(description = "Page number (0-based)") @RequestParam(defaultValue = "0") int page,
-			@Parameter(description = "Page size") @RequestParam(defaultValue = "12") int size) {
-
-		PageResponseDTO<CompanyDTO> data = companyService.searchCompanies(q, page, size);
+		@Parameter(description = "Search term") @RequestParam String q,
+		@Parameter(description = "Page number (0-based)") @RequestParam(defaultValue = "0") int page,
+		@Parameter(description = "Page size") @RequestParam(defaultValue = "12") int size,
+		CompanyFiltersDTO filters  // ← Spring auto-binds query params to this DTO
+	) {
+		PageResponseDTO<CompanyDTO> data = companyService.searchCompanies(q, page, size, filters);
 		return ResponseEntity.ok(data);
 	}
 
+	
 	@GetMapping("/{id}")
 	@Operation(summary = "Get company details", description = "Get detailed information about a specific company including alumni and reviews")
 	public ResponseEntity<CompanyDetailsDTO> getCompanyDetails(
