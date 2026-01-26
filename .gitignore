@@ -1,3 +1,6 @@
+# docker compose file
+docker-compose.yml
+
 # Logs
 logs
 *.log
@@ -69,5 +72,3 @@ uploads/
 *.log
 server/logs/
 
-
-docker-compose.yml
