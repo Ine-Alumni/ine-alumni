@@ -26,9 +26,6 @@ From repository root:
 docker compose up -d --build
 ```
 
-See full setup: [DOCKER_SETUP.md](./DOCKER_SETUP.md)
-
-
 Services & URLs:
 - Frontend: http://localhost:5173
 - Backend API: http://localhost:8080
