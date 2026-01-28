@@ -57,6 +57,9 @@ docker run --rm -p 8080:8080 \
   ine-alumni-backend:local
 ```
 
+Having issues? See: [TROUBLESHOOTING.md](./server/TROUBLESHOOTING.md)
+
+
 ## Configuration
 
 - `src/main/resources/application.yml` (Postgres by default in container)

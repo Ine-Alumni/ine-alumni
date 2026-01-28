@@ -1,9 +1,8 @@
 # Troubleshooting Guide
 
-Common issues and solutions when running INE Alumni with Docker Compose.
+Common issues and solutions when running INE Alumni with Docker Compose:
 
 ---
-
 ## Email Configuration
 
 ### Using Real SMTP (Gmail, Outlook, etc.)
@@ -313,10 +312,10 @@ unset APP_JWT_SECRET
 
 # Set required variables
 # PowerShell:
-$env:APP_JWT_SECRET="bG9jYWxkZXZqd3RzZWNyZXRrZXljaGFuZ2VpbnByb2R1Y3Rpb25taW4yNTZiaXRzcmVxdWlyZWRmb3JzZWN1cml0eQ=="
+$env:APP_JWT_SECRET="add-your-jwt-key-here"
 
 # Bash:
-export APP_JWT_SECRET="bG9jYWxkZXZqd3RzZWNyZXRrZXljaGFuZ2VpbnByb2R1Y3Rpb25taW4yNTZiaXRzcmVxdWlyZWRmb3JzZWN1cml0eQ=="
+export APP_JWT_SECRET="add-your-jwt-key-here
 
 # Start fresh
 docker-compose up --build
